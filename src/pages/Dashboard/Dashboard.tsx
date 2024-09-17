@@ -13,6 +13,7 @@ import { FC } from "react";
 import styles from "./Dashboard.module.scss";
 import {
   businessOutline,
+  chevronDown,
   compassOutline,
   helpBuoyOutline,
   megaphoneOutline,
@@ -23,10 +24,11 @@ const Dashboard: FC = () => {
     <IonPage className={styles.dashboardpage}>
       <IonHeader translucent={true} className="ion-no-border">
         <IonToolbar>
-          <IonTitle slot="start" className={styles.toolbartitle}>
+          <div className={styles.leftContainer} slot="start">
             <IonIcon icon={businessOutline}></IonIcon>
             <IonLabel>Header</IonLabel>
-          </IonTitle>
+            <IonIcon icon={chevronDown}></IonIcon>
+          </div>
           <IonIcon slot="end" icon={notificationsOutline}></IonIcon>
         </IonToolbar>
         <IonSegment value="dashboard">
