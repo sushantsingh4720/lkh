@@ -36,7 +36,7 @@ const Forgot: FC = () => {
               </h6>
             </IonCol>
           </IonRow>
-          <IonRow className="ion-margin-top ion-padding-top">
+          <IonRow className="ion-padding-top">
             <IonCol size="12">
               <div className={styles.formdata}>
                 <div className={styles.field}>

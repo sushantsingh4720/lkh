@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   IonButton,
   IonCardTitle,
@@ -12,11 +13,46 @@ import {
   IonRouterLink,
   IonRow,
   IonToolbar,
+  useIonRouter,
+  useIonToast,
 } from "@ionic/react";
 import styles from "./Login.module.scss";
 import Logo from "../../assets/images/Logo.png";
-
+import useAxios from "../../utils/axiosInstance";
+import { Redirect } from "react-router";
 const Login: React.FC = () => {
+  const axios = useAxios();
+  const router = useIonRouter();
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
+  const [showToast, dismissToast] = useIonToast();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null); // Reset error state
+    if (!email || !password) {
+      setError("Please fill in both email and password.");
+      return;
+    }
+    try {
+      // Send the login request to your API
+      const result = await axios.post("/auth/login", {
+        email,
+        password,
+      });
+      const response = result.data;
+      localStorage.setItem("token", response.token);
+      // navigation back
+      router.push("/","none", "replace");
+    } catch (err: any) {
+      // Handle error during API request
+      console.log("err", err.response?.data?.message);
+      setError(
+        err.response?.data?.message || "An error occurred. Please try again."
+      );
+    }
+  };
+
   return (
     <IonPage className={styles.loginPage}>
       <IonContent fullscreen>
@@ -33,13 +69,13 @@ const Login: React.FC = () => {
             </IonCol>
           </IonRow>
 
-          <IonRow className="ion-margin-top ion-padding-top">
+          <IonRow className="ion-padding-top">
             <IonCol size="12">
-              <div className={styles.formdata}>
+              <form className={styles.formdata} onSubmit={handleSubmit}>
                 <div className={styles.field}>
                   <IonLabel className={styles.fieldLabel}>
                     Email
-                    <p>Please check your email</p>
+                    {/* <p>Please check your email</p> */}
                   </IonLabel>
                   <IonInput
                     name="email"
@@ -47,13 +83,14 @@ const Login: React.FC = () => {
                     required
                     placeholder="joe@bills.com"
                     type="email"
-                    value=""
+                    value={email}
+                    onIonInput={(e: any) => setEmail(e.target.value)}
                   />
                 </div>
                 <div className={styles.field}>
                   <IonLabel className={styles.fieldLabel}>
                     Password
-                    <p className="ion-no-margin">Please check your password</p>
+                    {/* <p className="ion-no-margin">Please check your password</p> */}
                   </IonLabel>
                   <IonInput
                     name="password"
@@ -61,7 +98,8 @@ const Login: React.FC = () => {
                     required
                     placeholder="*********"
                     type="password"
-                    value=""
+                    value={password}
+                    onIonInput={(e: any) => setPassword(e.target.value)}
                   />
                   <IonRow className="ion-text-end ion-justify-content-center ion-margin-top">
                     <IonCol size="12">
@@ -76,10 +114,20 @@ const Login: React.FC = () => {
                   </IonRow>
                 </div>
 
-                <IonButton className="custom-button" expand="block">
+                {error && (
+                  <div className={styles.errorMessage}>
+                    <p className="ion-no-margin">{error}</p>
+                  </div>
+                )}
+
+                <IonButton
+                  className="custom-button"
+                  expand="block"
+                  type="submit"
+                >
                   Login
                 </IonButton>
-              </div>
+              </form>
             </IonCol>
           </IonRow>
         </IonGrid>
