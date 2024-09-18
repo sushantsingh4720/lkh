@@ -11,14 +11,14 @@ import {
   IonPage,
   IonRouterLink,
   IonRow,
-  IonToolbar,
 } from "@ionic/react";
-import styles from "./Login.module.scss";
+import styles from "./Forgot.module.scss";
+import { FC } from "react";
 import Logo from "../../assets/images/Logo.png";
 
-const Login: React.FC = () => {
+const Forgot: FC = () => {
   return (
-    <IonPage className={styles.loginPage}>
+    <IonPage className={styles.forgotpage}>
       <IonContent fullscreen>
         <IonGrid className="ion-padding">
           <IonRow className="ion-margin-top ion-padding-top">
@@ -28,11 +28,14 @@ const Login: React.FC = () => {
           </IonRow>
           <IonRow>
             <IonCol size="12" className={styles.headingText}>
-              <IonCardTitle>Log in</IonCardTitle>
-              <h5>Welcome back, hope you're doing well</h5>
+              <IonCardTitle>Forgot Passowrd</IonCardTitle>
+              <h5>Don't worry, it happens! Let's get you back on track.</h5>
+              <h6>
+                Please enter your email address below. We'll send you a link to
+                reset your password and regain access to your account.
+              </h6>
             </IonCol>
           </IonRow>
-
           <IonRow className="ion-margin-top ion-padding-top">
             <IonCol size="12">
               <div className={styles.formdata}>
@@ -50,53 +53,24 @@ const Login: React.FC = () => {
                     value=""
                   />
                 </div>
-                <div className={styles.field}>
-                  <IonLabel className={styles.fieldLabel}>
-                    Password
-                    <p className="ion-no-margin">Please check your password</p>
-                  </IonLabel>
-                  <IonInput
-                    name="password"
-                    className={styles.customInput}
-                    required
-                    placeholder="*********"
-                    type="password"
-                    value=""
-                  />
-                  <IonRow className="ion-text-end ion-justify-content-center ion-margin-top">
-                    <IonCol size="12">
-                      <IonRouterLink
-                        className="custom-link"
-                        routerLink="/auth/forgot"
-                      >
-                        {" "}
-                        Forgot Password?
-                      </IonRouterLink>
-                    </IonCol>
-                  </IonRow>
-                </div>
 
                 <IonButton className="custom-button" expand="block">
-                  Login
+                  Send
                 </IonButton>
               </div>
             </IonCol>
           </IonRow>
         </IonGrid>
       </IonContent>
-
       <IonFooter>
         <IonGrid className="ion-no-margin ion-no-padding">
           <IonRow className="ion-text-center ion-justify-content-center">
             <IonCol size="12">
               <p>
-                Don't have an account?
-                <IonRouterLink
-                  className="custom-link"
-                  routerLink="/auth/signup"
-                >
+                Back to
+                <IonRouterLink className="custom-link" routerLink="/auth/login">
                   {" "}
-                  Sign up&rarr;
+                  Login&rarr;
                 </IonRouterLink>
               </p>
             </IonCol>
@@ -107,4 +81,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default Forgot;
