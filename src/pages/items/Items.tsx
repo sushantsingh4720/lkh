@@ -12,8 +12,8 @@ import { FC } from "react";
 
 const Items: FC = () => {
   return (
-    <IonPage>
-      <IonHeader translucent={true} className="ion-no-border">
+    <div id="items">
+      <IonHeader translucent={true} >
         <IonToolbar>
           <IonTitle>Items</IonTitle>
           <IonIcon
@@ -28,7 +28,7 @@ const Items: FC = () => {
           <IonIcon icon={addOutline}></IonIcon>
         </IonButton>
       </IonContent>
-    </IonPage>
+    </div>
   );
 };
 

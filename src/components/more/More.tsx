@@ -10,15 +10,15 @@ import { FC } from "react";
 
 const More: FC = () => {
   return (
-    <IonPage>
-      <IonHeader translucent={true} className="ion-no-border">
+    <div id="more">
+      <IonHeader translucent={true} >
         <IonToolbar>
           <IonTitle>More Modules</IonTitle>
           <IonLabel slot="end">Customise</IonLabel>
         </IonToolbar>
       </IonHeader>
       <IonContent></IonContent>
-    </IonPage>
+    </div>
   );
 };
 

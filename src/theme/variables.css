@@ -1,11 +1,11 @@
 :root {
   --page-padding-left: 10px;
   --page-padding-right: 10px;
-  --ion-background-color: #f2f2f2;
+  /* --ion-background-color: #f2f2f2; */
 }
 
 .ion-page {
-  background-color: var(--ion-background-color);
+  /* background-color: var(--ion-background-color); */
 }
 ion-toolbar {
   --padding-start: var(--page-padding-left);
@@ -19,12 +19,13 @@ ion-segment {
 ion-tab-bar {
   padding-left: var(--page-padding-left);
   padding-right: var(--page-padding-right);
-  --background: #ffffff;
+  /* --background: #ffffff; */
 }
 ion-content {
   --padding-start: var(--page-padding-left);
   --padding-end: var(--page-padding-right);
-  --background: #ffffff;
+  /* --background: #ffffff; */
+  min-height: 78vh;
 }
 
 ion-icon {
@@ -48,7 +49,7 @@ ion-label {
 .backgroundwhiteicon {
   padding: 6px;
   border-radius: 8px;
-  background: #ffffff;
+  /* background: #ffffff; */
 }
 
 ion-toolbar {
@@ -70,12 +71,12 @@ ion-card {
   margin-inline-end: 0px;
   margin-top: 0px;
   margin-bottom: 0px;
-  background: #ffffff;
+  /* background: #ffffff; */
 }
 
 .customInput {
   border-bottom: 1px solid #4d4d4d;
-  --background: #ffffff;
+  /* --background: #ffffff; */
   font-size: 1.2rem;
   color: #1a1a1a;
   font-weight: normal;

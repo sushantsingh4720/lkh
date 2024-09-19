@@ -2,6 +2,7 @@ import {
   IonContent,
   IonHeader,
   IonIcon,
+  IonPage,
   IonTab,
   IonTabBar,
   IonTabButton,
@@ -31,22 +32,23 @@ import More from "../more/More";
 import styles from "./Tab.module.css";
 const Tab: FC = () => {
   return (
+    <IonPage>
     <IonTabs className={styles.iontabs}>
       <IonTab tab="dashboard">
-        <Dashboard />
+        <Dashboard></Dashboard>
       </IonTab>
 
       <IonTab tab="contacts">
-        <Contacts />
+        <Contacts></Contacts>
       </IonTab>
       <IonTab tab="invoices">
-        <Sales />
+        <Sales></Sales>
       </IonTab>
       <IonTab tab="items">
-        <Items />
+        <Items></Items>
       </IonTab>
       <IonTab tab="more">
-        <More />
+        <More></More>
       </IonTab>
 
       <IonTabBar slot="bottom">
@@ -72,6 +74,7 @@ const Tab: FC = () => {
         </IonTabButton>
       </IonTabBar>
     </IonTabs>
+    </IonPage>
   );
 };
 export default Tab;

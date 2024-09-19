@@ -57,8 +57,8 @@ const Contacts: FC = () => {
   }
 
   return (
-    <IonPage className={styles.contact_page} ref={page}>
-      <IonHeader translucent={true} className="ion-no-border">
+    <div className={styles.contact_page} ref={page} id="contacts">
+      <IonHeader translucent={true} >
         <IonToolbar>
           <IonTitle>Contacts</IonTitle>
           <IonIcon
@@ -79,7 +79,7 @@ const Contacts: FC = () => {
           dismiss={dismiss}
         />
       </IonContent>
-    </IonPage>
+    </div>
   );
 };
 

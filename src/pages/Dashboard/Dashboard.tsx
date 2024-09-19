@@ -31,8 +31,8 @@ import { Route } from "react-router";
 
 const Dashboard: FC = () => {
   return (
-    <IonPage className={styles.dashboardpage}>
-      <IonHeader translucent={true} className="ion-no-border">
+    <div className={styles.dashboardpage} id="dashboard">
+      <IonHeader translucent={true} >
         <IonToolbar>
           <div className={styles.leftContainer} slot="start">
             {/* <IonIcon icon={businessOutline}></IonIcon> */}
@@ -106,7 +106,7 @@ const Dashboard: FC = () => {
           streamlined body adapted for fast swimming.
         </p>
       </IonContent>
-    </IonPage>
+    </div>
   );
 };
 
