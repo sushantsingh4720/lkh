@@ -41,7 +41,7 @@ const Dashboard: FC = () => {
           </div>
           {/* <IonIcon slot="end" icon={notificationsOutline}></IonIcon> */}
         </IonToolbar>
-        <IonSegment value="dashboard">
+        {/* <IonSegment value="dashboard">
           <IonSegmentButton value="dashboard" layout="icon-start">
             <IonIcon icon={compassOutline}></IonIcon>
             <IonLabel>Dashboard</IonLabel>
@@ -54,7 +54,7 @@ const Dashboard: FC = () => {
             <IonIcon icon={helpBuoyOutline}></IonIcon>
             <IonLabel>Help</IonLabel>
           </IonSegmentButton>
-        </IonSegment>
+        </IonSegment> */}
       </IonHeader>
 
       <IonContent>

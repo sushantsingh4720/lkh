@@ -35,6 +35,7 @@ import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Signup";
 import Tab from "./components/tab/Tab";
 import Forgot from "./pages/forgot/Forgot";
+import NewContact from "./pages/contacts/newContact/NewContact";
 
 setupIonicReact();
 
@@ -43,15 +44,9 @@ const App: React.FC = () => (
     <IonReactRouter>
       <IonRouterOutlet>
         <Route exact path="/" component={Tab} />
-        <Route exact path="/auth/login">
-          <Login />
-        </Route>
-        <Route exact path="/auth/signup">
-          <Signup />
-        </Route>
-        <Route exact path="/auth/forgot">
-          <Forgot />
-        </Route>
+        <Route exact path="/auth/login" component={Login} />
+        <Route exact path="/auth/signup" component={Signup} />
+        <Route exact path="/auth/forgot" component={Forgot} />
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>

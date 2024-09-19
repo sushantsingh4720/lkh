@@ -1,4 +1,5 @@
 import {
+  IonButton,
   IonContent,
   IonHeader,
   IonIcon,
@@ -9,17 +10,31 @@ import {
 } from "@ionic/react";
 import { FC } from "react";
 import styles from "./Sales.module.scss";
-import { menuOutline, searchCircleOutline, searchCircleSharp, searchOutline } from "ionicons/icons";
+import {
+  addOutline,
+  menuOutline,
+  searchCircleOutline,
+  searchCircleSharp,
+  searchOutline,
+} from "ionicons/icons";
 const Sales: FC = () => {
   return (
-    <IonPage className={styles.salescontainer}> 
+    <IonPage className={styles.salescontainer}>
       <IonHeader translucent={true} className="ion-no-border">
         <IonToolbar>
           <IonTitle>Invoices</IonTitle>
-          <IonIcon slot='end' icon={searchOutline} className="backgroundwhiteicon"></IonIcon>
+          <IonIcon
+            slot="end"
+            icon={searchOutline}
+            className="backgroundwhiteicon"
+          ></IonIcon>
         </IonToolbar>
       </IonHeader>
-      <IonContent ></IonContent>
+      <IonContent>
+        <IonButton slot="fixed">
+          <IonIcon icon={addOutline}></IonIcon>
+        </IonButton>
+      </IonContent>
     </IonPage>
   );
 };

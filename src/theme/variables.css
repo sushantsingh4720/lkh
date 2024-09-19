@@ -40,9 +40,9 @@ ion-title {
   font-size: 1.2rem;
   font-weight: 600;
 }
-ion-label{
+ion-label {
   font-size: 1rem;
-  font-weight: 600;
+  /* font-weight: 600; */
 }
 
 .backgroundwhiteicon {
@@ -53,4 +53,36 @@ ion-label{
 
 ion-toolbar {
   --opacity: 0.5;
+}
+ion-button[slot="fixed"] {
+  top: 90%;
+  right: 10px;
+  --border-radius: 10px;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  --padding-start: 1.1em;
+  --padding-end: 1.1em;
+}
+ion-card {
+  -webkit-margin-start: 0px;
+  margin-inline-start: 0px;
+  -webkit-margin-end: 0px;
+  margin-inline-end: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  background: #ffffff;
+}
+
+.customInput {
+  border-bottom: 1px solid #4d4d4d;
+  --background: #ffffff;
+  font-size: 1.2rem;
+  color: #1a1a1a;
+  font-weight: normal;
+  min-height: auto;
+  /* --padding-top: 2px;
+  --padding-end: 10px;
+  --padding-bottom: 2px;
+  --padding-start: 10px; */
+  --highlight-height: 0px;
 }
