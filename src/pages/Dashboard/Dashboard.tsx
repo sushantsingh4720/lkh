@@ -35,11 +35,11 @@ const Dashboard: FC = () => {
       <IonHeader translucent={true} className="ion-no-border">
         <IonToolbar>
           <div className={styles.leftContainer} slot="start">
-            <IonIcon icon={businessOutline}></IonIcon>
-            <IonLabel>Header</IonLabel>
+            {/* <IonIcon icon={businessOutline}></IonIcon> */}
+            <IonLabel slot="start">sushant...</IonLabel>
             <IonIcon icon={chevronDown}></IonIcon>
           </div>
-          <IonIcon slot="end" icon={notificationsOutline}></IonIcon>
+          {/* <IonIcon slot="end" icon={notificationsOutline}></IonIcon> */}
         </IonToolbar>
         <IonSegment value="dashboard">
           <IonSegmentButton value="dashboard" layout="icon-start">

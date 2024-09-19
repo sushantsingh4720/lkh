@@ -3,34 +3,22 @@
     color: black;
     display: flex !important;
     align-items: center;
-    padding-left: 10px;
-    padding-right: 10px;
     ion-icon {
-      padding: 8px;
-      border-radius: 50%;
-      border: 2px solid #665f5f;
+      padding: 0;
+      background: none;
     }
     .leftContainer {
       display: flex;
       align-items: center;
-      gap: 8px;
       ion-label {
         font-size: 1.2rem;
         font-weight: 600;
       }
-      ion-icon:last-child {
-        padding: 0;
-        border: none;
-        border-radius: 0;
-        font-size: 1.6rem;
-        font-weight: 600;
-      }
+      
     }
   }
 
   ion-segment {
-    padding-left: 10px;
-    padding-right: 10px;
     ion-segment-button {
       --color-checked: #0099ff;
       --padding-end: 0px;

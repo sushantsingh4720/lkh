@@ -1,0 +1,56 @@
+:root {
+  --page-padding-left: 10px;
+  --page-padding-right: 10px;
+  --ion-background-color: #f2f2f2;
+}
+
+.ion-page {
+  background-color: var(--ion-background-color);
+}
+ion-toolbar {
+  --padding-start: var(--page-padding-left);
+  --padding-end: var(--page-padding-right);
+}
+ion-segment {
+  padding-left: var(--page-padding-left);
+  padding-right: var(--page-padding-right);
+}
+
+ion-tab-bar {
+  padding-left: var(--page-padding-left);
+  padding-right: var(--page-padding-right);
+  --background: #ffffff;
+}
+ion-content {
+  --padding-start: var(--page-padding-left);
+  --padding-end: var(--page-padding-right);
+  --background: #ffffff;
+}
+
+ion-icon {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+ion-title {
+  -webkit-padding-start: 0px;
+  padding-inline-start: 0px;
+  -webkit-padding-end: 0px;
+  padding-inline-end: 0px;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+ion-label{
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.backgroundwhiteicon {
+  padding: 6px;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+ion-toolbar {
+  --opacity: 0.5;
+}

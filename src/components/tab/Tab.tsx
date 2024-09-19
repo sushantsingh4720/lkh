@@ -23,15 +23,15 @@ import {
   search,
 } from "ionicons/icons";
 import { FC } from "react";
-import Dashboard from "../pages/dashboard/Dashboard";
-import Contacts from "../pages/contacts/Contacts";
-import Sales from "../pages/invoices/sales/Sales";
-import Items from "../pages/items/Items";
-import More from "./More";
-
+import Dashboard from "../../pages/dashboard/Dashboard";
+import Contacts from "../../pages/contacts/Contacts";
+import Sales from "../../pages/invoices/sales/Sales";
+import Items from "../../pages/items/Items";
+import More from "../more/More";
+import styles from "./Tab.module.css";
 const Tab: FC = () => {
   return (
-    <IonTabs>
+    <IonTabs className={styles.iontabs}>
       <IonTab tab="dashboard">
         <Dashboard />
       </IonTab>

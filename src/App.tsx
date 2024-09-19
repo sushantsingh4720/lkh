@@ -33,7 +33,7 @@ import "@ionic/react/css/palettes/dark.system.css";
 import "./theme/variables.css";
 import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Signup";
-import Tab from "./components/Tab";
+import Tab from "./components/tab/Tab";
 import Forgot from "./pages/forgot/Forgot";
 
 setupIonicReact();

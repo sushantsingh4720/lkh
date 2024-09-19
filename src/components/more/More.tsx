@@ -1,25 +1,20 @@
 import {
   IonContent,
   IonHeader,
-  IonIcon,
+  IonLabel,
   IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { searchOutline } from "ionicons/icons";
 import { FC } from "react";
 
-const Contacts: FC = () => {
+const More: FC = () => {
   return (
     <IonPage>
       <IonHeader translucent={true} className="ion-no-border">
         <IonToolbar>
-          <IonTitle>Contacts</IonTitle>
-          <IonIcon
-            slot="end"
-            icon={searchOutline}
-            className="backgroundwhiteicon"
-          ></IonIcon>
+          <IonTitle>More Modules</IonTitle>
+          <IonLabel slot="end">Customise</IonLabel>
         </IonToolbar>
       </IonHeader>
       <IonContent></IonContent>
@@ -27,4 +22,4 @@ const Contacts: FC = () => {
   );
 };
 
-export default Contacts;
+export default More;
