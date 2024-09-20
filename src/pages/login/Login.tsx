@@ -19,9 +19,13 @@ import {
 import styles from "./Login.module.scss";
 import Logo from "../../assets/images/Logo.png";
 import useAxios from "../../utils/axiosInstance";
-import { Redirect } from "react-router";
+import { Redirect, useHistory } from "react-router";
+import { useDispatch } from "react-redux";
+import { login } from "../../reduxStore/Auth";
 const Login: React.FC = () => {
   const axios = useAxios();
+  const dispatch = useDispatch();
+  const history = useHistory();
   const router = useIonRouter();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -41,12 +45,10 @@ const Login: React.FC = () => {
         password,
       });
       const response = result.data;
-      localStorage.setItem("token", response.token);
-      // navigation back
-      router.push("/","none", "replace");
+      const { token, user } = response;
+      dispatch(login({ token, user }));
+      router.push("/", "root");
     } catch (err: any) {
-      // Handle error during API request
-      console.log("err", err.response?.data?.message);
       setError(
         err.response?.data?.message || "An error occurred. Please try again."
       );

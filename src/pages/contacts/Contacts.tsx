@@ -24,7 +24,6 @@ const Contacts: FC = () => {
     }
     setItems([...items, ...newItems]);
   };
-  console.log(items);
   useEffect(() => {
     generateItems();
     // eslint-disable-next-line react-hooks/exhaustive-deps

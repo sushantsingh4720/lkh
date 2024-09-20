@@ -1,6 +1,9 @@
-import { Route } from "react-router-dom";
-import { IonApp, IonRouterOutlet, setupIonicReact } from "@ionic/react";
-import { IonReactRouter } from "@ionic/react-router";
+import {
+  IonApp,
+  IonSpinner,
+  setupIonicReact,
+  useIonRouter,
+} from "@ionic/react";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -31,25 +34,40 @@ import "@ionic/react/css/palettes/dark.system.css";
 
 /* Theme variables */
 import "./theme/variables.css";
-import Login from "./pages/login/Login";
-import Signup from "./pages/signup/Signup";
-import Tab from "./components/tab/Tab";
-import Forgot from "./pages/forgot/Forgot";
-import NewContact from "./pages/contacts/newContact/NewContact";
+
+import { useEffect, useState } from "react";
+import useAxios from "./utils/axiosInstance";
+import { useDispatch, useSelector } from "react-redux";
+import { loadUser, logout } from "./reduxStore/Auth";
+import Router from "./pages/Router";
+import { RootState } from "./reduxStore/Index";
+import FullPageSpinner from "./components/Spinner/fullPageSpinner/FullPageSpinner";
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route path="/" component={Tab} />
-        <Route exact path="/auth/login" component={Login} />
-        <Route exact path="/auth/signup" component={Signup} />
-        <Route exact path="/auth/forgot" component={Forgot} />
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
-);
+const App: React.FC = () => {
+  const dispatch = useDispatch();
+  const axios = useAxios();
+  const [loading,setLoading]=useState(true)
+  const getUser = async () => {
+    try {
+      const response = await axios.get("/user/profile");
+      const data = response?.data;
+      const user = data?.data;
+      dispatch(loadUser({ user }));
+    } catch (error: any) {
+      if (error.response.status === 403) {
+        dispatch(logout());
+      }
+    } finally {
+      setLoading(false)
+    }
+  };
+  console.log("hi");
+  useEffect(() => {
+    getUser();
+  }, []);
+  return <IonApp>{loading ? <FullPageSpinner /> : <Router />}</IonApp>;
+};
 
 export default App;
