@@ -1,64 +1,37 @@
 import {
+  IonAvatar,
   IonButton,
   IonContent,
   IonHeader,
   IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
   IonPage,
   IonTitle,
   IonToolbar,
-  useIonActionSheet,
-  useIonRouter,
-  IonModal,
 } from "@ionic/react";
 import { addOutline, searchOutline } from "ionicons/icons";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import styles from "./Contacts.module.scss";
-import NewContact from "./newContact/NewContact";
-
 const Contacts: FC = () => {
-  const modal = useRef<HTMLIonModalElement>(null);
-  const page = useRef(null);
+  const [items, setItems] = useState<string[]>([]);
 
-  const [presentingElement, setPresentingElement] =
-    useState<HTMLElement | null>(null);
-  const [present] = useIonActionSheet();
-
+  const generateItems = () => {
+    const newItems = [];
+    for (let i = 0; i < 20; i++) {
+      newItems.push(`Item ${1 + items.length + i}`);
+    }
+    setItems([...items, ...newItems]);
+  };
+  console.log(items);
   useEffect(() => {
-    setPresentingElement(page.current);
+    generateItems();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  function dismiss() {
-    modal.current?.dismiss();
-  }
-
-  function canDismiss() {
-    return new Promise<boolean>((resolve, reject) => {
-      present({
-        header: "Are you sure?",
-        buttons: [
-          {
-            text: "Yes",
-            role: "confirm",
-          },
-          {
-            text: "No",
-            role: "cancel",
-          },
-        ],
-        onWillDismiss: (ev) => {
-          if (ev.detail.role === "confirm") {
-            resolve(true);
-          } else {
-            reject();
-          }
-        },
-      });
-    });
-  }
-
   return (
-    <div className={styles.contact_page} ref={page} id="contacts">
-      <IonHeader translucent={true} >
+    <IonPage className={styles.contact_page}>
+      <IonHeader>
         <IonToolbar>
           <IonTitle>Contacts</IonTitle>
           <IonIcon
@@ -69,17 +42,35 @@ const Contacts: FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonButton slot="fixed" id="open-modal">
+        <IonList>
+          {items.map((item: any, index: Number) => (
+            <IonItem key={item}>
+              <div className={styles.ionitem_container}>
+                <div>
+                  <IonLabel className={styles.name_logo}>AU</IonLabel>
+                </div>
+                <div className={styles.description_container}>
+                  <IonLabel>sushant singh</IonLabel>
+                  <div style={{ display: "flex" }}>
+                    <div style={{ flex: 1 }}>
+                      <p>Phone</p>
+                      <IonLabel>7991597674</IonLabel>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <p>State</p>
+                      <IonLabel>Uttar Pradesh</IonLabel>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </IonItem>
+          ))}
+        </IonList>
+        <IonButton slot="fixed" id="open-modal" routerLink="/contacts/new">
           <IonIcon icon={addOutline}></IonIcon>
         </IonButton>
-        <NewContact
-          modal={modal}
-          canDismiss={canDismiss}
-          presentingElement={presentingElement!}
-          dismiss={dismiss}
-        />
       </IonContent>
-    </div>
+    </IonPage>
   );
 };
 

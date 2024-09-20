@@ -24,8 +24,6 @@ ion-tab-bar {
 ion-content {
   --padding-start: var(--page-padding-left);
   --padding-end: var(--page-padding-right);
-  /* --background: #ffffff; */
-  min-height: 78vh;
 }
 
 ion-icon {
@@ -86,4 +84,14 @@ ion-card {
   --padding-bottom: 2px;
   --padding-start: 10px; */
   --highlight-height: 0px;
+}
+
+.ion-tab-button {
+  --padding-end: 0px;
+  --padding-start: 0px;
+}
+ion-item{
+  --padding-start: 0px;
+    --inner-padding-end: 0px;
+    --inner-border-width: 0 0 1px 0;
 }

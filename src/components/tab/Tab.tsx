@@ -2,7 +2,9 @@ import {
   IonContent,
   IonHeader,
   IonIcon,
+  IonLabel,
   IonPage,
+  IonRouterOutlet,
   IonTab,
   IonTabBar,
   IonTabButton,
@@ -30,51 +32,45 @@ import Sales from "../../pages/invoices/sales/Sales";
 import Items from "../../pages/items/Items";
 import More from "../more/More";
 import styles from "./Tab.module.css";
+import { Redirect, Route } from "react-router";
+import NewContact from "../../pages/contacts/newContact/NewContact";
 const Tab: FC = () => {
   return (
-    <IonPage>
     <IonTabs className={styles.iontabs}>
-      <IonTab tab="dashboard">
-        <Dashboard></Dashboard>
-      </IonTab>
-
-      <IonTab tab="contacts">
-        <Contacts></Contacts>
-      </IonTab>
-      <IonTab tab="invoices">
-        <Sales></Sales>
-      </IonTab>
-      <IonTab tab="items">
-        <Items></Items>
-      </IonTab>
-      <IonTab tab="more">
-        <More></More>
-      </IonTab>
-
+      <IonRouterOutlet>
+        <Route exact path="/dashboard" component={Dashboard} />
+        <Route exact path="/contacts" component={Contacts} />
+        <Route exact path="/contacts/new" component={NewContact} />
+        <Route exact path="/sales" component={Sales} />
+        <Route exact path="/items" component={Items} />
+        <Route exact path="/more" component={More} />
+        <Route exact path="/">
+          <Redirect to="/dashboard" />
+        </Route>
+      </IonRouterOutlet>
       <IonTabBar slot="bottom">
-        <IonTabButton tab="dashboard">
+        <IonTabButton tab="dashboard" href="/dashboard">
           <IonIcon icon={compassOutline} />
           Dashboard
         </IonTabButton>
-        <IonTabButton tab="contacts">
+        <IonTabButton tab="contacts" href="/contacts">
           <IonIcon icon={peopleOutline} />
           Contacts
         </IonTabButton>
-        <IonTabButton tab="invoices">
+        <IonTabButton tab="invoices" href="/sales">
           <IonIcon icon={readerOutline} />
-          Invoices
+          Sales
         </IonTabButton>
-        <IonTabButton tab="items">
+        <IonTabButton tab="items" href="/items">
           <IonIcon icon={cubeOutline} />
           Items
         </IonTabButton>
-        <IonTabButton tab="more">
+        <IonTabButton tab="more" href="/more">
           <IonIcon icon={ellipsisHorizontalCircleOutline} />
           More
         </IonTabButton>
       </IonTabBar>
     </IonTabs>
-    </IonPage>
   );
 };
 export default Tab;

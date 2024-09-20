@@ -1,53 +1,70 @@
 import {
+  IonAlert,
+  IonBackButton,
   IonButton,
   IonButtons,
   IonCard,
   IonCardContent,
   IonCardHeader,
-  IonCardSubtitle,
   IonCardTitle,
   IonContent,
   IonGrid,
   IonHeader,
+  IonIcon,
   IonInput,
-  IonItem,
   IonLabel,
-  IonList,
   IonModal,
+  IonPage,
   IonRadio,
   IonRadioGroup,
   IonRow,
   IonTitle,
   IonToolbar,
+  useIonActionSheet,
+  useIonRouter,
+  useIonViewWillLeave,
 } from "@ionic/react";
-import { forwardRef, FC } from "react";
+import { FC, useState } from "react";
 import styles from "./NewContact.module.scss";
+import { arrowBackOutline, backspaceOutline } from "ionicons/icons";
 
-interface NewContactProps {
-  modal: React.RefObject<HTMLIonModalElement>;
-  canDismiss: () => Promise<boolean>;
-  presentingElement: HTMLElement;
-  dismiss: () => void;
-}
+const NewContact: FC = () => {
+  const router = useIonRouter();
+  const [showAlert, setShowAlert] = useState<boolean>(false);
 
-const NewContact: FC<NewContactProps> = forwardRef<
-  HTMLIonModalElement,
-  NewContactProps
->(({ modal, canDismiss, presentingElement, dismiss }, ref) => {
   return (
-    <IonModal
-      ref={modal}
-      trigger="open-modal"
-      canDismiss={canDismiss}
-      presentingElement={presentingElement}
-      className={styles.new_contact}
-    >
+    <IonPage className={styles.new_contact}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton color="medium" onClick={() => dismiss()}>
-              Cancel
+            <IonButton
+              onClick={(e: any) => {
+                e.preventDefault(); // Prevent the default back navigation
+                setShowAlert(true); // Show the alert on back button click
+              }}
+            >
+              <IonIcon icon={arrowBackOutline}></IonIcon>
             </IonButton>
+            <IonAlert
+              isOpen={showAlert}
+              message="Changes will be discarded once you leave this page"
+              buttons={[
+                {
+                  text: "Cancel",
+                  role: "cancel",
+                  handler: () => {
+                    setShowAlert(false); // Just close the alert
+                  },
+                },
+                {
+                  text: "OK",
+                  role: "confirm",
+                  handler: () => {
+                    router.push("/contacts", "root"); // Navigate back to contacts
+                  },
+                },
+              ]}
+            />
           </IonButtons>
           <IonTitle>New Contact</IonTitle>
           <IonButtons slot="end">
@@ -219,8 +236,8 @@ const NewContact: FC<NewContactProps> = forwardRef<
           </IonCardContent>
         </IonCard>
       </IonContent>
-    </IonModal>
+    </IonPage>
   );
-});
+};
 
 export default NewContact;

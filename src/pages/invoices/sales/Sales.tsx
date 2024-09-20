@@ -19,10 +19,10 @@ import {
 } from "ionicons/icons";
 const Sales: FC = () => {
   return (
-    <div className={styles.salescontainer} id="invoices">
-      <IonHeader translucent={true} >
+    <IonPage className={styles.salescontainer}>
+      <IonHeader translucent={true}>
         <IonToolbar>
-          <IonTitle>Invoices</IonTitle>
+          <IonTitle>Sales</IonTitle>
           <IonIcon
             slot="end"
             icon={searchOutline}
@@ -35,7 +35,7 @@ const Sales: FC = () => {
           <IonIcon icon={addOutline}></IonIcon>
         </IonButton>
       </IonContent>
-    </div>
+    </IonPage>
   );
 };
 
