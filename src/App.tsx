@@ -46,9 +46,10 @@ import FullPageSpinner from "./components/Spinner/fullPageSpinner/FullPageSpinne
 setupIonicReact();
 
 const App: React.FC = () => {
+  const router = useIonRouter();
   const dispatch = useDispatch();
   const axios = useAxios();
-  const [loading,setLoading]=useState(true)
+  const [loading, setLoading] = useState(true);
   const getUser = async () => {
     try {
       const response = await axios.get("/user/profile");
@@ -60,10 +61,9 @@ const App: React.FC = () => {
         dispatch(logout());
       }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
-  console.log("hi");
   useEffect(() => {
     getUser();
   }, []);

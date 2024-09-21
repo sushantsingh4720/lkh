@@ -12,6 +12,7 @@ import {
   IonPage,
   IonRouterLink,
   IonRow,
+  IonSpinner,
   IonToolbar,
   useIonRouter,
   useIonToast,
@@ -27,12 +28,15 @@ const Login: React.FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const router = useIonRouter();
+  const [busy, setBusy] = useState<boolean>(false);
+
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [showToast, dismissToast] = useIonToast();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setBusy(true);
     setError(null); // Reset error state
     if (!email || !password) {
       setError("Please fill in both email and password.");
@@ -47,11 +51,13 @@ const Login: React.FC = () => {
       const response = result.data;
       const { token, user } = response;
       dispatch(login({ token, user }));
-      router.push("/", "root");
+      router.push("/", "back", "replace");
     } catch (err: any) {
       setError(
         err.response?.data?.message || "An error occurred. Please try again."
       );
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -126,8 +132,13 @@ const Login: React.FC = () => {
                   className="custom-button"
                   expand="block"
                   type="submit"
+                  disabled={busy}
                 >
-                  Login
+                  {busy ? (
+                    <IonSpinner color="light" name="bubbles"></IonSpinner>
+                  ) : (
+                    "Login"
+                  )}
                 </IonButton>
               </form>
             </IonCol>

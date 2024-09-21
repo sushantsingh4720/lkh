@@ -65,7 +65,11 @@ const Contacts: FC = () => {
             </IonItem>
           ))}
         </IonList>
-        <IonButton slot="fixed" id="open-modal" routerLink="/contacts/new">
+        import Check from "./Check";
+        <IonButton
+          slot="fixed"
+          routerLink="/app/contacts/new"
+        >
           <IonIcon icon={addOutline}></IonIcon>
         </IonButton>
       </IonContent>

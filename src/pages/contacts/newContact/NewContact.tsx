@@ -26,7 +26,8 @@ import {
 } from "@ionic/react";
 import { FC, useState } from "react";
 import styles from "./NewContact.module.scss";
-import { arrowBackOutline, backspaceOutline } from "ionicons/icons";
+import { arrowBackOutline } from "ionicons/icons";
+import { Prompt } from "react-router";
 
 const NewContact: FC = () => {
   const router = useIonRouter();
@@ -38,9 +39,11 @@ const NewContact: FC = () => {
         <IonToolbar>
           <IonButtons slot="start">
             <IonButton
-              onClick={(e: any) => {
-                e.preventDefault(); // Prevent the default back navigation
-                setShowAlert(true); // Show the alert on back button click
+              onClick={(
+                e: React.MouseEvent<HTMLIonButtonElement, MouseEvent>
+              ) => {
+                e.preventDefault();
+                setShowAlert(true);
               }}
             >
               <IonIcon icon={arrowBackOutline}></IonIcon>
@@ -53,14 +56,14 @@ const NewContact: FC = () => {
                   text: "Cancel",
                   role: "cancel",
                   handler: () => {
-                    setShowAlert(false); // Just close the alert
+                    setShowAlert(false);
                   },
                 },
                 {
                   text: "OK",
                   role: "confirm",
                   handler: () => {
-                    router.push("/contacts", "root"); // Navigate back to contacts
+                    router.push("/app/contacts", "back", "pop");
                   },
                 },
               ]}

@@ -38,34 +38,34 @@ const Tab: FC = () => {
   return (
     <IonTabs className={styles.iontabs}>
       <IonRouterOutlet>
-        <Route exact path="/dashboard" component={Dashboard} />
-        <Route exact path="/contacts" component={Contacts} />
-        <Route exact path="/contacts/new" component={NewContact} />
-        <Route exact path="/sales" component={Sales} />
-        <Route exact path="/items" component={Items} />
-        <Route exact path="/more" component={More} />
-        <Route exact path="/">
-          <Redirect to="/dashboard" />
+        <Route exact path="/app/dashboard" component={Dashboard} />
+        <Route exact path="/app/contacts" component={Contacts} />
+        <Route exact path="/app/contacts/new" component={NewContact} />
+        <Route exact path="/app/sales" component={Sales} />
+        <Route exact path="/app/items" component={Items} />
+        <Route exact path="/app/more" component={More} />
+        <Route exact path="/app">
+          <Redirect to="/app/dashboard" />
         </Route>
       </IonRouterOutlet>
       <IonTabBar slot="bottom">
-        <IonTabButton tab="dashboard" href="/dashboard">
+        <IonTabButton tab="dashboard" href="/app/dashboard">
           <IonIcon icon={compassOutline} />
           Dashboard
         </IonTabButton>
-        <IonTabButton tab="contacts" href="/contacts">
+        <IonTabButton tab="contacts" href="/app/contacts">
           <IonIcon icon={peopleOutline} />
           Contacts
         </IonTabButton>
-        <IonTabButton tab="invoices" href="/sales">
+        <IonTabButton tab="invoices" href="/app/sales">
           <IonIcon icon={readerOutline} />
           Sales
         </IonTabButton>
-        <IonTabButton tab="items" href="/items">
+        <IonTabButton tab="items" href="/app/items">
           <IonIcon icon={cubeOutline} />
           Items
         </IonTabButton>
-        <IonTabButton tab="more" href="/more">
+        <IonTabButton tab="more" href="/app/more">
           <IonIcon icon={ellipsisHorizontalCircleOutline} />
           More
         </IonTabButton>

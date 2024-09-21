@@ -1,4 +1,7 @@
 import {
+  IonAlert,
+  IonButton,
+  IonButtons,
   IonContent,
   IonHeader,
   IonIcon,
@@ -12,6 +15,7 @@ import {
   IonTabs,
   IonTitle,
   IonToolbar,
+  useIonRouter,
 } from "@ionic/react";
 import { FC } from "react";
 import styles from "./Dashboard.module.scss";
@@ -26,10 +30,15 @@ import {
   radio,
   library,
   search,
+  powerOutline,
 } from "ionicons/icons";
 import { Route } from "react-router";
+import { useDispatch } from "react-redux";
+import { logout } from "../../reduxStore/Auth";
 
 const Dashboard: FC = () => {
+  const dispatch = useDispatch();
+  const router = useIonRouter();
   return (
     <IonPage className={styles.dashboardpage}>
       <IonHeader translucent={true}>
@@ -39,6 +48,33 @@ const Dashboard: FC = () => {
             <IonLabel slot="start">sushant...</IonLabel>
             <IonIcon icon={chevronDown}></IonIcon>
           </div>
+          <IonButtons slot="end" id="present-alert">
+            <IonButton>
+              <IonIcon icon={powerOutline} color="danger"></IonIcon>
+            </IonButton>
+            <IonAlert
+              header="Are you sure you want to logout!"
+              trigger="present-alert"
+              buttons={[
+                {
+                  text: "Cancel",
+                  role: "cancel",
+                  handler: () => {},
+                },
+                {
+                  text: "Logout",
+                  role: "confirm",
+                  handler: () => {
+                    dispatch(logout());
+                    router.push("/app/login", "back", "replace");
+                  },
+                },
+              ]}
+              // onDidDismiss={({ detail }) =>
+              //   console.log(`Dismissed with role: ${detail.role}`)
+              // }
+            ></IonAlert>
+          </IonButtons>
           {/* <IonIcon slot="end" icon={notificationsOutline}></IonIcon> */}
         </IonToolbar>
         {/* <IonSegment value="dashboard">
