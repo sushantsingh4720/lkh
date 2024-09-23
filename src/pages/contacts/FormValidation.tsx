@@ -40,7 +40,7 @@ export const validateContact = (
   if (!display_name) {
     return { success: false, message: "Please enter a valid display name" };
   }
-  if (!phone || !phone.trim().length || phone.trim().length < 10) {
+  if (!phone || !phone.trim().length || !(phone.trim().length === 10)) {
     return { success: false, message: "Please enter a valid phone number" };
   }
   if (!billing_country || !billing_country.trim().length) {

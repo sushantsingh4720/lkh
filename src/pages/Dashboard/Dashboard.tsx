@@ -71,7 +71,6 @@ const Dashboard: FC = () => {
                 },
               ]}
               // onDidDismiss={({ detail }) =>
-              //   console.log(`Dismissed with role: ${detail.role}`)
               // }
             ></IonAlert>
           </IonButtons>

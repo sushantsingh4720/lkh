@@ -1,13 +1,15 @@
-export const AllStates: Array<{
+export interface State {
   id: number;
   name: string;
   country_id: number;
   country_code: string;
   iso2: string;
   type: string | null;
-  latitude: string;
-  longitude: string;
-}> = [
+  latitude: string | null;
+  longitude: string | null;
+}
+
+export const AllStates: State[] = [
   {
     id: 1,
     name: "Southern Nations, Nationalities, and Peoples' Region",

@@ -10,6 +10,7 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonViewWillEnter,
 } from "@ionic/react";
 import { addOutline, searchOutline } from "ionicons/icons";
 import { FC, useEffect, useState } from "react";
@@ -28,15 +29,16 @@ const Contacts: FC = () => {
       setItems(data?.contacts || []);
     } catch (err: any) {
       const error = err.response?.data;
-      // console.log(error);
     } finally {
       setBusy(false);
     }
   };
-  useEffect(() => {
+
+  // Use this hook to fetch contacts every time the page becomes active
+  useIonViewWillEnter(() => {
     generateItems();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  });
+
   return (
     <IonPage className={styles.contact_page}>
       <IonHeader>

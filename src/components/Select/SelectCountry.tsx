@@ -23,7 +23,7 @@ interface TypeaheadProps {
   onSelectionChange?: (item: Country) => void;
 }
 
-function AppTypeahead(props: TypeaheadProps) {
+function SelectCountry(props: TypeaheadProps) {
   const [filteredItems, setFilteredItems] = useState<Country[]>(
     props.countries
   );
@@ -102,4 +102,4 @@ function AppTypeahead(props: TypeaheadProps) {
   );
 }
 
-export default AppTypeahead;
+export default SelectCountry;

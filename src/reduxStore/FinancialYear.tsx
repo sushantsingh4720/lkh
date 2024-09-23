@@ -22,8 +22,6 @@ if (selectedFinancialYear) {
   };
 }
 
-axios.defaults.headers["fy_id"] = FYear?.value;
-
 interface FinancialYearState {
   FYear: { label: string; value: string };
   FinancialYearArray: { label: string; value: string }[];
