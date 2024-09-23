@@ -90,8 +90,18 @@ ion-card {
   --padding-end: 0px;
   --padding-start: 0px;
 }
-ion-item{
+ion-item {
   --padding-start: 0px;
-    --inner-padding-end: 0px;
-    --inner-border-width: 0 0 1px 0;
+  --inner-padding-end: 0px;
+  --inner-border-width: 0 0 1px 0;
+}
+
+.list-md.list-inset {
+  -webkit-margin-start: 0;
+  margin-inline-start: 0;
+  -webkit-margin-end: 0;
+  margin-inline-end: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  border-radius: 0;
 }

@@ -15,21 +15,25 @@ import {
   useIonRouter,
 } from "@ionic/react";
 import styles from "./Forgot.module.scss";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import Logo from "../../assets/images/Logo.png";
 import useAxios from "../../utils/axiosInstance";
+import { useHistory } from "react-router";
 
 const Forgot: FC = () => {
   const router = useIonRouter();
   const axios = useAxios();
+  const history=useHistory()
   const [busy, setBusy] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
     setError(null); // Reset error state
+    setMessage(null); // Reset message state
     if (!email) {
       setError("Please fill in your email.");
       return;
@@ -38,8 +42,11 @@ const Forgot: FC = () => {
       // Send the request to your API
       const result = await axios.post("/auth/forgotpassword", { email });
       const response = result.data;
+      setMessage(response.message);
       // Optionally handle successful response (e.g., show a success message)
-      router.push("/auth/login", "back", "replace");
+      setTimeout((): void => {
+        history.replace("/auth/login")
+      }, 1000);
     } catch (err: any) {
       setError(
         err.response?.data?.message || "An error occurred. Please try again."
@@ -74,6 +81,7 @@ const Forgot: FC = () => {
                 <div className={styles.field}>
                   <IonLabel className={styles.fieldLabel}>Email</IonLabel>
                   <IonInput
+                    id="email"
                     name="email"
                     className={styles.customInput}
                     required
@@ -87,6 +95,11 @@ const Forgot: FC = () => {
                 {error && (
                   <div className={styles.errorMessage}>
                     <p className="ion-no-margin">{error}</p>
+                  </div>
+                )}
+                {message && (
+                  <div className={styles.message}>
+                    <p className="ion-no-margin">{message}</p>
                   </div>
                 )}
                 <IonButton

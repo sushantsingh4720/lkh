@@ -32,13 +32,13 @@ import {
   search,
   powerOutline,
 } from "ionicons/icons";
-import { Route } from "react-router";
+import { Route, useHistory } from "react-router";
 import { useDispatch } from "react-redux";
 import { logout } from "../../reduxStore/Auth";
 
 const Dashboard: FC = () => {
   const dispatch = useDispatch();
-  const router = useIonRouter();
+  const history = useHistory();
   return (
     <IonPage className={styles.dashboardpage}>
       <IonHeader translucent={true}>
@@ -66,7 +66,7 @@ const Dashboard: FC = () => {
                   role: "confirm",
                   handler: () => {
                     dispatch(logout());
-                    router.push("/app/login", "back", "replace");
+                    history.replace("/auth/login");
                   },
                 },
               ]}

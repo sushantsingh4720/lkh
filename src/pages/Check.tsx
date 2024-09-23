@@ -2,6 +2,7 @@ import {
   IonContent,
   IonHeader,
   IonPage,
+  IonRouterLink,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -16,7 +17,10 @@ const Check: FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <p>hii</p>
+        <IonRouterLink className="custom-link" routerLink="/auth/forgot">
+          {" "}
+          Forgot Password?
+        </IonRouterLink>
       </IonContent>
     </IonPage>
   );

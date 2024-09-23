@@ -8,7 +8,6 @@ import Signup from "./signup/Signup";
 import Forgot from "./forgot/Forgot";
 import { useSelector } from "react-redux";
 import { RootState } from "../reduxStore/Index";
-import Check from "./Check";
 const Router: FC = () => {
   const { isAuthenticated } = useSelector((state: RootState) => state.Auth);
   return (
@@ -28,13 +27,10 @@ const Router: FC = () => {
           {isAuthenticated ? <Redirect to="/" /> : <Login />}
         </Route>
         <Route exact path="/auth/signup">
-          {/* {isAuthenticated ? <Redirect to="/" /> : <Signup />}
-           */}
-           <Signup/>
+          {isAuthenticated ? <Redirect to="/" /> : <Signup />}
         </Route>
         <Route exact path="/auth/forgot">
           {isAuthenticated ? <Redirect to="/" /> : <Forgot />}
-          {/* <Forgot/> */}
         </Route>
       </IonRouterOutlet>
     </IonReactRouter>

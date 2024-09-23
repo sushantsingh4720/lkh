@@ -14,15 +14,24 @@ import {
 import { addOutline, searchOutline } from "ionicons/icons";
 import { FC, useEffect, useState } from "react";
 import styles from "./Contacts.module.scss";
+import useAxios from "../../utils/axiosInstance";
 const Contacts: FC = () => {
+  const axios = useAxios();
   const [items, setItems] = useState<string[]>([]);
+  const [busy, setBusy] = useState<boolean>(false);
 
-  const generateItems = () => {
-    const newItems = [];
-    for (let i = 0; i < 20; i++) {
-      newItems.push(`Item ${1 + items.length + i}`);
+  const generateItems = async () => {
+    setBusy(true);
+    try {
+      const response = await axios.get("/contact");
+      const data = response.data;
+      setItems(data?.contacts || []);
+    } catch (err: any) {
+      const error = err.response?.data;
+      // console.log(error);
+    } finally {
+      setBusy(false);
     }
-    setItems([...items, ...newItems]);
   };
   useEffect(() => {
     generateItems();
@@ -42,22 +51,24 @@ const Contacts: FC = () => {
       </IonHeader>
       <IonContent>
         <IonList>
-          {items.map((item: any, index: Number) => (
-            <IonItem key={item}>
+          {items?.map((item: any, index: Number) => (
+            <IonItem key={item.id}>
               <div className={styles.ionitem_container}>
                 <div>
-                  <IonLabel className={styles.name_logo}>AU</IonLabel>
+                  <IonLabel className={styles.name_logo}>
+                    {item?.name?.slice(0, 2).toUpperCase()}
+                  </IonLabel>
                 </div>
                 <div className={styles.description_container}>
-                  <IonLabel>sushant singh</IonLabel>
+                  <IonLabel>{item?.name}</IonLabel>
                   <div style={{ display: "flex" }}>
                     <div style={{ flex: 1 }}>
                       <p>Phone</p>
-                      <IonLabel>7991597674</IonLabel>
+                      <IonLabel>{item?.phone}</IonLabel>
                     </div>
                     <div style={{ flex: 1 }}>
                       <p>State</p>
-                      <IonLabel>Uttar Pradesh</IonLabel>
+                      <IonLabel>{item?.billing_state}</IonLabel>
                     </div>
                   </div>
                 </div>
@@ -65,11 +76,7 @@ const Contacts: FC = () => {
             </IonItem>
           ))}
         </IonList>
-        import Check from "./Check";
-        <IonButton
-          slot="fixed"
-          routerLink="/app/contacts/new"
-        >
+        <IonButton slot="fixed" routerLink="/app/contacts/new">
           <IonIcon icon={addOutline}></IonIcon>
         </IonButton>
       </IonContent>

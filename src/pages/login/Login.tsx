@@ -27,13 +27,11 @@ const Login: React.FC = () => {
   const axios = useAxios();
   const dispatch = useDispatch();
   const history = useHistory();
-  const router = useIonRouter();
   const [busy, setBusy] = useState<boolean>(false);
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const [showToast, dismissToast] = useIonToast();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
@@ -51,7 +49,7 @@ const Login: React.FC = () => {
       const response = result.data;
       const { token, user } = response;
       dispatch(login({ token, user }));
-      router.push("/", "back", "replace");
+      history.replace("/")
     } catch (err: any) {
       setError(
         err.response?.data?.message || "An error occurred. Please try again."
@@ -63,7 +61,7 @@ const Login: React.FC = () => {
 
   return (
     <IonPage className={styles.loginPage}>
-      <IonContent fullscreen>
+      <IonContent>
         <IonGrid className="ion-padding">
           <IonRow className="ion-margin-top ion-padding-top">
             <IonCol size="12" className={styles.imagecolumn}>
@@ -86,6 +84,7 @@ const Login: React.FC = () => {
                     {/* <p>Please check your email</p> */}
                   </IonLabel>
                   <IonInput
+                    id="email"
                     name="email"
                     className={styles.customInput}
                     required
@@ -101,6 +100,7 @@ const Login: React.FC = () => {
                     {/* <p className="ion-no-margin">Please check your password</p> */}
                   </IonLabel>
                   <IonInput
+                    id="password"
                     name="password"
                     className={styles.customInput}
                     required
