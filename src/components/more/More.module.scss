@@ -7,6 +7,7 @@
         display: flex;
         gap: 16px;
         align-items: center;
+
         .accordin_logo_icon {
           font-size: 1.625rem;
         }
@@ -19,7 +20,7 @@
         font-weight: 600;
         ion-label {
           --color: #262626 !important;
-          padding: 16px 0px 16px 0px;
+          padding: 18px 0px 18px 0px;
           margin: 0;
         }
         .according_dropdown_logo {
@@ -31,9 +32,14 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 16px 0px 16px 16px;
+        margin: 16px 0px 16px 40px;
+        padding: 0px 0px 16px 0px;
         border-bottom: 1px solid #d7d8da !important;
         font-size: 1.125rem;
+        &:last-child {
+          margin: 16px 0px 0px 40px;
+          border-bottom: none !important;
+        }
       }
       .ion_accordin_content {
         display: flex;
@@ -44,6 +50,9 @@
         font-size: 1.125rem;
         color: #262626;
         font-weight: 600;
+        &:last-child {
+          border-bottom: none !important;
+        }
       }
     }
   }

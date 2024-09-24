@@ -95,7 +95,7 @@ const initialFormData: FormData = {
 const NewContact: FC = () => {
   const history = useHistory();
   const axios = useAxios();
-  const [busy, setbusy] = useState<boolean>(false);
+  const [busy, setBusy] = useState<boolean>(false);
   const countryModal = useRef<HTMLIonModalElement>(null);
   const stateModal = useRef<HTMLIonModalElement>(null);
   const cityModal = useRef<HTMLIonModalElement>(null);
@@ -269,7 +269,7 @@ const NewContact: FC = () => {
       contactType,
     } = formData;
 
-    const updatedCustomerData = {
+    const updatedFormData = {
       ...formData,
       name: name.trim(),
       display_name: display_name.trim(),
@@ -292,18 +292,18 @@ const NewContact: FC = () => {
         : {}),
     };
 
-    setFormData(updatedCustomerData);
+    setFormData(updatedFormData);
 
-    const result = validateContact(updatedCustomerData, contactType);
+    const result = validateContact(updatedFormData, contactType);
     if (!result.success) {
       setAlertHeader("Form validation Failed");
       setErrorMessages(result.message);
       setShowAlert(true);
       return;
     }
-    setbusy(true);
+    setBusy(true);
     try {
-      const response = await axios.post("/contact", updatedCustomerData, {
+      const response = await axios.post("/contact", updatedFormData, {
         headers: { "Content-Type": "application/json" },
       });
       const result = response.data;
@@ -311,14 +311,14 @@ const NewContact: FC = () => {
       setSuccessMessage(message);
       setIsSuccess(true);
       setFormData(initialFormData);
-      history.replace("/app/contacts");
+      history.goBack();
     } catch (error: any) {
       const err = error.response?.data;
       setAlertHeader("Form Submission Failed");
       setErrorMessages(err?.message || "Please Retry");
       setShowAlert(true);
     } finally {
-      setbusy(false);
+      setBusy(false);
     }
   };
 
@@ -327,11 +327,11 @@ const NewContact: FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton onClick={() => history.replace("/app/contacts")}>
+            <IonButton onClick={() => history.goBack()}>
               <IonIcon icon={arrowBackOutline}></IonIcon>
             </IonButton>
           </IonButtons>
-          <IonTitle>New Contact</IonTitle>
+          <IonTitle>Add Contact</IonTitle>
           <IonButtons slot="end">
             <IonButton onClick={handleSave} color="primary">
               Save
@@ -840,13 +840,13 @@ const NewContact: FC = () => {
         isOpen={busy}
         message="please wait..."
       />
-      <IonToast
+      {/* <IonToast
         isOpen={isSuccess}
-        position="top"
-        positionAnchor="header"
+        position="bottom"
+        positionAnchor="footer"
         message={successMessage}
         duration={3000}
-      ></IonToast>
+      ></IonToast> */}
     </IonPage>
   );
 };

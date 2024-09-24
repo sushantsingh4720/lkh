@@ -29,7 +29,7 @@ import { FC } from "react";
 import Dashboard from "../../pages/dashboard/Dashboard";
 import Contacts from "../../pages/contacts/Contacts";
 import Sales from "../../pages/invoices/sales/Sales";
-import Items from "../../pages/items/Items";
+import Items from "../../pages/items/items/Items";
 import More from "../more/More";
 import styles from "./Tab.module.css";
 import { Redirect, Route } from "react-router";
@@ -40,7 +40,6 @@ const Tab: FC = () => {
       <IonRouterOutlet>
         <Route exact path="/app/dashboard" component={Dashboard} />
         <Route exact path="/app/contacts" component={Contacts} />
-        <Route exact path="/app/contacts/new" component={NewContact} />
         <Route exact path="/app/sales" component={Sales} />
         <Route exact path="/app/items" component={Items} />
         <Route exact path="/app/more" component={More} />

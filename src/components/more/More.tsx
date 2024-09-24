@@ -1,6 +1,7 @@
 import {
   IonAccordion,
   IonAccordionGroup,
+  IonAlert,
   IonContent,
   IonHeader,
   IonIcon,
@@ -29,6 +30,7 @@ import {
   documentAttachOutline,
   documentOutline,
   documentTextOutline,
+  extensionPuzzleOutline,
   peopleCircleOutline,
   personAddOutline,
   personCircleOutline,
@@ -38,14 +40,18 @@ import {
   ribbonOutline,
   scanCircleOutline,
   settingsOutline,
+  storefrontOutline,
 } from "ionicons/icons";
-import { FC } from "react";
+import { FC, useState } from "react";
 import styles from "./More.module.scss";
 import axios from "axios";
 import { useHistory } from "react-router";
+import { logout } from "../../reduxStore/Auth";
+import { useDispatch } from "react-redux";
 const More: FC = () => {
   const history = useHistory();
-
+  const dispatch = useDispatch();
+  const [logoutAlertIsOpen, setLogoutAlertIsOpen] = useState<boolean>(false);
   return (
     <IonPage className={styles.morepage}>
       <IonHeader translucent={true}>
@@ -64,7 +70,7 @@ const More: FC = () => {
                 <IonIcon icon={compassOutline}></IonIcon>
                 <IonText>Dashboard</IonText>
               </div>
-              <IonIcon icon={chevronForwardOutline}></IonIcon>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
             </div>
           </IonAccordion>
           <IonAccordion value="contacts">
@@ -92,9 +98,13 @@ const More: FC = () => {
                 ></IonIcon>
                 <IonText>Contacts</IonText>
               </div>
-              <IonIcon icon={chevronForwardOutline}></IonIcon>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
             </div>
-            <div className={styles.ion_group_content} slot="content">
+            <div
+              className={styles.ion_group_content}
+              slot="content"
+              onClick={() => history.push("/leads")}
+            >
               <div className={styles.accordin_logo}>
                 <IonIcon
                   icon={personAddOutline}
@@ -102,7 +112,7 @@ const More: FC = () => {
                 ></IonIcon>
                 <IonText>Leads</IonText>
               </div>
-              <IonIcon icon={chevronForwardOutline}></IonIcon>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
             </div>
           </IonAccordion>
           <IonAccordion value="items">
@@ -129,9 +139,13 @@ const More: FC = () => {
                 ></IonIcon>
                 <IonText>Items</IonText>
               </div>
-              <IonIcon icon={chevronForwardOutline}></IonIcon>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
             </div>
-            <div className={styles.ion_group_content} slot="content">
+            <div
+              className={styles.ion_group_content}
+              slot="content"
+              onClick={() => history.push("/categories")}
+            >
               <div className={styles.accordin_logo}>
                 <IonIcon
                   icon={appsOutline}
@@ -139,9 +153,13 @@ const More: FC = () => {
                 ></IonIcon>
                 <IonText>Categories</IonText>
               </div>
-              <IonIcon icon={chevronForwardOutline}></IonIcon>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
             </div>
-            <div className={styles.ion_group_content} slot="content">
+            <div
+              className={styles.ion_group_content}
+              slot="content"
+              onClick={() => history.push("/brands")}
+            >
               <div className={styles.accordin_logo}>
                 <IonIcon
                   icon={ribbonOutline}
@@ -149,7 +167,7 @@ const More: FC = () => {
                 ></IonIcon>
                 <IonText>Brands</IonText>
               </div>
-              <IonIcon icon={chevronForwardOutline}></IonIcon>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
             </div>
           </IonAccordion>
           <IonAccordion value="taxes">
@@ -164,7 +182,11 @@ const More: FC = () => {
               ></IonIcon>
               <IonLabel>Taxes</IonLabel>
             </IonItem>
-            <div className={styles.ion_group_content} slot="content">
+            <div
+              className={styles.ion_group_content}
+              slot="content"
+              onClick={() => history.push("/taxes")}
+            >
               <div className={styles.accordin_logo}>
                 <IonIcon
                   icon={atOutline}
@@ -172,9 +194,13 @@ const More: FC = () => {
                 ></IonIcon>
                 <IonText>Tax</IonText>
               </div>
-              <IonIcon icon={chevronForwardOutline}></IonIcon>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
             </div>
-            <div className={styles.ion_group_content} slot="content">
+            <div
+              className={styles.ion_group_content}
+              slot="content"
+              onClick={() => history.push("/hsn")}
+            >
               <div className={styles.accordin_logo}>
                 <IonIcon
                   icon={scanCircleOutline}
@@ -182,9 +208,13 @@ const More: FC = () => {
                 ></IonIcon>
                 <IonText>Hsn</IonText>
               </div>
-              <IonIcon icon={chevronForwardOutline}></IonIcon>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
             </div>
-            <div className={styles.ion_group_content} slot="content">
+            <div
+              className={styles.ion_group_content}
+              slot="content"
+              onClick={() => history.push("/sac")}
+            >
               <div className={styles.accordin_logo}>
                 <IonIcon
                   icon={scanCircleOutline}
@@ -192,7 +222,7 @@ const More: FC = () => {
                 ></IonIcon>
                 <IonText>Sac</IonText>
               </div>
-              <IonIcon icon={chevronForwardOutline}></IonIcon>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
             </div>
           </IonAccordion>
           <IonAccordion value="invoices">
@@ -219,9 +249,13 @@ const More: FC = () => {
                 ></IonIcon>
                 <IonText>Sales</IonText>
               </div>
-              <IonIcon icon={chevronForwardOutline}></IonIcon>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
             </div>
-            <div className={styles.ion_group_content} slot="content">
+            <div
+              className={styles.ion_group_content}
+              slot="content"
+              onClick={() => history.push("/expenses")}
+            >
               <div className={styles.accordin_logo}>
                 <IonIcon
                   icon={documentOutline}
@@ -229,9 +263,13 @@ const More: FC = () => {
                 ></IonIcon>
                 <IonText>Expenses</IonText>
               </div>
-              <IonIcon icon={chevronForwardOutline}></IonIcon>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
             </div>
-            <div className={styles.ion_group_content} slot="content">
+            <div
+              className={styles.ion_group_content}
+              slot="content"
+              onClick={() => history.push("/quotations")}
+            >
               <div className={styles.accordin_logo}>
                 <IonIcon
                   icon={documentAttachOutline}
@@ -239,9 +277,13 @@ const More: FC = () => {
                 ></IonIcon>
                 <IonText>Quotations</IonText>
               </div>
-              <IonIcon icon={chevronForwardOutline}></IonIcon>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
             </div>
-            <div className={styles.ion_group_content} slot="content">
+            <div
+              className={styles.ion_group_content}
+              slot="content"
+              onClick={() => history.push("/delivery_challan")}
+            >
               <div className={styles.accordin_logo}>
                 <IonIcon
                   icon={carOutline}
@@ -249,9 +291,13 @@ const More: FC = () => {
                 ></IonIcon>
                 <IonText>Delivery Challan</IonText>
               </div>
-              <IonIcon icon={chevronForwardOutline}></IonIcon>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
             </div>
-            <div className={styles.ion_group_content} slot="content">
+            <div
+              className={styles.ion_group_content}
+              slot="content"
+              onClick={() => history.push("/payments")}
+            >
               <div className={styles.accordin_logo}>
                 <IonIcon
                   icon={cashOutline}
@@ -259,28 +305,106 @@ const More: FC = () => {
                 ></IonIcon>
                 <IonText>Payment Records</IonText>
               </div>
-              <IonIcon icon={chevronForwardOutline}></IonIcon>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
             </div>
           </IonAccordion>
           <IonAccordion value="reports">
-            <div className={styles.ion_accordin_content} slot="header">
+            <IonItem
+              slot="header"
+              color="light"
+              className={styles.according_dropdown}
+            >
+              <IonIcon
+                icon={receiptOutline}
+                className={styles.according_dropdown_logo}
+              ></IonIcon>
+              <IonLabel>Reports</IonLabel>
+            </IonItem>
+            <div
+              className={styles.ion_group_content}
+              slot="content"
+              onClick={() => history.push("/stock_reports")}
+            >
               <div className={styles.accordin_logo}>
-                <IonIcon icon={receiptOutline}></IonIcon>
-                <IonText>Reports</IonText>
+                <IonIcon
+                  icon={storefrontOutline}
+                  className={styles.accordin_logo_icon}
+                ></IonIcon>
+                <IonText>Stock</IonText>
               </div>
-              <IonIcon icon={chevronForwardOutline}></IonIcon>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
+            </div>
+            <div
+              className={styles.ion_group_content}
+              slot="content"
+              onClick={() => history.push("/gst_reports")}
+            >
+              <div className={styles.accordin_logo}>
+                <IonIcon
+                  icon={atOutline}
+                  className={styles.accordin_logo_icon}
+                ></IonIcon>
+                <IonText>Gst</IonText>
+              </div>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
+            </div>
+            <div
+              className={styles.ion_group_content}
+              slot="content"
+              onClick={() => history.push("/invoice_reports")}
+            >
+              <div className={styles.accordin_logo}>
+                <IonIcon
+                  icon={documentTextOutline}
+                  className={styles.accordin_logo_icon}
+                ></IonIcon>
+                <IonText>Invoice</IonText>
+              </div>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
+            </div>
+            <div
+              className={styles.ion_group_content}
+              slot="content"
+              onClick={() => history.push("/supplier_reports")}
+            >
+              <div className={styles.accordin_logo}>
+                <IonIcon
+                  icon={carOutline}
+                  className={styles.accordin_logo_icon}
+                ></IonIcon>
+                <IonText>Supplier</IonText>
+              </div>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
+            </div>
+            <div
+              className={styles.ion_group_content}
+              slot="content"
+              onClick={() => history.push("/inventory_reports")}
+            >
+              <div className={styles.accordin_logo}>
+                <IonIcon
+                  icon={extensionPuzzleOutline}
+                  className={styles.accordin_logo_icon}
+                ></IonIcon>
+                <IonText>Inventory</IonText>
+              </div>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
             </div>
           </IonAccordion>
-          <IonAccordion value="users">
+
+          <IonAccordion value="users" onClick={() => history.push("/users")}>
             <div className={styles.ion_accordin_content} slot="header">
               <div className={styles.accordin_logo}>
                 <IonIcon icon={personCircleOutline}></IonIcon>
                 <IonText>Users</IonText>
               </div>
-              <IonIcon icon={chevronForwardOutline}></IonIcon>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
             </div>
           </IonAccordion>
-          <IonAccordion value="settings">
+          <IonAccordion
+            value="settings"
+            onClick={() => history.push("/settings")}
+          >
             <div className={styles.ion_accordin_content} slot="header">
               <div className={styles.accordin_logo}>
                 <IonIcon icon={settingsOutline}></IonIcon>
@@ -289,25 +413,53 @@ const More: FC = () => {
               <IonIcon icon={chevronForwardOutline}></IonIcon>
             </div>
           </IonAccordion>
-          <IonAccordion value="supports">
+          <IonAccordion
+            value="supports"
+            onClick={() => history.push("/supports")}
+          >
             <div className={styles.ion_accordin_content} slot="header">
               <div className={styles.accordin_logo}>
                 <IonIcon icon={callOutline}></IonIcon>
                 <IonText>Support</IonText>
               </div>
-              <IonIcon icon={chevronForwardOutline}></IonIcon>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
             </div>
           </IonAccordion>
-          <IonAccordion value="logout">
+          <IonAccordion
+            value="logout"
+            onClick={() => setLogoutAlertIsOpen(true)}
+          >
             <div className={styles.ion_accordin_content} slot="header">
               <div className={styles.accordin_logo}>
                 <IonIcon icon={powerOutline}></IonIcon>
                 <IonText>Logout</IonText>
               </div>
-              <IonIcon icon={chevronForwardOutline}></IonIcon>
+              {/* <IonIcon icon={chevronForwardOutline}></IonIcon> */}
             </div>
           </IonAccordion>
         </IonAccordionGroup>
+        <IonAlert
+          header="Are you sure you want to logout!"
+          isOpen={logoutAlertIsOpen}
+          buttons={[
+            {
+              text: "Cancel",
+              role: "cancel",
+              handler: () => {
+                setLogoutAlertIsOpen(false);
+              },
+            },
+            {
+              text: "Logout",
+              role: "confirm",
+              handler: () => {
+                dispatch(logout());
+                history.replace("/auth/login");
+              },
+            },
+          ]}
+          onDidDismiss={({ detail }) => {}}
+        ></IonAlert>
       </IonContent>
     </IonPage>
   );
