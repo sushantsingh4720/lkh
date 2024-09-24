@@ -32,7 +32,7 @@ import useAxios from "../../../utils/axiosInstance";
 import { Country, AllCountries } from "../../../assets/helpers/AllCountries";
 import { State, AllStates } from "../../../assets/helpers/AllStates";
 import SelectCountry from "../../../components/Select/SelectCountry";
-import { chevronDown } from "ionicons/icons";
+import { arrowBackOutline, chevronDown } from "ionicons/icons";
 import SelectState from "../../../components/Select/SelectState";
 import { City, AllCities } from "../../../assets/helpers/AllCities";
 import SelectCity from "../../../components/Select/SelectCity";
@@ -311,7 +311,7 @@ const NewContact: FC = () => {
       setSuccessMessage(message);
       setIsSuccess(true);
       setFormData(initialFormData);
-      history.push("/app/contacts");
+      history.replace("/app/contacts");
     } catch (error: any) {
       const err = error.response?.data;
       setAlertHeader("Form Submission Failed");
@@ -327,7 +327,9 @@ const NewContact: FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton></IonBackButton>
+            <IonButton onClick={() => history.replace("/app/contacts")}>
+              <IonIcon icon={arrowBackOutline}></IonIcon>
+            </IonButton>
           </IonButtons>
           <IonTitle>New Contact</IonTitle>
           <IonButtons slot="end">

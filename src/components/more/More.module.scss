@@ -1,0 +1,50 @@
+.morepage {
+  ion-accordion-group {
+    padding-top: 10px;
+    padding-bottom: 20px;
+    ion-accordion {
+      .accordin_logo {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        .accordin_logo_icon {
+          font-size: 1.625rem;
+        }
+        ion-icon {
+          font-size: 1.825rem;
+        }
+      }
+      ion-item {
+        font-size: 1.125rem;
+        font-weight: 600;
+        ion-label {
+          --color: #262626 !important;
+          padding: 16px 0px 16px 0px;
+          margin: 0;
+        }
+        .according_dropdown_logo {
+          font-size: 1.825rem;
+          margin-right: 16px;
+        }
+      }
+      .ion_group_content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 0px 16px 16px;
+        border-bottom: 1px solid #d7d8da !important;
+        font-size: 1.125rem;
+      }
+      .ion_accordin_content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 0px 16px 0px;
+        border-bottom: 1px solid #d7d8da !important;
+        font-size: 1.125rem;
+        color: #262626;
+        font-weight: 600;
+      }
+    }
+  }
+}
