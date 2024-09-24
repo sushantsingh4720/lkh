@@ -47,7 +47,7 @@ const Brands: FC = () => {
     setItems([]);
   });
   return (
-    <IonPage className="">
+    <IonPage className={styles.brand_page}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">

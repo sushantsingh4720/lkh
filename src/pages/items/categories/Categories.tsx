@@ -47,7 +47,7 @@ const Categories: FC = () => {
     setItems([]);
   });
   return (
-    <IonPage className="">
+    <IonPage className={styles.category_page}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
