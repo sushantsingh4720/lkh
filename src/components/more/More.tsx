@@ -56,7 +56,7 @@ const More: FC = () => {
     <IonPage className={styles.morepage}>
       <IonHeader translucent={true}>
         <IonToolbar>
-          <IonTitle>More Modules</IonTitle>
+          <IonTitle>More</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
