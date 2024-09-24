@@ -4,18 +4,50 @@ import {
   IonContent,
   IonHeader,
   IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonViewWillEnter,
+  useIonViewWillLeave,
 } from "@ionic/react";
 import { addOutline, arrowBackOutline, searchOutline } from "ionicons/icons";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { useHistory } from "react-router";
-
+import useAxios from "../../../utils/axiosInstance";
+import LoadDataSpinner from "../../../components/Spinner/loadDataSpinner/LoadDataSpinner";
+import styles from "./Brands.module.scss";
 const Brands: FC = () => {
   const history = useHistory();
+  const axios = useAxios();
+  const [items, setItems] = useState<string[]>([]);
+  const [busy, setBusy] = useState<boolean>(false);
+
+  const generateItems = async () => {
+    setBusy(true);
+    try {
+      const response = await axios.get("/brand");
+      const data = response.data;
+      setItems(data?.brands || []);
+    } catch (err: any) {
+      const error = err.response?.data;
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  // Use this hook to fetch contacts every time the page becomes active
+  useIonViewWillEnter(() => {
+    generateItems();
+  });
+
+  useIonViewWillLeave(() => {
+    setItems([]);
+  });
   return (
-    <IonPage>
+    <IonPage className="">
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -32,7 +64,18 @@ const Brands: FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonButton slot="fixed" routerLink="">
+        {busy ? (
+          <LoadDataSpinner />
+        ) : (
+          <IonList>
+            {items.map((item: any) => (
+              <IonItem key={item?.id}>
+                <h5>{item?.name}</h5>
+              </IonItem>
+            ))}
+          </IonList>
+        )}
+        <IonButton slot="fixed" routerLink="/brands/add">
           <IonIcon icon={addOutline}></IonIcon>
         </IonButton>
       </IonContent>
