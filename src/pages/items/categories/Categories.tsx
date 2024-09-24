@@ -70,7 +70,9 @@ const Categories: FC = () => {
           <IonList>
             {items.map((item: any) => (
               <IonItem key={item?.id}>
-                <h5>{item?.name}</h5>
+                <div className={styles.inner_ion_item}>
+                  <h5>{item?.name}</h5>
+                </div>
               </IonItem>
             ))}
           </IonList>

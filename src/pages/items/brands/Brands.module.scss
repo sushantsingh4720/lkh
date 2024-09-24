@@ -1,10 +1,14 @@
 .brand_page {
-    ion-content {
-      ion-list {
-        ion-item {
-          padding: 0px 16px 16px;
+  ion-content {
+    ion-list {
+      ion-item {
+        .inner_ion_item {
+          padding: 16px;
+          h5 {
+            margin: 0;
+          }
         }
       }
     }
   }
-  
+}
