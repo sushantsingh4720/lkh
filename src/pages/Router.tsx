@@ -30,6 +30,8 @@ import Inventory from "./Reports/Inventory";
 import AddCategory from "./items/categories/addCategory/AddCategory";
 import AddBrand from "./items/brands/addBrand/AddBrand";
 import AddTax from "./taxes/taxes/AddTax/AddTax";
+import AddHsn from "./taxes/hsn/addhsn/AddHsn";
+import AddSac from "./taxes/sac/addSac/AddSac";
 const Router: FC = () => {
   const { isAuthenticated } = useSelector((state: RootState) => state.Auth);
   return (
@@ -54,7 +56,9 @@ const Router: FC = () => {
         <Route exact path="/taxes" component={Taxes} />
         <Route exact path="/taxes/add" component={AddTax} />
         <Route exact path="/hsn" component={Hsn} />
+        <Route exact path="/hsn/add" component={AddHsn} />
         <Route exact path="/sac" component={Sac} />
+        <Route exact path="/sac/add" component={AddSac} />
         <Route exact path="/expenses" component={Expenses} />
         <Route exact path="/quotations" component={Quotations} />
         <Route exact path="/delivery_challan" component={DeliveryChallan} />

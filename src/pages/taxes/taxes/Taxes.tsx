@@ -70,7 +70,7 @@ const Taxes: FC = () => {
           <IonList>
             {items.map((item: any) => (
               <IonItem key={item?.id}>
-                <div className={styles.tax_inner_ion_item}>
+                <div className={styles.inner_ion_item}>
                   <h5>{item?.name}</h5>
                   <div>
                     <p>Rate (%)</p>
