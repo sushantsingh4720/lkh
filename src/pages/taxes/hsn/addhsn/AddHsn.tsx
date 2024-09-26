@@ -72,19 +72,19 @@ const AddHsn: FC = () => {
     setFormData(updatedFormData);
     if (!hsn_code_no || hsn_code_no.length < 4) {
       setAlertHeader("Form validation Failed");
-      setErrorMessages("Please enter a valid hsn code no");
+      setErrorMessages("Please enter valid hsn code no");
       setShowAlert(true);
       return;
     }
     if (!hsn_code || hsn_code.length < 4) {
       setAlertHeader("Form validation Failed");
-      setErrorMessages("Please enter a hsn code");
+      setErrorMessages("Please enter hsn code");
       setShowAlert(true);
       return;
     }
     if (+gst_rate > 100) {
       setAlertHeader("Form validation Failed");
-      setErrorMessages("Please enter a valid rate");
+      setErrorMessages("Please enter valid rate");
       setShowAlert(true);
       return;
     }

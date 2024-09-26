@@ -45,6 +45,7 @@ import SelectBrand from "../../../../components/Select/SelectBrand";
 import SelectTax from "../../../../components/Select/SelectTax";
 import SelectCombineCode from "../../../../components/Select/SelectCombineCode";
 import SelectUOM from "../../../../components/Select/SelectUnitOfMeasurement";
+import { productValidation } from "../FormValidation";
 
 interface FormData {
   brandName: string;
@@ -120,7 +121,9 @@ const AddItems: FC = () => {
     setFormData((pre) => ({
       ...pre,
       type: value,
-      ...(value === "product" ? {sac_code:""} : { sac_code: "",hsn_code: "" }),
+      ...(value === "product"
+        ? { sac_code: "" }
+        : { sac_code: "", hsn_code: "" }),
     }));
   };
 
@@ -167,16 +170,18 @@ const AddItems: FC = () => {
   };
 
   const handleSave = async () => {
-    const { name, description } = formData;
+    const { name, varient, description } = formData;
     let updatedFormData = {
       ...formData,
       name: name.trim(),
+      ...(varient && { varient: varient.trim() }),
       ...(description && { description: description.trim() }),
     };
     setFormData(updatedFormData);
-    if (!updatedFormData.name) {
+    const result = productValidation(updatedFormData);
+    if (!result.success) {
       setAlertHeader("Form validation Failed");
-      setErrorMessages("Please enter item name");
+      setErrorMessages(result.message);
       setShowAlert(true);
       return;
     }

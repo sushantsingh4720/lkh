@@ -35,13 +35,13 @@ export const validateContact = (
   const isShippingCountryIndia: boolean = shipping_country === "India";
 
   if (!name) {
-    return { success: false, message: "Please enter a valid name" };
+    return { success: false, message: "Please enter valid name" };
   }
   if (!display_name) {
-    return { success: false, message: "Please enter a valid display name" };
+    return { success: false, message: "Please enter valid display name" };
   }
   if (!phone || !phone.trim().length || !(phone.trim().length === 10)) {
-    return { success: false, message: "Please enter a valid phone number" };
+    return { success: false, message: "Please enter valid phone number" };
   }
   if (!billing_country || !billing_country.trim().length) {
     return { success: false, message: "Please select a billing country" };
@@ -55,12 +55,12 @@ export const validateContact = (
 
   if (contactType === "customer" && !customerData.isBillAndShipAddressSame) {
     if (!shipping_name) {
-      return { success: false, message: "Please enter a valid shipping name" };
+      return { success: false, message: "Please enter valid shipping name" };
     }
     if (!shipping_display_name) {
       return {
         success: false,
-        message: "Please enter a valid shipping display name",
+        message: "Please enter valid shipping display name",
       };
     }
     if (!shipping_country || !shipping_country.trim().length) {

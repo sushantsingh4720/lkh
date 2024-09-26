@@ -72,19 +72,19 @@ import {
       setFormData(updatedFormData);
       if (!sac_code_no || sac_code_no.length < 4) {
         setAlertHeader("Form validation Failed");
-        setErrorMessages("Please enter a valid sac code no");
+        setErrorMessages("Please enter valid sac code no");
         setShowAlert(true);
         return;
       }
       if (!sac_code || sac_code.length < 4) {
         setAlertHeader("Form validation Failed");
-        setErrorMessages("Please enter a sac code");
+        setErrorMessages("Please enter sac code");
         setShowAlert(true);
         return;
       }
       if (+gst_rate > 100) {
         setAlertHeader("Form validation Failed");
-        setErrorMessages("Please enter a valid rate");
+        setErrorMessages("Please enter valid rate");
         setShowAlert(true);
         return;
       }

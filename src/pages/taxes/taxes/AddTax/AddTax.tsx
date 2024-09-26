@@ -76,7 +76,7 @@ const AddTax: FC = () => {
     }
     if (+rate > 100) {
       setAlertHeader("Form validation Failed");
-      setErrorMessages("Please enter a valid rate");
+      setErrorMessages("Please enter valid rate");
       setShowAlert(true);
       return;
     }
