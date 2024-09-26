@@ -1,13 +1,13 @@
-.new_contact {
+.add_items_page {
   ion-content {
     --padding-top: var(--page-padding-left);
     --padding-bottom: var(--page-padding-left);
     // --background: #f1f1f1;
     ion-card {
-        margin-top: 20px;
-        &:first-child{
-            margin-top: 0px;
-        }
+      margin-top: 20px;
+      &:first-child {
+        margin-top: 0px;
+      }
       ion-grid {
         ion-radio-group {
           margin-top: 8px;

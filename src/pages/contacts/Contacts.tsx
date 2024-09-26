@@ -90,7 +90,7 @@ const Contacts: FC = () => {
           </IonList>
         )}
 
-        <IonButton slot="fixed" routerLink="/contacts/new">
+        <IonButton slot="fixed" routerLink="/contacts/add">
           <IonIcon icon={addOutline}></IonIcon>
         </IonButton>
       </IonContent>

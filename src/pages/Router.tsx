@@ -8,7 +8,7 @@ import Signup from "./signup/Signup";
 import Forgot from "./forgot/Forgot";
 import { useSelector } from "react-redux";
 import { RootState } from "../reduxStore/Index";
-import NewContact from "./contacts/newContact/NewContact";
+import AddContact from "./contacts/addContact/AddContact";
 import Categories from "./items/categories/Categories";
 import Brands from "./items/brands/Brands";
 import Taxes from "./taxes/taxes/Taxes";
@@ -32,6 +32,7 @@ import AddBrand from "./items/brands/addBrand/AddBrand";
 import AddTax from "./taxes/taxes/AddTax/AddTax";
 import AddHsn from "./taxes/hsn/addhsn/AddHsn";
 import AddSac from "./taxes/sac/addSac/AddSac";
+import AddItems from "./items/items/addItem/AddItems";
 const Router: FC = () => {
   const { isAuthenticated } = useSelector((state: RootState) => state.Auth);
   return (
@@ -47,8 +48,9 @@ const Router: FC = () => {
         <Route path="/app">
           {isAuthenticated ? <Tab></Tab> : <Redirect to="/auth/login" />}
         </Route>
-        <Route exact path="/contacts/new" component={NewContact} />
+        <Route exact path="/contacts/add" component={AddContact} />
         <Route exact path="/leads" component={Leads} />
+        <Route exact path="/items/add" component={AddItems} />
         <Route exact path="/categories" component={Categories} />
         <Route exact path="/categories/add" component={AddCategory} />
         <Route exact path="/brands" component={Brands} />

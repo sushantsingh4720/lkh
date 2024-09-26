@@ -33,7 +33,6 @@ import Items from "../../pages/items/items/Items";
 import More from "../more/More";
 import styles from "./Tab.module.css";
 import { Redirect, Route } from "react-router";
-import NewContact from "../../pages/contacts/newContact/NewContact";
 const Tab: FC = () => {
   return (
     <IonTabs className={styles.iontabs}>

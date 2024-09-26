@@ -26,7 +26,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { FC, useEffect, useRef, useState } from "react";
-import styles from "./NewContact.module.scss";
+import styles from "./AddContact.module.scss";
 import { validateContact } from "../FormValidation";
 import useAxios from "../../../utils/axiosInstance";
 import { Country, AllCountries } from "../../../assets/helpers/AllCountries";
@@ -92,7 +92,7 @@ const initialFormData: FormData = {
   shipping_phone: "",
   shipping_state: "",
 };
-const NewContact: FC = () => {
+const AddContact: FC = () => {
   const history = useHistory();
   const axios = useAxios();
   const [busy, setBusy] = useState<boolean>(false);
@@ -323,7 +323,7 @@ const NewContact: FC = () => {
   };
 
   return (
-    <IonPage className={styles.new_contact}>
+    <IonPage className={styles.add_contact}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -851,4 +851,4 @@ const NewContact: FC = () => {
   );
 };
 
-export default NewContact;
+export default AddContact;

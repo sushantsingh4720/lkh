@@ -2,6 +2,7 @@
   --page-padding-left: 10px;
   --page-padding-right: 10px;
   --ion-color-light: #ffffff;
+  --min-height: auto;
   /* --ion-background-color: #f2f2f2; */
 }
 
@@ -116,4 +117,16 @@ ion-loading.custom-loading {
 
 textarea {
   padding-top: 0px !important;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.space_between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
