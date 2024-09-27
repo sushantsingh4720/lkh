@@ -18,7 +18,8 @@
     .first_line {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      // align-items: center;
+      gap: 12px;
       font-weight: bold;
     }
     .second_line {

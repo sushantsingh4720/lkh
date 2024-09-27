@@ -83,7 +83,7 @@ const Sales: FC = () => {
                     <IonLabel>{item?.name}</IonLabel>
                     <IonLabel>
                       {Curruncy}
-                      {formatIndianCurrency(item?.amount)}
+                      {formatIndianCurrency(item?.total)}
                     </IonLabel>
                   </div>
                   <div className={styles.second_line}>
@@ -94,7 +94,7 @@ const Sales: FC = () => {
                     </div>
                     {Number(item?.balance) ? (
                       <div>
-                        Due:{Curruncy}
+                        Due:{" "}{Curruncy}
                         {formatIndianCurrency(item?.balance)}
                       </div>
                     ) : (
