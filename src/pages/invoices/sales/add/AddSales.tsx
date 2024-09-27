@@ -8,35 +8,28 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import { arrowBackOutline } from "ionicons/icons";
 import { FC } from "react";
-import { addOutline, arrowBackOutline, searchOutline } from "ionicons/icons";
 import { useHistory } from "react-router";
-const Expenses: FC = () => {
+
+const AddSales: FC = () => {
   const history = useHistory();
   return (
     <IonPage>
-      <IonHeader translucent={true}>
+      <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonButton onClick={() => history.goBack()}>
               <IonIcon icon={arrowBackOutline} color="primary"></IonIcon>
             </IonButton>
           </IonButtons>
-          <IonTitle>Expenses</IonTitle>
-          <IonIcon
-            slot="end"
-            icon={searchOutline}
-            className="backgroundwhiteicon"
-          ></IonIcon>
+          <IonTitle>Add Sales</IonTitle>
+          <IonButtons slot="end">
+            <IonButton color="primary">Save</IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
-        <IonButton slot="fixed">
-          <IonIcon icon={addOutline}></IonIcon>
-        </IonButton>
-      </IonContent>
+      <IonContent></IonContent>
     </IonPage>
   );
 };
-
-export default Expenses;

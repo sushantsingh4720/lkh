@@ -52,7 +52,7 @@ const Brands: FC = () => {
         <IonToolbar>
           <IonButtons slot="start">
             <IonButton onClick={() => history.goBack()}>
-              <IonIcon icon={arrowBackOutline}></IonIcon>
+              <IonIcon icon={arrowBackOutline} color="primary"></IonIcon>
             </IonButton>
           </IonButtons>
           <IonTitle>Brands</IonTitle>
