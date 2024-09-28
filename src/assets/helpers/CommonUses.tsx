@@ -40,3 +40,5 @@ export function formatIndianCurrency(amount: number): string {
     maximumFractionDigits: 2,
   });
 }
+
+export const todayDate: string = new Date().toISOString().split("T")[0];

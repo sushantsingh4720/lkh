@@ -89,7 +89,7 @@ function SelectCategory(props: TypeaheadProps) {
             onIonChange={radioChange}
           >
             {filteredItems.map((item) => (
-              <IonItem key={item.name}>
+              <IonItem key={item.id}>
                 <IonRadio value={item.name} slot="start" />
                 {item.name}
               </IonItem>

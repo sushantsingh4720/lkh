@@ -393,7 +393,6 @@ const AddItems: FC = () => {
                   <IonLabel>Tax </IonLabel>
                   <IonIcon
                     icon={addOutline}
-                    size="large"
                     color="success"
                     onClick={() => history.push("/taxes/add")}
                   ></IonIcon>
@@ -419,7 +418,6 @@ const AddItems: FC = () => {
                   <IonLabel>Hsn/Sac code</IonLabel>
                   <IonIcon
                     icon={addOutline}
-                    size="large"
                     color="success"
                     onClick={() =>
                       history.push(isProduct ? "/hsn/add" : "/sac/add")
@@ -463,7 +461,6 @@ const AddItems: FC = () => {
                   <IonLabel>Brand</IonLabel>
                   <IonIcon
                     icon={addOutline}
-                    size="large"
                     color="success"
                     onClick={() => history.push("/brands/add")}
                   ></IonIcon>
@@ -489,7 +486,6 @@ const AddItems: FC = () => {
                   <IonLabel>Category</IonLabel>
                   <IonIcon
                     icon={addOutline}
-                    size="large"
                     color="success"
                     onClick={() => history.push("/categories/add")}
                   ></IonIcon>

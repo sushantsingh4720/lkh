@@ -13,19 +13,20 @@ import {
   IonRadioGroup,
 } from "@ionic/react";
 import type { RadioGroupCustomEvent } from "@ionic/react";
-import { Brand } from "../../assets/helpers/Interfaces";
+import { Item } from "../../assets/helpers/Interfaces";
 interface TypeaheadProps {
-  brands: Brand[];
-  selectedItem: Brand | null;
+  items: Item[];
+  selectedItem: Item | null;
   title?: string;
   onSelectionCancel?: () => void;
-  onSelectionChange?: (item: Brand) => void;
+  onSelectionChange?: (item: Item) => void;
 }
 
-function SelectBrand(props: TypeaheadProps) {
-  const [filteredItems, setFilteredItems] = useState<Brand[]>(props.brands);
-  const [workingSelectedValue, setWorkingSelectedValue] =
-    useState<Brand | null>(props.selectedItem);
+function SelectItem(props: TypeaheadProps) {
+  const [filteredItems, setFilteredItems] = useState<Item[]>(props.items);
+  const [workingSelectedValue, setWorkingSelectedValue] = useState<Item | null>(
+    props.selectedItem
+  );
 
   const cancelChanges = () => {
     if (props.onSelectionCancel) {
@@ -45,11 +46,11 @@ function SelectBrand(props: TypeaheadProps) {
 
   const filterList = (searchQuery: string | null | undefined) => {
     if (!searchQuery) {
-      setFilteredItems([...props.brands]);
+      setFilteredItems([...props.items]);
     } else {
       const normalizedQuery = searchQuery.toLowerCase();
       setFilteredItems(
-        props.brands.filter((item) =>
+        props.items.filter((item) =>
           item.name.toLowerCase().includes(normalizedQuery)
         )
       );
@@ -57,10 +58,10 @@ function SelectBrand(props: TypeaheadProps) {
   };
 
   const radioChange = (ev: RadioGroupCustomEvent) => {
-    const selectedBrand = props.brands.find(
-      (brand) => brand.name === ev.detail.value
+    const selectedItem = props.items.find(
+      (item) => item.name === ev.detail.value
     );
-    setWorkingSelectedValue(selectedBrand || null);
+    setWorkingSelectedValue(selectedItem || null);
   };
 
   return (
@@ -103,4 +104,4 @@ function SelectBrand(props: TypeaheadProps) {
   );
 }
 
-export default SelectBrand;
+export default SelectItem;

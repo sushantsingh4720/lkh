@@ -49,7 +49,6 @@ const Sales: FC = () => {
       setBusy(false);
     }
   };
-  console.log(items);
   // Use this hook to fetch items every time the page becomes active
   useIonViewWillEnter(() => {
     generateItems();
@@ -94,7 +93,7 @@ const Sales: FC = () => {
                     </div>
                     {Number(item?.balance) ? (
                       <div>
-                        Due:{" "}{Curruncy}
+                        Due: {Curruncy}
                         {formatIndianCurrency(item?.balance)}
                       </div>
                     ) : (
@@ -113,7 +112,7 @@ const Sales: FC = () => {
             ))}
           </IonList>
         )}
-        <IonButton slot="fixed">
+        <IonButton slot="fixed" routerLink="/sales/add">
           <IonIcon icon={addOutline}></IonIcon>
         </IonButton>
       </IonContent>

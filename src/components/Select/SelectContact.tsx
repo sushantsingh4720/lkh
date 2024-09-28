@@ -13,19 +13,19 @@ import {
   IonRadioGroup,
 } from "@ionic/react";
 import type { RadioGroupCustomEvent } from "@ionic/react";
-import { Brand } from "../../assets/helpers/Interfaces";
+import { Contact } from "../../assets/helpers/Interfaces";
 interface TypeaheadProps {
-  brands: Brand[];
-  selectedItem: Brand | null;
+  contacts: Contact[];
+  selectedItem: Contact | null;
   title?: string;
   onSelectionCancel?: () => void;
-  onSelectionChange?: (item: Brand) => void;
+  onSelectionChange?: (item: Contact) => void;
 }
 
-function SelectBrand(props: TypeaheadProps) {
-  const [filteredItems, setFilteredItems] = useState<Brand[]>(props.brands);
+function SelectContact(props: TypeaheadProps) {
+  const [filteredItems, setFilteredItems] = useState<Contact[]>(props.contacts);
   const [workingSelectedValue, setWorkingSelectedValue] =
-    useState<Brand | null>(props.selectedItem);
+    useState<Contact | null>(props.selectedItem);
 
   const cancelChanges = () => {
     if (props.onSelectionCancel) {
@@ -45,11 +45,11 @@ function SelectBrand(props: TypeaheadProps) {
 
   const filterList = (searchQuery: string | null | undefined) => {
     if (!searchQuery) {
-      setFilteredItems([...props.brands]);
+      setFilteredItems([...props.contacts]);
     } else {
       const normalizedQuery = searchQuery.toLowerCase();
       setFilteredItems(
-        props.brands.filter((item) =>
+        props.contacts.filter((item) =>
           item.name.toLowerCase().includes(normalizedQuery)
         )
       );
@@ -57,10 +57,10 @@ function SelectBrand(props: TypeaheadProps) {
   };
 
   const radioChange = (ev: RadioGroupCustomEvent) => {
-    const selectedBrand = props.brands.find(
-      (brand) => brand.name === ev.detail.value
+    const selectedContact = props.contacts.find(
+      (contact) => contact.name === ev.detail.value
     );
-    setWorkingSelectedValue(selectedBrand || null);
+    setWorkingSelectedValue(selectedContact || null);
   };
 
   return (
@@ -93,7 +93,7 @@ function SelectBrand(props: TypeaheadProps) {
             {filteredItems.map((item) => (
               <IonItem key={item.id}>
                 <IonRadio value={item.name} slot="start" />
-                {item.name}
+                {item.name} ({item.phone})
               </IonItem>
             ))}
           </IonRadioGroup>
@@ -103,4 +103,4 @@ function SelectBrand(props: TypeaheadProps) {
   );
 }
 
-export default SelectBrand;
+export default SelectContact;
