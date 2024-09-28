@@ -63,6 +63,7 @@ const Router: FC = () => {
         <Route exact path="/hsn/add" component={AddHsn} />
         <Route exact path="/sac" component={Sac} />
         <Route exact path="/sac/add" component={AddSac} />
+        <Route exact path="/invoices/item/add" component={AddInvoiceItem} />
         <Route exact path="/sales/add" component={AddSales} />
         <Route exact path="/expenses" component={Expenses} />
         <Route exact path="/quotations" component={Quotations} />

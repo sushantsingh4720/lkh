@@ -136,9 +136,9 @@ export interface InvoiceItem {
 }
 
 export interface SalesInvoice {
-  checkout_details?: Contact; // Should be a JSON string, ensure validation.
+  checkout_details: Contact | null; // Should be a JSON string, ensure validation.
   name?: string;
-  invoice?: number;
+  invoice: number | null;
   is_cancelled?: number; // Defaults to 0 (tinyint).
   type?: string;
   invoiceType?: string;
@@ -157,13 +157,13 @@ export interface SalesInvoice {
   round_off_value?: number; // Defaults to 0.00.
   payment_status?: string; // Defaults to 'Unpaid'.
   paid_amount?: number; // Defaults to 0.00.
-  dueDate?: string; // Date in format 'YYYY-MM-DD'.
+  dueDate: string; // Date in format 'YYYY-MM-DD'.
   shipping_address?: string;
-  date?: string; // Date in format 'YYYY-MM-DD'.
+  date: string; // Date in format 'YYYY-MM-DD'.
   paid_date?: string; // Date in format 'YYYY-MM-DD'.
   balance?: number;
   taxName?: string; // JSON string, ensure validation.
-  all_products?: InvoiceItem; // JSON string, ensure validation.
+  all_products?: InvoiceItem[]; // JSON string, ensure validation.
   other_charges?: string; // JSON string, ensure validation.
   other_info?: string; // JSON string, ensure validation.
   all_checks?: string; // JSON string, ensure validation.

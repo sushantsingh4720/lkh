@@ -29,7 +29,7 @@ import {
   arrowBackOutline,
   chevronDown,
 } from "ionicons/icons";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useReducer, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import {
   Contact,
@@ -41,70 +41,56 @@ import styles from "./AddSales.module.scss";
 import SelectContact from "../../../../components/Select/SelectContact";
 import useAxios from "../../../../utils/axiosInstance";
 import AddInvoiceItem from "../../AddInvoiceItem/AddInvoiceItem";
-const initialFormData: SalesInvoice = {
-  invoiceType: "item_wise_discount_and_tax",
-  type: "product",
-  date: todayDate,
-  dueDate: todayDate,
-};
+import {
+  INITIAL_STATE,
+  reducer,
+} from "../../../../reducers/salesReducers/Reducer";
+import { useDispatch } from "react-redux";
+import {
+  HANDLE_CLIENT_SELECT_CHANGE,
+  HANDLE_DATE_INPUT_CHANGE,
+  HANDLE_INPUT_CHANGE,
+  HANDLE_INVOICE_NUMBER_CHANGE,
+  HANDLE_INVOICE_TYPE_CHANGE,
+  HANDLE_ITEM_TYPE_CHANGE,
+} from "../../../../reducers/salesReducers/Constant";
 
 const AddSales: FC = () => {
   const history = useHistory();
   const axios = useAxios();
+  const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
   const customerModal = useRef<HTMLIonModalElement>(null);
-  const itemModal = useRef<HTMLIonModalElement>(null);
-  const [selectedCustomer, setSelectedCustomer] = useState<Contact | null>(
-    null
-  );
-  const [items, setItems] = useState([]);
-  const [formData, setFormData] = useState<SalesInvoice>(initialFormData);
-  const [allProducts, setAllProducts] = useState<InvoiceItem[]>([]);
-  const [nextInvoice, setNextInvoice] = useState<number | null>(null);
   const [contacts, setContacts] = useState([]);
+  console.log(state);
+
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
-    if (name === "date") {
-      return setFormData((pre) => ({
-        ...pre,
-        [name]: value,
-        ...(name === "date" && new Date(pre.dueDate || "") < new Date(value)
-          ? { dueDate: value }
-          : {}),
-      }));
-    }
-    setFormData((pre) => ({ ...pre, [name]: value }));
+    dispatch({ type: HANDLE_INPUT_CHANGE, payload: { name, value } });
+  };
+
+  const handleDateChange = (e: any) => {
+    const { name, value } = e.target;
+    dispatch({ type: HANDLE_DATE_INPUT_CHANGE, payload: { name, value } });
   };
 
   const handleItemTypeChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData((pre) => ({ ...pre, type: value }));
+    const { value } = e.target;
+    dispatch({ type: HANDLE_ITEM_TYPE_CHANGE, payload: { type: value } });
   };
 
   const handleInvoiceTypeChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData((pre) => ({ ...pre, invoiceType: value }));
+    const { value } = e.target;
+    dispatch({
+      type: HANDLE_INVOICE_TYPE_CHANGE,
+      payload: { invoiceType: value },
+    });
   };
 
   const onHandleCustomer = (selectedContact: Contact) => {
-    setSelectedCustomer(selectedContact);
-    const address = selectedContact.isBillAndShipAddressSame
-      ? `${selectedContact.billing_address ?? ""} ${
-          selectedContact.billing_city ?? ""
-        } ${selectedContact.billing_state ?? ""} ${
-          selectedContact.billing_PIN_Code ?? ""
-        } ${selectedContact.billing_country ?? ""}`.trim()
-      : `${selectedContact.shipping_address ?? ""} ${
-          selectedContact.shipping_city ?? ""
-        } ${selectedContact.shipping_state ?? ""} ${
-          selectedContact.shipping_pin_code ?? ""
-        } ${selectedContact.shipping_country ?? ""}`.trim();
-
-    setFormData((pre) => ({
-      ...pre,
-      name: selectedContact.name,
-      checkout_details: selectedContact,
-      shipping_address: address.trim(),
-    }));
+    dispatch({
+      type: HANDLE_CLIENT_SELECT_CHANGE,
+      payload: { selectedContact },
+    });
     customerModal.current?.dismiss();
   };
 
@@ -121,31 +107,17 @@ const AddSales: FC = () => {
   };
 
   const fetchNextInvoice = async () => {
-    if (nextInvoice === null) {
+    if (state.invoice === null) {
       // Fetch the next invoice only if it hasn't been fetched yet
       try {
         const nextInvoiceRes = await axios.get("/sales_inv/get_inv");
-        setNextInvoice(nextInvoiceRes?.data?.invoice);
-        setFormData((pre) => ({
-          ...pre,
-          invoice: nextInvoiceRes?.data?.invoice,
-        }));
+        dispatch({
+          type: HANDLE_INVOICE_NUMBER_CHANGE,
+          payload: { invoice: nextInvoiceRes?.data?.invoice },
+        });
       } catch (error) {
         // Handle error
       }
-    }
-  };
-
-  const fetchItems = async () => {
-    try {
-      const [items] = await Promise.all([axios.get("/product/allproducts")]);
-      setItems(
-        items.data?.products.filter(
-          (product: any) => product.type === formData?.type
-        ) || []
-      );
-    } catch (error) {
-      // Handle error
     }
   };
 
@@ -156,10 +128,6 @@ const AddSales: FC = () => {
   useEffect(() => {
     fetchNextInvoice();
   }, []);
-
-  useIonViewWillEnter(() => {
-    fetchData();
-  });
 
   return (
     <IonPage className={styles.add_sales}>
@@ -202,16 +170,16 @@ const AddSales: FC = () => {
                         width: "100%",
                       }}
                     >
-                      {formData?.name || "--Select Customer--"}
+                      {state?.name || "--Select Customer--"}
                       <IonIcon icon={chevronDown}></IonIcon>
                     </div>
                   </IonItem>
                 </IonList>
-                {formData?.name ? (
+                {state?.name ? (
                   <span style={{ color: "green" }}>
-                    {formData?.checkout_details?.billing_state}
+                    {state?.checkout_details?.billing_state}
                     {", "}
-                    {formData?.checkout_details?.billing_country}
+                    {state?.checkout_details?.billing_country}
                   </span>
                 ) : (
                   ""
@@ -223,7 +191,7 @@ const AddSales: FC = () => {
                   className="customInput"
                   type="number"
                   name="invoice"
-                  value={formData.invoice}
+                  value={state.invoice}
                   onIonInput={handleInputChange}
                 />
               </IonRow>
@@ -234,8 +202,8 @@ const AddSales: FC = () => {
                   type="date"
                   name="date"
                   min={todayDate}
-                  value={formData.date}
-                  onIonInput={handleInputChange}
+                  value={state.date}
+                  onIonInput={handleDateChange}
                 />
               </IonRow>
               <IonRow>
@@ -244,9 +212,9 @@ const AddSales: FC = () => {
                   className="customInput"
                   type="date"
                   name="dueDate"
-                  min={formData.date}
-                  value={formData.dueDate}
-                  onIonInput={handleInputChange}
+                  min={state.date}
+                  value={state.dueDate}
+                  onIonInput={handleDateChange}
                 />
               </IonRow>
             </IonGrid>
@@ -258,7 +226,7 @@ const AddSales: FC = () => {
               <IonRow>
                 <IonLabel>Item Type</IonLabel>
                 <IonRadioGroup
-                  value={formData.type}
+                  value={state.type}
                   onIonChange={handleItemTypeChange}
                 >
                   <div>
@@ -274,7 +242,7 @@ const AddSales: FC = () => {
               <IonRow>
                 <IonLabel>Discount And Tax</IonLabel>
                 <IonRadioGroup
-                  value={formData.invoiceType}
+                  value={state.invoiceType}
                   onIonChange={handleInvoiceTypeChange}
                 >
                   <div>
@@ -306,15 +274,9 @@ const AddSales: FC = () => {
         <SelectContact
           title={"Select Customer"}
           contacts={contacts}
-          selectedItem={selectedCustomer}
+          selectedItem={state.checkout_details}
           onSelectionCancel={() => customerModal.current?.dismiss()}
           onSelectionChange={onHandleCustomer}
-        />
-      </IonModal>
-      <IonModal trigger="add-item-modal" ref={itemModal}>
-        <AddInvoiceItem
-          title={"Add Item"}
-          onSelectionCancel={() => itemModal.current?.dismiss()}
         />
       </IonModal>
     </IonPage>

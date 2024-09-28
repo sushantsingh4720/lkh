@@ -27,50 +27,23 @@ import { Item } from "../../../assets/helpers/Interfaces";
 import SelectItem from "../../../components/Select/SelectItem";
 import useAxios from "../../../utils/axiosInstance";
 
-interface AddInvoiceItemProps {
-  title: string;
-  onSelectionCancel: () => Promise<boolean> | undefined;
-}
-
-const AddInvoiceItem: FC<AddInvoiceItemProps> = ({
-  title,
-  onSelectionCancel,
-}) => {
+const AddInvoiceItem: FC = () => {
   const axios = useAxios();
   const history = useHistory();
-  const addItemModal = useRef<HTMLIonModalElement>(null);
-  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
-  const [taxes, setTaxes] = useState([]);
-  const [items, setItems] = useState([]);
-  const [itemType, setItemType] = useState("product");
-  const [invoiceType, setInvoiceType] = useState("item_wise_discount_and_tax");
-
-  const onHandleBrand = (selectedItem: Item) => {
-    setSelectedItem(selectedItem);
-    addItemModal.current?.dismiss();
-  };
-
-  const cancelChanges = () => {
-    if (onSelectionCancel) {
-      onSelectionCancel();
-    }
-  };
-  console.log("items", items);
-
 
   return (
-    <>
+    <IonPage className={styles.add_invoice_item}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton onClick={cancelChanges} color="primary">
-              Cancel
+            <IonButton onClick={() => history.goBack()}>
+              <IonIcon icon={arrowBackOutline} color="primary"></IonIcon>
             </IonButton>
           </IonButtons>
-          <IonTitle>{title}</IonTitle>
+          <IonTitle>Add Invoice Item</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent className={styles.add_invoice_item}>
+      <IonContent>
         <IonCard>
           <IonCardContent>
             <IonGrid className="ion-no-padding">
@@ -93,7 +66,7 @@ const AddInvoiceItem: FC<AddInvoiceItemProps> = ({
                         width: "100%",
                       }}
                     >
-                      {selectedItem?.name || "--Select Item--"}
+                      {"" || "--Select Item--"}
                       <IonIcon icon={chevronDown}></IonIcon>
                     </div>
                   </IonItem>
@@ -107,7 +80,7 @@ const AddInvoiceItem: FC<AddInvoiceItemProps> = ({
                 <IonLabel>Rate</IonLabel>
                 <IonInput className="customInput" name="name" />
               </IonRow>
-              {invoiceType === "item_wise_discount_and_tax" ? (
+              {"item_wise_discount_and_tax" === "item_wise_discount_and_tax" ? (
                 <IonRow>
                   <IonLabel>Discount</IonLabel>
                   <IonInput className="customInput" name="name" />
@@ -115,7 +88,7 @@ const AddInvoiceItem: FC<AddInvoiceItemProps> = ({
               ) : (
                 ""
               )}
-              {invoiceType === "item_wise_discount_and_tax" ? (
+              {"item_wise_discount_and_tax" === "item_wise_discount_and_tax" ? (
                 <IonRow>
                   <IonLabel>Tax</IonLabel>
                   <IonInput className="customInput" name="name" />
@@ -127,16 +100,7 @@ const AddInvoiceItem: FC<AddInvoiceItemProps> = ({
           </IonCardContent>
         </IonCard>
       </IonContent>
-      <IonModal trigger="select-item" ref={addItemModal}>
-        <SelectItem
-          title={"Select Item"}
-          items={items}
-          selectedItem={selectedItem}
-          onSelectionCancel={() => addItemModal.current?.dismiss()}
-          onSelectionChange={onHandleBrand}
-        />
-      </IonModal>
-    </>
+    </IonPage>
   );
 };
 export default AddInvoiceItem;
