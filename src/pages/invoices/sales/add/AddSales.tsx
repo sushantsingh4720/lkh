@@ -3,6 +3,7 @@ import {
   IonButtons,
   IonCard,
   IonCardContent,
+  IonCheckbox,
   IonContent,
   IonGrid,
   IonHeader,
@@ -30,7 +31,12 @@ import {
 } from "ionicons/icons";
 import { FC, useEffect, useReducer, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { Contact, InvoiceItem } from "../../../../assets/helpers/Interfaces";
+import {
+  Bank,
+  Contact,
+  InvoiceItem,
+  Tax,
+} from "../../../../assets/helpers/Interfaces";
 import {
   Curruncy,
   parseFloatWithFixedValue,
@@ -44,14 +50,18 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { RootState } from "../../../../reduxStore/Index";
 import {
+  bankHandler,
   clientSelectChange,
   dateInputChange,
   inputChange,
   invoiceNumberChange,
   invoiceTypeChange,
   itemTypeChange,
+  otherInfoHandler,
   removeItemHandler,
 } from "../../../../reduxStore/InvoiceForm";
+import SelectBank from "../../../../components/Select/SetectBank";
+import SelectTax from "../../../../components/Select/SelectTax";
 
 const AddSales: FC = () => {
   const history = useHistory();
@@ -59,9 +69,15 @@ const AddSales: FC = () => {
   const dispatch = useDispatch();
   const { companyData } = useSelector((state: RootState) => state.Company);
   const state = useSelector((state: RootState) => state.InvoiceForm);
-  const customerModal = useRef<HTMLIonModalElement>(null);
+  const [customerModal, setCustomerModal] = useState<boolean>(false);
+  const [bankModal, setBankModal] = useState<boolean>(false);
+  const [taxModal, setTaxModal] = useState<boolean>(false);
   const [contacts, setContacts] = useState([]);
-
+  const [banks, setBanks] = useState([]);
+  const [taxes, setTaxes] = useState([]);
+  const [selectedTax, setSelectedTax] = useState<Tax | null>(null);
+  const [selectedBank, setSelectedBank] = useState<Bank | null>(null);
+  console.log(state);
   const isClientCompanyStateSame =
     state?.checkout_details?.billing_state === companyData?.state;
 
@@ -87,20 +103,50 @@ const AddSales: FC = () => {
 
   const onHandleCustomer = (selectedContact: Contact) => {
     dispatch(clientSelectChange({ selectedContact }));
-    customerModal.current?.dismiss();
+    setCustomerModal(false);
+  };
+
+  const onHandleBank = (selectedBank: Bank) => {
+    setSelectedBank(selectedBank);
+    let bank;
+    if (selectedBank) {
+      bank = selectedBank
+        ? {
+            ...selectedBank,
+            label: selectedBank.name,
+            value: selectedBank.name,
+          }
+        : null;
+    }
+    dispatch(bankHandler({ bank }));
+    setBankModal(false);
+  };
+
+  const onHandleTax = (selectedTax: Tax) => {
+    setSelectedTax(selectedTax);
+    setTaxModal(false);
   };
 
   const onRemoveItemHandler = (index: number) => {
     dispatch(removeItemHandler({ index, isClientCompanyStateSame }));
   };
 
+  const onHandleOtherInfoInputChange = (e: any) => {
+    const { name, value } = e.target;
+    dispatch(otherInfoHandler({ name, value }));
+  };
+
   const fetchData = async () => {
     try {
-      const [ContactsRes] = await Promise.all([
+      const [ContactsRes, bankRes, taxRes] = await Promise.all([
         axios.get("/contact/allcontacts"),
+        axios.get("/bank"),
+        axios.get("/tax/alltaxes?active=true"),
       ]);
 
       setContacts(ContactsRes.data?.contacts || []);
+      setBanks(bankRes.data?.banks || []);
+      setTaxes(taxRes.data?.taxes || []);
     } catch (error) {
       // Handle error
     }
@@ -123,6 +169,7 @@ const AddSales: FC = () => {
   useIonViewWillEnter(() => {
     fetchNextInvoice();
   }, []);
+
   useIonViewWillEnter(() => {
     fetchData();
   });
@@ -155,8 +202,8 @@ const AddSales: FC = () => {
                     onClick={() => history.push("/contacts/add")}
                   ></IonIcon>
                 </div>
-                <IonList inset={true}>
-                  <IonItem button={true} detail={false} id="select-customer">
+                <IonList>
+                  <IonItem onClick={() => setCustomerModal(true)}>
                     <div
                       style={{
                         display: "flex",
@@ -318,7 +365,7 @@ const AddSales: FC = () => {
                             </div>
                             <div style={{ justifySelf: "end", color: "black" }}>
                               <h6 style={{ padding: 0, margin: 0 }}>
-                                {parseFloatWithFixedValue(item.amount)}
+                                {parseFloatWithFixedValue(item.preSubTotal)}
                               </h6>{" "}
                               {/* Access total price */}
                             </div>
@@ -330,6 +377,108 @@ const AddSales: FC = () => {
               ) : (
                 ""
               )}
+            </IonGrid>
+          </IonCardContent>
+        </IonCard>
+        {state?.invoiceType === "invoice_wise_discount_and_tax" ? (
+          <IonCard>
+            <IonCardContent>
+              <IonGrid className="ion-no-padding">
+                <IonRow>
+                  <IonLabel>Discount Type</IonLabel>
+                  <IonRadioGroup value={state?.discountType}>
+                    <div>
+                      <IonRadio value="1"></IonRadio>
+                      <IonText>%</IonText>
+                    </div>
+                    <div>
+                      <IonRadio value="2"></IonRadio>
+                      <IonText>{Curruncy}</IonText>
+                    </div>
+                  </IonRadioGroup>
+                </IonRow>
+                <IonRow>
+                  <IonLabel>Discount Value</IonLabel>
+                  <IonInput
+                    className="customInput"
+                    name="discountValue"
+                    type="number"
+                    value={state?.discountValue}
+                  />
+                </IonRow>
+                <IonRow>
+                  <div className="space_between">
+                    <IonLabel>Tax </IonLabel>
+                    <IonIcon
+                      icon={addOutline}
+                      color="success"
+                      onClick={() => history.push("/taxes/add")}
+                    ></IonIcon>
+                  </div>
+                  <IonList>
+                    <IonItem onClick={() => setTaxModal(true)}>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          width: "100%",
+                        }}
+                      >
+                        {state?.taxName?.name || "--Select Tax--"}
+                        <IonIcon icon={chevronDown}></IonIcon>
+                      </div>
+                    </IonItem>
+                  </IonList>
+                </IonRow>
+              </IonGrid>
+            </IonCardContent>
+          </IonCard>
+        ) : (
+          ""
+        )}
+        <IonCard>
+          <IonCardContent>
+            <IonGrid>
+              <IonRow>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  <IonCheckbox
+                    checked={state?.all_checks?.shipping_charges}
+                    name="shipping_charges"
+                  ></IonCheckbox>
+                  <IonLabel>
+                    Shipping Charges <IonText>({Curruncy})</IonText>
+                  </IonLabel>
+                </div>
+                <IonInput
+                  disabled
+                  className="customInput"
+                  name="shipping_charges"
+                  type="number"
+                  value={state?.other_charges?.shipping_charges}
+                />
+              </IonRow>
+              <IonRow>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  <IonCheckbox
+                    checked={state?.round_off}
+                    name="round_off"
+                  ></IonCheckbox>
+                  <IonLabel>
+                    Round Off <IonText>({Curruncy})</IonText>
+                  </IonLabel>
+                </div>
+                <IonInput
+                  className="customInput"
+                  name="round_off_value"
+                  type="number"
+                  value={state?.round_off_value}
+                />
+              </IonRow>
             </IonGrid>
           </IonCardContent>
         </IonCard>
@@ -424,7 +573,7 @@ const AddSales: FC = () => {
                           >
                             <h2>IGST</h2>
                             <h2>
-                              {Curruncy} {parseFloatWithFixedValue(state.SGST)}
+                              {Curruncy} {parseFloatWithFixedValue(state.IGST)}
                             </h2>
                           </div>
                         )}
@@ -453,14 +602,84 @@ const AddSales: FC = () => {
         ) : (
           ""
         )}
+
+        <IonCard>
+          <IonCardContent>
+            <IonGrid className="ion-no-padding">
+              <IonRow>
+                <IonLabel>Note For Client</IonLabel>
+                <IonInput
+                  className="customInput"
+                  type="text"
+                  name="clientNote"
+                  value={state?.other_info?.clientNote}
+                  onIonInput={onHandleOtherInfoInputChange}
+                />
+              </IonRow>
+              <IonRow>
+                <IonLabel>Note For Admin</IonLabel>
+                <IonInput
+                  className="customInput"
+                  type="text"
+                  name="note"
+                  value={state?.other_info?.note}
+                  onIonInput={onHandleOtherInfoInputChange}
+                />
+              </IonRow>
+              <IonRow>
+                <div className="space_between">
+                  <IonLabel>Bank </IonLabel>
+                  <IonIcon
+                    icon={addOutline}
+                    color="success"
+                    // onClick={() => history.push("/items/add")}
+                  ></IonIcon>
+                </div>
+                <IonList>
+                  <IonItem onClick={() => setBankModal(true)}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        width: "100%",
+                      }}
+                    >
+                      {selectedBank?.name || "--Select Bank--"}
+                      <IonIcon icon={chevronDown}></IonIcon>
+                    </div>
+                  </IonItem>
+                </IonList>
+              </IonRow>
+            </IonGrid>
+          </IonCardContent>
+        </IonCard>
       </IonContent>
-      <IonModal trigger="select-customer" ref={customerModal}>
+      <IonModal isOpen={customerModal}>
         <SelectContact
           title={"Select Customer"}
           contacts={contacts}
           selectedItem={state.checkout_details}
-          onSelectionCancel={() => customerModal.current?.dismiss()}
+          onSelectionCancel={() => setCustomerModal(false)}
           onSelectionChange={onHandleCustomer}
+        />
+      </IonModal>
+      <IonModal isOpen={taxModal}>
+        <SelectTax
+          title="Select Tax"
+          taxes={taxes}
+          selectedItem={selectedTax}
+          onSelectionCancel={() => setTaxModal(false)}
+          onSelectionChange={onHandleTax}
+        />
+      </IonModal>
+      <IonModal isOpen={bankModal}>
+        <SelectBank
+          title={"Select Bank"}
+          banks={banks}
+          selectedItem={selectedBank}
+          onSelectionCancel={() => setBankModal(false)}
+          onSelectionChange={onHandleBank}
         />
       </IonModal>
     </IonPage>

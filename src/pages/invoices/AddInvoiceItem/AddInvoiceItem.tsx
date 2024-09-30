@@ -42,7 +42,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../reduxStore/Index";
 import SelectTax from "../../../components/Select/SelectTax";
 import { AllUnitOfMeasurement } from "../../../assets/helpers/AllUnitOfMeasurement";
-import { parseFloatWithFixedValue } from "../../../assets/helpers/CommonUses";
+import {
+  Curruncy,
+  parseFloatWithFixedValue,
+} from "../../../assets/helpers/CommonUses";
 import { AddInvoiceItemValidation } from "./AddInvoiceItemValidation";
 import { addItemHandler } from "../../../reduxStore/InvoiceForm";
 const initialFormData: InvoiceItem = {
@@ -66,8 +69,8 @@ const AddInvoiceItem: FC = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { companyData } = useSelector((state: RootState) => state.Company);
-  const itemModal = useRef<HTMLIonModalElement>(null);
-  const taxModal = useRef<HTMLIonModalElement>(null);
+  const [itemModal, setItemModal] = useState<boolean>(false);
+  const [taxModal, setTaxModal] = useState<boolean>(false);
   const [formData, setFormData] = useState<InvoiceItem>(initialFormData);
   const state = useSelector((state: RootState) => state.InvoiceForm);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
@@ -104,7 +107,7 @@ const AddInvoiceItem: FC = () => {
       type,
     }));
     setSelectedTax(findTax ? findTax : null);
-    itemModal.current?.dismiss();
+    setItemModal(false);
   };
 
   const handleInputChange = (e: any) => {
@@ -120,7 +123,7 @@ const AddInvoiceItem: FC = () => {
   const onHandleTax = (selectedTax: Tax) => {
     setSelectedTax(selectedTax);
     setFormData((pre) => ({ ...pre, taxName: selectedTax }));
-    taxModal.current?.dismiss();
+    setTaxModal(false);
   };
 
   // Function to calculate the invoice item details
@@ -236,8 +239,8 @@ const AddInvoiceItem: FC = () => {
   });
 
   useIonViewWillLeave(() => {
-    setItems([]);
-    setTaxes([]);
+    // setItems([]);
+    // setTaxes([]);
   });
 
   return (
@@ -265,8 +268,8 @@ const AddInvoiceItem: FC = () => {
                     onClick={() => history.push("/items/add")}
                   ></IonIcon>
                 </div>
-                <IonList inset={true}>
-                  <IonItem button={true} detail={false} id="select-item">
+                <IonList>
+                  <IonItem onClick={() => setItemModal(true)}>
                     <div
                       style={{
                         display: "flex",
@@ -314,7 +317,7 @@ const AddInvoiceItem: FC = () => {
                     </div>
                     <div>
                       <IonRadio value="2"></IonRadio>
-                      <IonText>Ruppess</IonText>
+                      <IonText>{Curruncy}</IonText>
                     </div>
                   </IonRadioGroup>
                 </IonRow>
@@ -345,12 +348,8 @@ const AddInvoiceItem: FC = () => {
                       onClick={() => history.push("/taxes/add")}
                     ></IonIcon>
                   </div>
-                  <IonList inset={true}>
-                    <IonItem
-                      button={true}
-                      detail={false}
-                      id="select-invoice-item-tax"
-                    >
+                  <IonList>
+                    <IonItem onClick={() => setTaxModal(true)}>
                       <div
                         style={{
                           display: "flex",
@@ -386,21 +385,21 @@ const AddInvoiceItem: FC = () => {
           </IonButton>
         </div>
       </IonContent>
-      <IonModal trigger="select-invoice-item-tax" ref={taxModal}>
+      <IonModal isOpen={taxModal}>
         <SelectTax
           title="Select Tax"
           taxes={taxes}
           selectedItem={selectedTax}
-          onSelectionCancel={() => taxModal.current?.dismiss()}
+          onSelectionCancel={() => setTaxModal(false)}
           onSelectionChange={onHandleTax}
         />
       </IonModal>
-      <IonModal trigger="select-item" ref={itemModal}>
+      <IonModal isOpen={itemModal}>
         <SelectItem
           title={"Select Item"}
           items={items}
           selectedItem={selectedItem}
-          onSelectionCancel={() => itemModal.current?.dismiss()}
+          onSelectionCancel={() => setItemModal(false)}
           onSelectionChange={onHandleItem}
         />
       </IonModal>

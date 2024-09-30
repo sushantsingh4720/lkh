@@ -9,8 +9,55 @@ import {
   InvoiceItem,
   SalesInvoice,
 } from "../assets/helpers/Interfaces"; // Import the SelectedContact interface
-import { useSelector } from "react-redux";
-import { RootState } from "./Index";
+
+const calculateTotals = (
+  products: InvoiceItem[],
+  isClientCompanyStateSame: boolean
+) => {
+  let amount;
+  let discount;
+  let total_tax;
+  let GST;
+  let total;
+  let SGST;
+  let CGST;
+  let IGST;
+  let balance;
+
+  amount = parseFloatWithFixedValue(
+    products.reduce(
+      (amount, product) => amount + Number(product.preSubTotal),
+      0
+    )
+  );
+  total = amount;
+  discount = parseFloatWithFixedValue(
+    products.reduce(
+      (discount, product) => discount + Number(product.discount || 0),
+      0
+    )
+  );
+  if (Number(discount) > 0) {
+    total = parseFloatWithFixedValue(Number(amount) - Number(discount));
+  }
+
+  total_tax = parseFloatWithFixedValue(
+    products.reduce((tax, product) => tax + Number(product.itemTax || 0), 0)
+  );
+
+  if (Number(total_tax) > 0) {
+    GST = total_tax;
+
+    if (isClientCompanyStateSame) {
+      SGST = CGST = parseFloatWithFixedValue(Number(GST) / 2);
+    } else {
+      IGST = GST;
+    }
+    total = parseFloatWithFixedValue(Number(total) + Number(GST));
+  }
+  balance = total;
+  return { amount, discount, total_tax, GST, SGST, CGST, IGST, total, balance };
+};
 
 const initialState: SalesInvoice = {
   checkout_details: null,
@@ -19,6 +66,13 @@ const initialState: SalesInvoice = {
   date: todayDate,
   dueDate: todayDate,
   invoice: null,
+  discountType: "1",
+  other_info: {
+    client_type: {
+      label: "Customer",
+      value: "Customer",
+    },
+  },
 };
 
 const InoviceForm = createSlice({
@@ -123,65 +177,18 @@ const InoviceForm = createSlice({
       state,
       action: PayloadAction<{ product: any; isClientCompanyStateSame: boolean }>
     ) => {
-      const { isClientCompanyStateSame } = action.payload;
+      const { isClientCompanyStateSame, product } = action.payload;
 
-      const products = [action.payload.product, ...(state?.all_products || [])];
-      let amount;
-      let discount;
-      let total_tax;
-      let GST;
-      let total;
-      let SGST;
-      let CGST;
-      let IGST;
-      let balance;
+      const products = [product, ...(state?.all_products || [])];
+      const totals = calculateTotals(products, isClientCompanyStateSame);
 
-      amount = parseFloatWithFixedValue(
-        products.reduce(
-          (amount, product) => amount + Number(product.preSubTotal),
-          0
-        )
-      );
-      total = amount;
-      discount = parseFloatWithFixedValue(
-        products.reduce(
-          (discount, product) => discount + Number(product.discount || 0),
-          0
-        )
-      );
-      if (Number(discount) > 0) {
-        total = parseFloatWithFixedValue(Number(amount) - Number(discount));
-      }
-
-      total_tax = parseFloatWithFixedValue(
-        products.reduce((tax, product) => tax + Number(product.itemTax || 0), 0)
-      );
-
-      if (Number(total_tax) > 0) {
-        GST = total_tax;
-
-        if (isClientCompanyStateSame) {
-          SGST = CGST = parseFloatWithFixedValue(Number(GST) / 2);
-        } else {
-          IGST = GST;
-        }
-        total = parseFloatWithFixedValue(Number(total) + Number(GST));
-      }
-      balance = total;
       return {
         ...state,
         all_products: products,
-        amount,
-        discount,
-        total_tax,
-        GST,
-        total,
-        SGST,
-        CGST,
-        IGST,
-        balance,
+        ...totals,
       };
     },
+
     removeItemHandler: (
       state,
       action: PayloadAction<{
@@ -190,60 +197,41 @@ const InoviceForm = createSlice({
       }>
     ) => {
       const { isClientCompanyStateSame, index } = action.payload;
-      const products = state.all_products?.filter((_, i) => i !== index);
-      let amount;
-      let discount;
-      let total_tax;
-      let GST;
-      let total;
-      let SGST;
-      let CGST;
-      let IGST;
-      let balance;
-
-      amount = parseFloatWithFixedValue(
-        products?.reduce(
-          (amount, product) => amount + Number(product.preSubTotal),
-          0
-        ) || 0
-      );
-
-      discount = parseFloatWithFixedValue(
-        products?.reduce(
-          (discount, product) => discount + Number(product.discount),
-          0
-        ) || 0
-      );
-
-      if (Number(discount) > 0) {
-        total = parseFloatWithFixedValue(Number(amount) - Number(discount));
-      }
-      total_tax = parseFloatWithFixedValue(
-        products?.reduce((tax, product) => tax + Number(product.itemTax), 0) ||
-          0
-      );
-
-      if (Number(total_tax) > 0) {
-        if (isClientCompanyStateSame) {
-          SGST = CGST = parseFloatWithFixedValue(Number(GST) / 2);
-        } else {
-          IGST = GST;
-        }
-        total = parseFloatWithFixedValue(Number(total) + Number(GST));
-      }
-      balance = total;
+      const products = state.all_products?.filter((_, i) => i !== index) || [];
+      const totals = calculateTotals(products, isClientCompanyStateSame);
       return {
         ...state,
         all_products: products,
-        amount,
-        discount,
-        total_tax,
-        GST,
-        total,
-        SGST,
-        CGST,
-        IGST,
-        balance,
+        ...totals,
+      };
+    },
+
+    otherInfoHandler: (
+      state,
+      action: PayloadAction<{
+        name: string;
+        value: string;
+      }>
+    ) => {
+      const { name, value } = action.payload;
+      const updateOtherInfo = { ...state.other_info, [name]: value };
+      return {
+        ...state,
+        other_info: updateOtherInfo,
+      };
+    },
+
+    bankHandler: (
+      state,
+      action: PayloadAction<{
+        bank: any;
+      }>
+    ) => {
+      const { bank } = action.payload;
+      const updateOtherInfo = { ...state.other_info, bank };
+      return {
+        ...state,
+        other_info: updateOtherInfo,
       };
     },
   },
@@ -259,6 +247,8 @@ export const {
   dateInputChange,
   addItemHandler,
   removeItemHandler,
+  otherInfoHandler,
+  bankHandler,
 } = InoviceForm.actions;
 
 // Export reducer

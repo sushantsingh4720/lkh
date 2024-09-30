@@ -49,6 +49,15 @@ export interface Tax {
   description: string;
 }
 
+export interface Bank {
+  id: number;
+  name: string;
+  ifsc: string;
+  branch: string;
+  account_no: string;
+  description: string | null;
+}
+
 export interface CombineCode {
   id: number;
   code_no: string;
@@ -123,7 +132,7 @@ export interface SalesInvoice {
   amount?: string;
   discount?: string; // Defaults to 0.00.
   discountType?: string;
-  discountValue?: number;
+  discountValue?: string;
   GST?: string;
   IGST?: string;
   CGST?: string;
@@ -142,6 +151,6 @@ export interface SalesInvoice {
   taxName?: string; // JSON string, ensure validation.
   all_products?: InvoiceItem[]; // JSON string, ensure validation.
   other_charges?: string; // JSON string, ensure validation.
-  other_info?: string; // JSON string, ensure validation.
+  other_info?: any; // JSON string, ensure validation.
   all_checks?: string; // JSON string, ensure validation.
 }
