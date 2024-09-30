@@ -30,8 +30,9 @@ export function padWithZeros(number: number): string {
   return number.toString().padStart(5, "0");
 }
 
-export const parseFloatWithFixedValue = (value: string): string => {
-  return parseFloat(value).toFixed(2);
+export const parseFloatWithFixedValue = (value: string | number): string => {
+  const parsedValue = parseFloat(String(value)); // Ensure value is always parsed as a float
+  return isNaN(parsedValue) ? "0.00" : parsedValue.toFixed(2); // Return as string with 2 decimal places
 };
 
 export function formatIndianCurrency(amount: number): string {

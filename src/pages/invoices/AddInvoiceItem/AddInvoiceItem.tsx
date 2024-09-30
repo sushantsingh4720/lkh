@@ -44,6 +44,7 @@ import SelectTax from "../../../components/Select/SelectTax";
 import { AllUnitOfMeasurement } from "../../../assets/helpers/AllUnitOfMeasurement";
 import { parseFloatWithFixedValue } from "../../../assets/helpers/CommonUses";
 import { AddInvoiceItemValidation } from "./AddInvoiceItemValidation";
+import { addItemHandler } from "../../../reduxStore/InvoiceForm";
 const initialFormData: InvoiceItem = {
   UOM: null,
   code: "",
@@ -77,10 +78,10 @@ const AddInvoiceItem: FC = () => {
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [alertHeader, setAlertHeader] = useState<string>("");
   const [errorMessages, setErrorMessages] = useState<string>("");
-  console.log(formData);
+
   const onHandleItem = (selectedItem: Item): void => {
     setSelectedItem(selectedItem);
-    const { UOM, hsn_code, sac_code, taxName, s_price } = selectedItem;
+    const { UOM, hsn_code, sac_code, taxName, s_price, type } = selectedItem;
     const code: string = state.type === "product" ? hsn_code : sac_code;
     const findTax = taxes.find((tax) => tax.name === taxName);
     const findUOM = AllUnitOfMeasurement.includes(UOM)
@@ -97,6 +98,7 @@ const AddInvoiceItem: FC = () => {
         : {}),
       UOM: findUOM,
       quantity: "1",
+      type,
     }));
     setSelectedTax(findTax ? findTax : null);
     itemModal.current?.dismiss();
@@ -118,7 +120,60 @@ const AddInvoiceItem: FC = () => {
     taxModal.current?.dismiss();
   };
 
-  const handleSaveAndNew = (): void => {
+  // Function to calculate the invoice item details
+  const calculateInvoiceItem = (formData: any) => {
+    const { quantity, discountType, discountValue, price, taxName } = formData;
+
+    let amount = parseFloatWithFixedValue(parseInt(quantity) * Number(price));
+    let preSubTotal = amount;
+    let subTotal = amount;
+    let discount;
+    let itemTax;
+
+    if (Number(discountValue) > 0) {
+      if (Number(discountType) === 1) {
+        discount = parseFloatWithFixedValue(
+          (Number(amount) * Number(discountValue)) / 100
+        );
+      } else if (Number(discountType) === 2) {
+        discount = Number(discountValue);
+      }
+    }
+
+    if (Number(discount) > 0) {
+      subTotal = parseFloatWithFixedValue(Number(amount) - Number(discount));
+    }
+
+    if (taxName) {
+      itemTax = parseFloatWithFixedValue(
+        (Number(subTotal) * Number(taxName?.rate)) / 100
+      );
+    }
+
+    if (Number(itemTax) > 0) {
+      amount = parseFloatWithFixedValue(subTotal + Number(itemTax));
+    }
+
+    return {
+      UOM: formData?.UOM,
+      code: formData?.code,
+      product: formData?.product,
+      quantity,
+      discount,
+      discountType,
+      discountValue,
+      taxName,
+      subTotal, // Consider using number if subtotal is always numeric
+      preSubTotal, // Consider using number if preSubtotal is always numeric
+      price,
+      amount, // Consider using number if amount is always numeric
+      itemTax,
+      type: formData?.type,
+    };
+  };
+
+  // Common function for saving invoice item
+  const saveInvoiceItem = (formData: any, onSuccess: () => void) => {
     const validationResult = AddInvoiceItemValidation(formData);
 
     if (!validationResult.isValid) {
@@ -127,28 +182,33 @@ const AddInvoiceItem: FC = () => {
       setShowAlert(true);
       return;
     }
+
+    const product = calculateInvoiceItem(formData);
+    dispatch(addItemHandler({ product }));
+    onSuccess();
+
     setSuccessMessage("Item Added Successfully");
     setIsSuccess(true);
     setTimeout((): void => {
       setIsSuccess(false);
+      setSuccessMessage("");
     }, 3000);
   };
 
-  const handleSave = () => {
-    const validationResult = AddInvoiceItemValidation(formData);
+  // Refactored handleSaveAndNew
+  const handleSaveAndNew = (): void => {
+    saveInvoiceItem(formData, () => {
+      setFormData(initialFormData); // Uncomment if required
+    });
+  };
 
-    if (!validationResult.isValid) {
-      setAlertHeader("Form Validation Failed");
-      setErrorMessages(validationResult.message || "Validation failed");
-      setShowAlert(true);
-      return;
-    }
-
-    setSuccessMessage("Item Added Successfully");
-    setIsSuccess(true);
-    setTimeout((): void => {
-      setIsSuccess(false);
-    }, 3000);
+  // Refactored handleSave
+  const handleSave = (): void => {
+    saveInvoiceItem(formData, () => {
+      // Handle post-save actions for Save
+      history.goBack(); // Uncomment if required
+      setFormData(initialFormData); // Uncomment if required
+    });
   };
 
   const fetchData = async () => {

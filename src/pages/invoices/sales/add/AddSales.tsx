@@ -26,11 +26,16 @@ import {
   addOutline,
   arrowBackOutline,
   chevronDown,
+  closeCircleOutline,
 } from "ionicons/icons";
 import { FC, useEffect, useReducer, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { Contact } from "../../../../assets/helpers/Interfaces";
-import { todayDate } from "../../../../assets/helpers/CommonUses";
+import { Contact, InvoiceItem } from "../../../../assets/helpers/Interfaces";
+import {
+  Curruncy,
+  parseFloatWithFixedValue,
+  todayDate,
+} from "../../../../assets/helpers/CommonUses";
 import styles from "./AddSales.module.scss";
 import SelectContact from "../../../../components/Select/SelectContact";
 import useAxios from "../../../../utils/axiosInstance";
@@ -45,6 +50,7 @@ import {
   invoiceNumberChange,
   invoiceTypeChange,
   itemTypeChange,
+  removeItemHandler,
 } from "../../../../reduxStore/InvoiceForm";
 
 const AddSales: FC = () => {
@@ -52,7 +58,7 @@ const AddSales: FC = () => {
   const axios = useAxios();
   const dispatch = useDispatch();
   const state = useSelector((state: RootState) => state.InvoiceForm);
-
+  console.log("state", state);
   const customerModal = useRef<HTMLIonModalElement>(null);
   const [contacts, setContacts] = useState([]);
   const handleInputChange = (e: any) => {
@@ -78,6 +84,10 @@ const AddSales: FC = () => {
   const onHandleCustomer = (selectedContact: Contact) => {
     dispatch(clientSelectChange({ selectedContact }));
     customerModal.current?.dismiss();
+  };
+
+  const onRemoveItemHandler = (index: number) => {
+    dispatch(removeItemHandler(index));
   };
 
   const fetchData = async () => {
@@ -130,9 +140,6 @@ const AddSales: FC = () => {
       </IonHeader>
       <IonContent>
         <IonCard>
-          {/* <IonCardHeader>
-            <IonCardTitle>Contact Information</IonCardTitle>
-          </IonCardHeader> */}
           <IonCardContent>
             <IonGrid className="ion-no-padding">
               <IonRow>
@@ -253,6 +260,160 @@ const AddSales: FC = () => {
                 >
                   <IonIcon icon={addCircleOutline}></IonIcon> Add Item
                 </IonButton>
+              </IonRow>
+              {state.all_products?.length ? (
+                <IonRow>
+                  <div
+                    style={{
+                      display: "flex",
+                      borderBottom: "1px solid gray",
+                      paddingBottom: "6px",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <IonLabel>Items</IonLabel>
+                    <IonLabel>Amount</IonLabel>
+                  </div>
+                  {state.all_products?.length
+                    ? state.all_products.map(
+                        (item: InvoiceItem, index: number) => (
+                          <div
+                            key={index} // Add a key for each mapped item
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              borderBottom: "1px solid gray",
+                            }}
+                          >
+                            <div style={{ display: "flex", gap: "12px" }}>
+                              <IonIcon
+                                icon={closeCircleOutline}
+                                color="danger"
+                                onClick={() => onRemoveItemHandler(index)} // Use index to dynamically remove the item
+                              ></IonIcon>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  gap: "8px",
+                                  color: "black",
+                                }}
+                              >
+                                <h3 style={{ padding: 0, margin: 0 }}>
+                                  {item.product?.name}
+                                </h3>{" "}
+                                {/* Access item name */}
+                                <IonText>
+                                  {item.quantity} *{" "}
+                                  {parseFloatWithFixedValue(item.price)}
+                                </IonText>{" "}
+                                {/* Access quantity and price */}
+                              </div>
+                            </div>
+                            <div style={{ justifySelf: "end", color: "black" }}>
+                              <h6 style={{ padding: 0, margin: 0 }}>
+                                {parseFloatWithFixedValue(item.amount)}
+                              </h6>{" "}
+                              {/* Access total price */}
+                            </div>
+                          </div>
+                        )
+                      )
+                    : ""}
+                </IonRow>
+              ) : (
+                ""
+              )}
+            </IonGrid>
+          </IonCardContent>
+        </IonCard>
+        <IonCard>
+          <IonCardContent>
+            <IonGrid className="ion-no-padding">
+              <IonRow>
+                {state.all_products?.length ? (
+                  <div>
+                    <div
+                      style={{
+                        display: "flex",
+                        borderBottom: "1px solid gray",
+                        paddingBottom: "6px",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <IonLabel>Details</IonLabel>
+                      <IonLabel>Amount</IonLabel>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        paddingBottom: "6px",
+                        justifyContent: "space-between",
+                        color: "black",
+                      }}
+                    >
+                      <h2>Sub Total</h2>
+                      <h2>{Curruncy} 800.25</h2>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        paddingBottom: "6px",
+                        justifyContent: "space-between",
+                        color: "black",
+                      }}
+                    >
+                      <h2>Total Discount (-)</h2>
+                      <h2>{Curruncy} 800.25</h2>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        paddingBottom: "6px",
+                        justifyContent: "space-between",
+                        color: "black",
+                      }}
+                    >
+                      <h2>CGST</h2>
+                      <h2>{Curruncy} 400.13</h2>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        paddingBottom: "6px",
+                        justifyContent: "space-between",
+                        color: "black",
+                      }}
+                    >
+                      <h2>SGST</h2>
+                      <h2>{Curruncy} 400.13</h2>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        paddingBottom: "6px",
+                        justifyContent: "space-between",
+                        color: "black",
+                      }}
+                    >
+                      <h2>IGST</h2>
+                      <h2>{Curruncy} 800.25</h2>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        paddingBottom: "6px",
+                        justifyContent: "space-between",
+                        color: "black",
+                      }}
+                    >
+                      <h2>Grand Total</h2>
+                      <h2>{Curruncy} 800.25</h2>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
               </IonRow>
             </IonGrid>
           </IonCardContent>

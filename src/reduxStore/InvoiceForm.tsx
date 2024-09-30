@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { todayDate } from "../assets/helpers/CommonUses";
-import { Contact, SalesInvoice } from "../assets/helpers/Interfaces"; // Import the SelectedContact interface
+import {
+  Contact,
+  InvoiceItem,
+  SalesInvoice,
+} from "../assets/helpers/Interfaces"; // Import the SelectedContact interface
 
 const initialState: SalesInvoice = {
   checkout_details: null,
@@ -40,6 +44,7 @@ const InoviceForm = createSlice({
         shipping_address: address,
       };
     },
+
     invoiceNumberChange: (
       state,
       action: PayloadAction<{ invoice: number }>
@@ -50,6 +55,7 @@ const InoviceForm = createSlice({
         invoice: action.payload.invoice,
       };
     },
+
     itemTypeChange: (state, action: PayloadAction<{ type: string }>) => {
       // Updating state immutably
       return {
@@ -57,6 +63,7 @@ const InoviceForm = createSlice({
         type: action.payload.type,
       };
     },
+
     invoiceTypeChange: (
       state,
       action: PayloadAction<{ invoiceType: string }>
@@ -67,6 +74,7 @@ const InoviceForm = createSlice({
         invoiceType: action.payload.invoiceType,
       };
     },
+
     inputChange: (
       state,
       action: PayloadAction<{ name: string; value: any }>
@@ -78,6 +86,7 @@ const InoviceForm = createSlice({
         [name]: value,
       };
     },
+
     dateInputChange: (
       state,
       action: PayloadAction<{ name: string; value: any }>
@@ -103,6 +112,22 @@ const InoviceForm = createSlice({
 
       return newState;
     },
+
+    addItemHandler: (state, action: PayloadAction<{ product: any }>) => {
+      const products = [action.payload.product, ...(state?.all_products || [])];
+      return {
+        ...state,
+        all_products: products,
+      };
+    },
+    removeItemHandler: (state, action: PayloadAction<number>) => {
+      const index = action.payload;
+      const updatedProducts = state.all_products?.filter((_, i) => i !== index);
+      return {
+        ...state,
+        all_products: updatedProducts,
+      };
+    },
   },
 });
 
@@ -114,6 +139,8 @@ export const {
   invoiceTypeChange,
   inputChange,
   dateInputChange,
+  addItemHandler,
+  removeItemHandler,
 } = InoviceForm.actions;
 
 // Export reducer
