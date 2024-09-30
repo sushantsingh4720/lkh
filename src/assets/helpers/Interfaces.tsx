@@ -120,25 +120,25 @@ export interface SalesInvoice {
   type?: string;
   invoiceType?: string;
   hsn_sac?: number;
-  amount?: number;
-  discount?: number; // Defaults to 0.00.
+  amount?: string;
+  discount?: string; // Defaults to 0.00.
   discountType?: string;
   discountValue?: number;
-  GST?: number;
-  IGST?: number;
-  CGST?: number;
-  SGST?: number;
-  total_tax?: number;
-  total?: number;
+  GST?: string;
+  IGST?: string;
+  CGST?: string;
+  SGST?: string;
+  total_tax?: string;
+  total?: string;
   round_off?: number; // Defaults to 0 (tinyint).
   round_off_value?: number; // Defaults to 0.00.
   payment_status?: string; // Defaults to 'Unpaid'.
-  paid_amount?: number; // Defaults to 0.00.
+  paid_amount?: string; // Defaults to 0.00.
   dueDate: string; // Date in format 'YYYY-MM-DD'.
   shipping_address?: string;
   date: string; // Date in format 'YYYY-MM-DD'.
   paid_date?: string; // Date in format 'YYYY-MM-DD'.
-  balance?: number;
+  balance?: string;
   taxName?: string; // JSON string, ensure validation.
   all_products?: InvoiceItem[]; // JSON string, ensure validation.
   other_charges?: string; // JSON string, ensure validation.

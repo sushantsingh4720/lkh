@@ -65,6 +65,7 @@ const AddInvoiceItem: FC = () => {
   const axios = useAxios();
   const history = useHistory();
   const dispatch = useDispatch();
+  const { companyData } = useSelector((state: RootState) => state.Company);
   const itemModal = useRef<HTMLIonModalElement>(null);
   const taxModal = useRef<HTMLIonModalElement>(null);
   const [formData, setFormData] = useState<InvoiceItem>(initialFormData);
@@ -79,6 +80,8 @@ const AddInvoiceItem: FC = () => {
   const [alertHeader, setAlertHeader] = useState<string>("");
   const [errorMessages, setErrorMessages] = useState<string>("");
 
+  const isClientCompanyStateSame =
+    state?.checkout_details?.billing_state === companyData?.state;
   const onHandleItem = (selectedItem: Item): void => {
     setSelectedItem(selectedItem);
     const { UOM, hsn_code, sac_code, taxName, s_price, type } = selectedItem;
@@ -184,7 +187,7 @@ const AddInvoiceItem: FC = () => {
     }
 
     const product = calculateInvoiceItem(formData);
-    dispatch(addItemHandler({ product }));
+    dispatch(addItemHandler({ product, isClientCompanyStateSame }));
     onSuccess();
 
     setSuccessMessage("Item Added Successfully");

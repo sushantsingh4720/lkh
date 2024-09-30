@@ -1,10 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { todayDate } from "../assets/helpers/CommonUses";
+// const { companyData } = useSelector((state: RootState) => state.Company);
+import {
+  parseFloatWithFixedValue,
+  todayDate,
+} from "../assets/helpers/CommonUses";
 import {
   Contact,
   InvoiceItem,
   SalesInvoice,
 } from "../assets/helpers/Interfaces"; // Import the SelectedContact interface
+import { useSelector } from "react-redux";
+import { RootState } from "./Index";
 
 const initialState: SalesInvoice = {
   checkout_details: null,
@@ -113,19 +119,131 @@ const InoviceForm = createSlice({
       return newState;
     },
 
-    addItemHandler: (state, action: PayloadAction<{ product: any }>) => {
+    addItemHandler: (
+      state,
+      action: PayloadAction<{ product: any; isClientCompanyStateSame: boolean }>
+    ) => {
+      const { isClientCompanyStateSame } = action.payload;
+
       const products = [action.payload.product, ...(state?.all_products || [])];
+      let amount;
+      let discount;
+      let total_tax;
+      let GST;
+      let total;
+      let SGST;
+      let CGST;
+      let IGST;
+      let balance;
+
+      amount = parseFloatWithFixedValue(
+        products.reduce(
+          (amount, product) => amount + Number(product.preSubTotal),
+          0
+        )
+      );
+      total = amount;
+      discount = parseFloatWithFixedValue(
+        products.reduce(
+          (discount, product) => discount + Number(product.discount || 0),
+          0
+        )
+      );
+      if (Number(discount) > 0) {
+        total = parseFloatWithFixedValue(Number(amount) - Number(discount));
+      }
+
+      total_tax = parseFloatWithFixedValue(
+        products.reduce((tax, product) => tax + Number(product.itemTax || 0), 0)
+      );
+
+      if (Number(total_tax) > 0) {
+        GST = total_tax;
+
+        if (isClientCompanyStateSame) {
+          SGST = CGST = parseFloatWithFixedValue(Number(GST) / 2);
+        } else {
+          IGST = GST;
+        }
+        total = parseFloatWithFixedValue(Number(total) + Number(GST));
+      }
+      balance = total;
       return {
         ...state,
         all_products: products,
+        amount,
+        discount,
+        total_tax,
+        GST,
+        total,
+        SGST,
+        CGST,
+        IGST,
+        balance,
       };
     },
-    removeItemHandler: (state, action: PayloadAction<number>) => {
-      const index = action.payload;
-      const updatedProducts = state.all_products?.filter((_, i) => i !== index);
+    removeItemHandler: (
+      state,
+      action: PayloadAction<{
+        index: number;
+        isClientCompanyStateSame: boolean;
+      }>
+    ) => {
+      const { isClientCompanyStateSame, index } = action.payload;
+      const products = state.all_products?.filter((_, i) => i !== index);
+      let amount;
+      let discount;
+      let total_tax;
+      let GST;
+      let total;
+      let SGST;
+      let CGST;
+      let IGST;
+      let balance;
+
+      amount = parseFloatWithFixedValue(
+        products?.reduce(
+          (amount, product) => amount + Number(product.preSubTotal),
+          0
+        ) || 0
+      );
+
+      discount = parseFloatWithFixedValue(
+        products?.reduce(
+          (discount, product) => discount + Number(product.discount),
+          0
+        ) || 0
+      );
+
+      if (Number(discount) > 0) {
+        total = parseFloatWithFixedValue(Number(amount) - Number(discount));
+      }
+      total_tax = parseFloatWithFixedValue(
+        products?.reduce((tax, product) => tax + Number(product.itemTax), 0) ||
+          0
+      );
+
+      if (Number(total_tax) > 0) {
+        if (isClientCompanyStateSame) {
+          SGST = CGST = parseFloatWithFixedValue(Number(GST) / 2);
+        } else {
+          IGST = GST;
+        }
+        total = parseFloatWithFixedValue(Number(total) + Number(GST));
+      }
+      balance = total;
       return {
         ...state,
-        all_products: updatedProducts,
+        all_products: products,
+        amount,
+        discount,
+        total_tax,
+        GST,
+        total,
+        SGST,
+        CGST,
+        IGST,
+        balance,
       };
     },
   },

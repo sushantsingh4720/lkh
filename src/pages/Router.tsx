@@ -1,12 +1,12 @@
 import { IonRouterOutlet } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { Redirect, Route } from "react-router";
 import Tab from "../components/tab/Tab";
 import Login from "./login/Login";
 import Signup from "./signup/Signup";
 import Forgot from "./forgot/Forgot";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../reduxStore/Index";
 import AddContact from "./contacts/addContact/AddContact";
 import Categories from "./items/categories/Categories";
@@ -35,8 +35,34 @@ import AddSac from "./taxes/sac/addSac/AddSac";
 import AddItems from "./items/items/addItem/AddItems";
 import AddSales from "./invoices/sales/add/AddSales";
 import AddInvoiceItem from "./invoices/AddInvoiceItem/AddInvoiceItem";
+import useAxios from "../utils/axiosInstance";
+import { setCompanyData } from "../reduxStore/Company";
+import { setFinancialYearArray } from "../reduxStore/FinancialYear";
 const Router: FC = () => {
+  const dispatch = useDispatch();
+  const axios = useAxios();
   const { isAuthenticated } = useSelector((state: RootState) => state.Auth);
+
+  const getCompany = async () => {
+    try {
+      const result = await axios.get("/company");
+      const response = result.data;
+      dispatch(setCompanyData(response.company));
+      dispatch(
+        setFinancialYearArray(response?.financialYearData?.financial_year)
+      );
+    } catch (error) {
+      dispatch(setCompanyData({}));
+    }
+  };
+
+  useEffect(() => {
+    if (isAuthenticated) getCompany();
+    return () => {
+      dispatch(setCompanyData({}));
+    };
+  }, [isAuthenticated]);
+
   return (
     <IonReactRouter>
       <IonRouterOutlet>

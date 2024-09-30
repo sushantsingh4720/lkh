@@ -57,10 +57,14 @@ const AddSales: FC = () => {
   const history = useHistory();
   const axios = useAxios();
   const dispatch = useDispatch();
+  const { companyData } = useSelector((state: RootState) => state.Company);
   const state = useSelector((state: RootState) => state.InvoiceForm);
-  console.log("state", state);
   const customerModal = useRef<HTMLIonModalElement>(null);
   const [contacts, setContacts] = useState([]);
+
+  const isClientCompanyStateSame =
+    state?.checkout_details?.billing_state === companyData?.state;
+
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     dispatch(inputChange({ name, value }));
@@ -87,7 +91,7 @@ const AddSales: FC = () => {
   };
 
   const onRemoveItemHandler = (index: number) => {
-    dispatch(removeItemHandler(index));
+    dispatch(removeItemHandler({ index, isClientCompanyStateSame }));
   };
 
   const fetchData = async () => {
@@ -257,6 +261,8 @@ const AddSales: FC = () => {
                   fill="outline"
                   id="add-item-modal"
                   onClick={() => history.push("/invoices/item/add")}
+                  disabled={!state?.checkout_details}
+                  title="Please First Select Customer"
                 >
                   <IonIcon icon={addCircleOutline}></IonIcon> Add Item
                 </IonButton>
@@ -327,11 +333,11 @@ const AddSales: FC = () => {
             </IonGrid>
           </IonCardContent>
         </IonCard>
-        <IonCard>
-          <IonCardContent>
-            <IonGrid className="ion-no-padding">
-              <IonRow>
-                {state.all_products?.length ? (
+        {state.all_products?.length ? (
+          <IonCard>
+            <IonCardContent>
+              <IonGrid className="ion-no-padding">
+                <IonRow>
                   <div>
                     <div
                       style={{
@@ -353,52 +359,79 @@ const AddSales: FC = () => {
                       }}
                     >
                       <h2>Sub Total</h2>
-                      <h2>{Curruncy} 800.25</h2>
+                      <h2>
+                        {Curruncy} {parseFloatWithFixedValue(state.amount)}
+                      </h2>
                     </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        paddingBottom: "6px",
-                        justifyContent: "space-between",
-                        color: "black",
-                      }}
-                    >
-                      <h2>Total Discount (-)</h2>
-                      <h2>{Curruncy} 800.25</h2>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        paddingBottom: "6px",
-                        justifyContent: "space-between",
-                        color: "black",
-                      }}
-                    >
-                      <h2>CGST</h2>
-                      <h2>{Curruncy} 400.13</h2>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        paddingBottom: "6px",
-                        justifyContent: "space-between",
-                        color: "black",
-                      }}
-                    >
-                      <h2>SGST</h2>
-                      <h2>{Curruncy} 400.13</h2>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        paddingBottom: "6px",
-                        justifyContent: "space-between",
-                        color: "black",
-                      }}
-                    >
-                      <h2>IGST</h2>
-                      <h2>{Curruncy} 800.25</h2>
-                    </div>
+                    {Number(state?.discount) > 0 ? (
+                      <div
+                        style={{
+                          display: "flex",
+                          paddingBottom: "6px",
+                          justifyContent: "space-between",
+                          color: "black",
+                        }}
+                      >
+                        <h2>Total Discount (-)</h2>
+                        <h2>
+                          {Curruncy} {parseFloatWithFixedValue(state.discount)}
+                        </h2>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                    {Number(state.GST) > 0 ? (
+                      <>
+                        {isClientCompanyStateSame ? (
+                          <>
+                            <div
+                              style={{
+                                display: "flex",
+                                paddingBottom: "6px",
+                                justifyContent: "space-between",
+                                color: "black",
+                              }}
+                            >
+                              <h2>CGST</h2>
+                              <h2>
+                                {Curruncy}{" "}
+                                {parseFloatWithFixedValue(state.CGST)}
+                              </h2>
+                            </div>
+                            <div
+                              style={{
+                                display: "flex",
+                                paddingBottom: "6px",
+                                justifyContent: "space-between",
+                                color: "black",
+                              }}
+                            >
+                              <h2>SGST</h2>
+                              <h2>
+                                {Curruncy}{" "}
+                                {parseFloatWithFixedValue(state.SGST)}
+                              </h2>
+                            </div>
+                          </>
+                        ) : (
+                          <div
+                            style={{
+                              display: "flex",
+                              paddingBottom: "6px",
+                              justifyContent: "space-between",
+                              color: "black",
+                            }}
+                          >
+                            <h2>IGST</h2>
+                            <h2>
+                              {Curruncy} {parseFloatWithFixedValue(state.SGST)}
+                            </h2>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      ""
+                    )}
                     <div
                       style={{
                         display: "flex",
@@ -408,16 +441,18 @@ const AddSales: FC = () => {
                       }}
                     >
                       <h2>Grand Total</h2>
-                      <h2>{Curruncy} 800.25</h2>
+                      <h2>
+                        {Curruncy} {parseFloatWithFixedValue(state.total)}
+                      </h2>
                     </div>
                   </div>
-                ) : (
-                  ""
-                )}
-              </IonRow>
-            </IonGrid>
-          </IonCardContent>
-        </IonCard>
+                </IonRow>
+              </IonGrid>
+            </IonCardContent>
+          </IonCard>
+        ) : (
+          ""
+        )}
       </IonContent>
       <IonModal trigger="select-customer" ref={customerModal}>
         <SelectContact
