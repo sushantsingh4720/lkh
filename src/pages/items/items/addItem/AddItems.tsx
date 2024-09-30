@@ -210,7 +210,15 @@ const AddItems: FC = () => {
     if (isProduct) {
       return [
         ...hsns.map(
-          ({ name_of_commodity, gst_rate, active, hsn_code, hsn_code_no }) => ({
+          ({
+            id,
+            name_of_commodity,
+            gst_rate,
+            active,
+            hsn_code,
+            hsn_code_no,
+          }) => ({
+            id,
             name_of_commodity,
             gst_rate,
             active,
@@ -219,7 +227,15 @@ const AddItems: FC = () => {
           })
         ),
         ...sacs.map(
-          ({ name_of_commodity, gst_rate, active, sac_code, sac_code_no }) => ({
+          ({
+            id,
+            name_of_commodity,
+            gst_rate,
+            active,
+            sac_code,
+            sac_code_no,
+          }) => ({
+            id,
             name_of_commodity,
             gst_rate,
             active,
@@ -230,7 +246,8 @@ const AddItems: FC = () => {
       ];
     }
     return sacs.map(
-      ({ name_of_commodity, gst_rate, active, sac_code, sac_code_no }) => ({
+      ({ name_of_commodity, gst_rate, active, sac_code, sac_code_no, id }) => ({
+        id,
         name_of_commodity,
         gst_rate,
         active,

@@ -3,8 +3,6 @@ import {
   IonButtons,
   IonCard,
   IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
   IonContent,
   IonGrid,
   IonHeader,
@@ -31,66 +29,54 @@ import {
 } from "ionicons/icons";
 import { FC, useEffect, useReducer, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import {
-  Contact,
-  InvoiceItem,
-  SalesInvoice,
-} from "../../../../assets/helpers/Interfaces";
+import { Contact } from "../../../../assets/helpers/Interfaces";
 import { todayDate } from "../../../../assets/helpers/CommonUses";
 import styles from "./AddSales.module.scss";
 import SelectContact from "../../../../components/Select/SelectContact";
 import useAxios from "../../../../utils/axiosInstance";
-import AddInvoiceItem from "../../AddInvoiceItem/AddInvoiceItem";
+
+import { useDispatch, useSelector } from "react-redux";
+
+import { RootState } from "../../../../reduxStore/Index";
 import {
-  INITIAL_STATE,
-  reducer,
-} from "../../../../reducers/salesReducers/Reducer";
-import { useDispatch } from "react-redux";
-import {
-  HANDLE_CLIENT_SELECT_CHANGE,
-  HANDLE_DATE_INPUT_CHANGE,
-  HANDLE_INPUT_CHANGE,
-  HANDLE_INVOICE_NUMBER_CHANGE,
-  HANDLE_INVOICE_TYPE_CHANGE,
-  HANDLE_ITEM_TYPE_CHANGE,
-} from "../../../../reducers/salesReducers/Constant";
+  clientSelectChange,
+  dateInputChange,
+  inputChange,
+  invoiceNumberChange,
+  invoiceTypeChange,
+  itemTypeChange,
+} from "../../../../reduxStore/InvoiceForm";
 
 const AddSales: FC = () => {
   const history = useHistory();
   const axios = useAxios();
-  const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
+  const dispatch = useDispatch();
+  const state = useSelector((state: RootState) => state.InvoiceForm);
+
   const customerModal = useRef<HTMLIonModalElement>(null);
   const [contacts, setContacts] = useState([]);
-  console.log(state);
-
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
-    dispatch({ type: HANDLE_INPUT_CHANGE, payload: { name, value } });
+    dispatch(inputChange({ name, value }));
   };
 
   const handleDateChange = (e: any) => {
     const { name, value } = e.target;
-    dispatch({ type: HANDLE_DATE_INPUT_CHANGE, payload: { name, value } });
+    dispatch(dateInputChange({ name, value }));
   };
 
   const handleItemTypeChange = (e: any) => {
     const { value } = e.target;
-    dispatch({ type: HANDLE_ITEM_TYPE_CHANGE, payload: { type: value } });
+    dispatch(itemTypeChange({ type: value }));
   };
 
   const handleInvoiceTypeChange = (e: any) => {
     const { value } = e.target;
-    dispatch({
-      type: HANDLE_INVOICE_TYPE_CHANGE,
-      payload: { invoiceType: value },
-    });
+    dispatch(invoiceTypeChange({ invoiceType: value }));
   };
 
   const onHandleCustomer = (selectedContact: Contact) => {
-    dispatch({
-      type: HANDLE_CLIENT_SELECT_CHANGE,
-      payload: { selectedContact },
-    });
+    dispatch(clientSelectChange({ selectedContact }));
     customerModal.current?.dismiss();
   };
 
@@ -111,10 +97,9 @@ const AddSales: FC = () => {
       // Fetch the next invoice only if it hasn't been fetched yet
       try {
         const nextInvoiceRes = await axios.get("/sales_inv/get_inv");
-        dispatch({
-          type: HANDLE_INVOICE_NUMBER_CHANGE,
-          payload: { invoice: nextInvoiceRes?.data?.invoice },
-        });
+        dispatch(
+          invoiceNumberChange({ invoice: nextInvoiceRes?.data?.invoice })
+        );
       } catch (error) {
         // Handle error
       }
@@ -122,12 +107,11 @@ const AddSales: FC = () => {
   };
 
   useIonViewWillEnter(() => {
-    fetchData();
-  });
-
-  useEffect(() => {
     fetchNextInvoice();
   }, []);
+  useIonViewWillEnter(() => {
+    fetchData();
+  });
 
   return (
     <IonPage className={styles.add_sales}>
@@ -191,7 +175,7 @@ const AddSales: FC = () => {
                   className="customInput"
                   type="number"
                   name="invoice"
-                  value={state.invoice}
+                  value={state?.invoice}
                   onIonInput={handleInputChange}
                 />
               </IonRow>
@@ -202,7 +186,7 @@ const AddSales: FC = () => {
                   type="date"
                   name="date"
                   min={todayDate}
-                  value={state.date}
+                  value={state?.date}
                   onIonInput={handleDateChange}
                 />
               </IonRow>
@@ -262,7 +246,11 @@ const AddSales: FC = () => {
           <IonCardContent>
             <IonGrid className="ion-no-padding">
               <IonRow>
-                <IonButton fill="outline" id="add-item-modal">
+                <IonButton
+                  fill="outline"
+                  id="add-item-modal"
+                  onClick={() => history.push("/invoices/item/add")}
+                >
                   <IonIcon icon={addCircleOutline}></IonIcon> Add Item
                 </IonButton>
               </IonRow>

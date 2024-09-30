@@ -71,11 +71,15 @@ function SelectCombineCode(props: TypeaheadProps) {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton onClick={cancelChanges} color="primary">Cancel</IonButton>
+            <IonButton onClick={cancelChanges} color="primary">
+              Cancel
+            </IonButton>
           </IonButtons>
           <IonTitle>{props.title}</IonTitle>
           <IonButtons slot="end">
-            <IonButton onClick={confirmChanges} color="primary">Done</IonButton>
+            <IonButton onClick={confirmChanges} color="primary">
+              Done
+            </IonButton>
           </IonButtons>
         </IonToolbar>
         <IonToolbar>
@@ -90,7 +94,7 @@ function SelectCombineCode(props: TypeaheadProps) {
             onIonChange={radioChange}
           >
             {filteredItems.map((item) => (
-              <IonItem key={item.code}>
+              <IonItem key={item.id}>
                 <IonRadio value={item.code} slot="start" />
                 {item.code}
               </IonItem>

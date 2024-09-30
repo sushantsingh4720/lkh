@@ -67,11 +67,15 @@ function SelectUOM(props: TypeaheadProps) {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton onClick={cancelChanges} color="primary">Cancel</IonButton>
+            <IonButton onClick={cancelChanges} color="primary">
+              Cancel
+            </IonButton>
           </IonButtons>
           <IonTitle>{props.title}</IonTitle>
           <IonButtons slot="end">
-            <IonButton onClick={confirmChanges} color="primary">Done</IonButton>
+            <IonButton onClick={confirmChanges} color="primary">
+              Done
+            </IonButton>
           </IonButtons>
         </IonToolbar>
         <IonToolbar>

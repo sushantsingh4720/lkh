@@ -50,6 +50,7 @@ export interface Tax {
 }
 
 export interface CombineCode {
+  id: number;
   code_no: string;
   code: string;
   gst_rate: string;
@@ -80,30 +81,6 @@ interface UOM {
   value: string;
 }
 
-interface Product {
-  id: number;
-  fy_id: number;
-  companyId: number;
-  name: string;
-  varient: string;
-  type: string;
-  hsn_code: string;
-  sac_code: string;
-  mrp_price: number;
-  s_price: number;
-  p_price: number;
-  UOM: string;
-  brandName: string;
-  taxName: string;
-  categoryName: string;
-  opening_qty_per: number;
-  description: string;
-  createdAt: string; // or Date if you prefer Date objects
-  updatedAt: string; // or Date if you prefer Date objects
-  label: string;
-  value: string;
-}
-
 interface TaxName {
   id: number;
   name: string;
@@ -119,19 +96,19 @@ interface TaxName {
 }
 
 export interface InvoiceItem {
-  UOM: UOM;
+  UOM: UOM | null;
   code: string;
-  product: Product;
-  quantity: number;
+  product: Item | null;
+  quantity: string;
   discount: string; // Consider using number if discount is always numeric
   discountType: string;
-  discountValue: number;
-  taxName: TaxName;
+  discountValue: string;
+  taxName: Tax | null;
   subTotal: string; // Consider using number if subtotal is always numeric
   preSubTotal: string; // Consider using number if preSubtotal is always numeric
-  price: number;
+  price: string;
   amount: string; // Consider using number if amount is always numeric
-  itemTax: number;
+  itemTax: string;
   type: string;
 }
 
