@@ -1,3 +1,7 @@
+import { FC, useState } from "react";
+import { useHistory, useParams } from "react-router";
+import useAxios from "../../../../utils/axiosInstance";
+import { Item, RouteParams } from "../../../../assets/helpers/Interfaces";
 import {
   IonAlert,
   IonButton,
@@ -11,24 +15,15 @@ import {
   useIonViewDidLeave,
   useIonViewWillEnter,
 } from "@ionic/react";
-import {
-  arrowBackOutline,
-  createOutline,
-  trashBinOutline,
-  trashOutline,
-} from "ionicons/icons";
-import { FC, useState } from "react";
-import { useHistory, useParams } from "react-router";
-import useAxios from "../../../utils/axiosInstance";
-import { Contact, RouteParams } from "../../../assets/helpers/Interfaces";
-import LoadDataSpinner from "../../../components/Spinner/loadDataSpinner/LoadDataSpinner";
+import { arrowBackOutline, createOutline, trashOutline } from "ionicons/icons";
+import LoadDataSpinner from "../../../../components/Spinner/loadDataSpinner/LoadDataSpinner";
 
-const ViewContact: FC = () => {
+const ViewItem: FC = () => {
   const history = useHistory();
   const axios = useAxios();
   const { id } = useParams<RouteParams>();
   const [busy, setBusy] = useState<boolean>(true);
-  const [contact, setContact] = useState<Contact | null>(null);
+  const [item, setItem] = useState<Item | null>(null);
   const [deleteAlert, setDeleteAlert] = useState<boolean>(false);
 
   const deleteHandler = () => {
@@ -43,8 +38,7 @@ const ViewContact: FC = () => {
   const fetchData = async () => {
     setBusy(true);
     try {
-      const [contactRes] = await Promise.all([axios.get(`/contact/${id}`)]);
-      setContact(contactRes.data?.data || null);
+      const [itemRes] = await Promise.all([axios.get(`/product/${id}`)]);
     } catch (error) {
     } finally {
       setBusy(false);
@@ -56,7 +50,7 @@ const ViewContact: FC = () => {
   });
 
   useIonViewDidLeave(() => {
-    setContact(null);
+    setItem(null);
   });
 
   return (
@@ -70,9 +64,9 @@ const ViewContact: FC = () => {
           </IonButtons>
           {!busy ? (
             <>
-              <IonTitle>{contact?.name}</IonTitle>
+              <IonTitle>Item</IonTitle>
               <IonButtons slot="end">
-                <IonButton onClick={() => history.push(`/contacts/edit/${id}`)}>
+                <IonButton onClick={() => history.push(`/items/edit/${id}`)}>
                   <IonIcon icon={createOutline} color="primary"></IonIcon>
                 </IonButton>
                 <IonButton onClick={() => setDeleteAlert(true)}>
@@ -87,7 +81,7 @@ const ViewContact: FC = () => {
       </IonHeader>
       {busy ? <LoadDataSpinner /> : <IonContent>View page</IonContent>}
       <IonAlert
-        header="Are you sure you want to delete this contact?"
+        header="Are you sure you want to delete this item?"
         isOpen={deleteAlert}
         buttons={[
           {
@@ -110,4 +104,5 @@ const ViewContact: FC = () => {
     </IonPage>
   );
 };
-export default ViewContact;
+
+export default ViewItem;

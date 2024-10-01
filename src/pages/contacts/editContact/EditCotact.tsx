@@ -210,7 +210,7 @@ const EditContact: FC = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [contactRes] = await Promise.all([axios.get(`contact/${id}`)]);
+      const [contactRes] = await Promise.all([axios.get(`/contact/${id}`)]);
 
       const {
         fy_id,

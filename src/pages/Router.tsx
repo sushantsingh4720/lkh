@@ -40,6 +40,8 @@ import { setCompanyData } from "../reduxStore/Company";
 import { setFinancialYearArray } from "../reduxStore/FinancialYear";
 import ViewContact from "./contacts/viewContact/ViewContact";
 import EditContact from "./contacts/editContact/EditCotact";
+import ViewItem from "./items/items/viewItem/ViewItem";
+import EditItem from "./items/items/editItem/EditItem";
 const Router: FC = () => {
   const dispatch = useDispatch();
   const axios = useAxios();
@@ -83,6 +85,8 @@ const Router: FC = () => {
         <Route exact path="/contacts/edit/:id" component={EditContact} />
         <Route exact path="/leads" component={Leads} />
         <Route exact path="/items/add" component={AddItems} />
+        <Route exact path="/items/view/:id" component={ViewItem} />
+        <Route exact path="/items/edit/:id" component={EditItem} />
         <Route exact path="/categories" component={Categories} />
         <Route exact path="/categories/add" component={AddCategory} />
         <Route exact path="/brands" component={Brands} />

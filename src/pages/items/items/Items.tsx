@@ -65,7 +65,7 @@ const Items: FC = () => {
         ) : (
           <IonList>
             {items?.map((item: any, index: Number) => (
-              <IonItem key={item.id}>
+              <IonItem key={item.id} routerLink={`/items/view/${item.id}`}>
                 <div className={styles.ionitem_container}>
                   {/* <div>
                     <IonLabel className={styles.name_logo}>
@@ -84,7 +84,9 @@ const Items: FC = () => {
                       </div>
                       <div style={{ flex: 1 }}>
                         <p>Type</p>
-                        <IonLabel>{item?.type==='product'?'Product':'Service'}</IonLabel>
+                        <IonLabel>
+                          {item?.type === "product" ? "Product" : "Service"}
+                        </IonLabel>
                       </div>
                     </div>
                   </div>

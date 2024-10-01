@@ -35,6 +35,7 @@ import {
   Brand,
   Tax,
   CombineCode,
+  Item,
 } from "../../../../assets/helpers/Interfaces";
 import {
   AllUnitOfMeasurement,
@@ -47,24 +48,7 @@ import SelectCombineCode from "../../../../components/Select/SelectCombineCode";
 import SelectUOM from "../../../../components/Select/SelectUnitOfMeasurement";
 import { productValidation } from "../FormValidation";
 
-interface FormData {
-  brandName: string;
-  UOM: string;
-  categoryName: string;
-  description: string;
-  hsn_code: string;
-  mrp_price: string;
-  name: string;
-  opening_qty_per: string;
-  p_price: string;
-  s_price: string;
-  sac_code: string;
-  taxName: string;
-  type: string;
-  varient: string;
-}
-
-const initialFormData: FormData = {
+const initialFormData: Item = {
   brandName: "",
   UOM: "",
   categoryName: "",
@@ -84,13 +68,14 @@ const initialFormData: FormData = {
 const AddItems: FC = () => {
   const axios = useAxios();
   const history = useHistory();
-  const categoryModal = useRef<HTMLIonModalElement>(null);
-  const brandModal = useRef<HTMLIonModalElement>(null);
-  const taxModal = useRef<HTMLIonModalElement>(null);
-  const combineCodeModal = useRef<HTMLIonModalElement>(null);
-  const uomModal = useRef<HTMLIonModalElement>(null);
 
-  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [categoryModal, setCategoryModal] = useState<boolean>(false);
+  const [brandModal, setBrandModal] = useState<boolean>(false);
+  const [taxModal, setTaxModal] = useState<boolean>(false);
+  const [combineCodeModal, setCombineCodesModal] = useState<boolean>(false);
+  const [uomModal, setUomModal] = useState<boolean>(false);
+
+  const [formData, setFormData] = useState<Item>(initialFormData);
 
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
@@ -135,19 +120,19 @@ const AddItems: FC = () => {
   const onHandleCategory = (selectedCategory: Category) => {
     setSelectedCategory(selectedCategory);
     setFormData((pre) => ({ ...pre, categoryName: selectedCategory.name }));
-    categoryModal.current?.dismiss();
+    setCategoryModal(false);
   };
 
   const onHandleBrand = (selectedBrand: Brand) => {
     setSelectedBrand(selectedBrand);
     setFormData((pre) => ({ ...pre, brandName: selectedBrand.name }));
-    brandModal.current?.dismiss();
+    setBrandModal(false);
   };
 
   const onHandleTax = (selectedTax: Tax) => {
     setSelectedTax(selectedTax);
     setFormData((pre) => ({ ...pre, taxName: selectedTax.name }));
-    taxModal.current?.dismiss();
+    setTaxModal(false);
   };
 
   const onHandleCombineCode = (selectedCombineCode: CombineCode) => {
@@ -161,12 +146,12 @@ const AddItems: FC = () => {
             hsn_code: selectedCombineCode.code,
           }),
     }));
-    combineCodeModal.current?.dismiss();
+    setCombineCodesModal(false);
   };
 
   const onHandleUom = (selectedUom: UOM) => {
     setFormData((pre) => ({ ...pre, UOM: selectedUom }));
-    uomModal.current?.dismiss();
+    setUomModal(false);
   };
 
   const handleSave = async () => {
@@ -414,8 +399,8 @@ const AddItems: FC = () => {
                     onClick={() => history.push("/taxes/add")}
                   ></IonIcon>
                 </div>
-                <IonList inset={true}>
-                  <IonItem button={true} detail={false} id="select-tax">
+                <IonList>
+                  <IonItem onClick={() => setTaxModal(true)}>
                     <div
                       style={{
                         display: "flex",
@@ -441,12 +426,8 @@ const AddItems: FC = () => {
                     }
                   ></IonIcon>
                 </div>
-                <IonList inset={true}>
-                  <IonItem
-                    button={true}
-                    detail={false}
-                    id="select-combine_code"
-                  >
+                <IonList>
+                  <IonItem onClick={() => setCombineCodesModal(true)}>
                     <div
                       style={{
                         display: "flex",
@@ -482,8 +463,8 @@ const AddItems: FC = () => {
                     onClick={() => history.push("/brands/add")}
                   ></IonIcon>
                 </div>
-                <IonList inset={true}>
-                  <IonItem button={true} detail={false} id="select-brand">
+                <IonList>
+                  <IonItem onClick={() => setBrandModal(true)}>
                     <div
                       style={{
                         display: "flex",
@@ -507,8 +488,8 @@ const AddItems: FC = () => {
                     onClick={() => history.push("/categories/add")}
                   ></IonIcon>
                 </div>
-                <IonList inset={true}>
-                  <IonItem button={true} detail={false} id="select-category">
+                <IonList>
+                  <IonItem onClick={() => setCategoryModal(true)}>
                     <div
                       style={{
                         display: "flex",
@@ -525,8 +506,8 @@ const AddItems: FC = () => {
               </IonRow>
               <IonRow>
                 <IonLabel>UOM (Unit Of Measurement)</IonLabel>
-                <IonList inset={true}>
-                  <IonItem button={true} detail={false} id="select-uom">
+                <IonList>
+                  <IonItem onClick={() => setUomModal(true)}>
                     <div
                       style={{
                         display: "flex",
@@ -578,48 +559,48 @@ const AddItems: FC = () => {
             duration={3000}
           ></IonToast> */}
       </IonContent>
-      <IonModal trigger="select-category" ref={categoryModal}>
+      <IonModal isOpen={categoryModal}>
         <SelectCategory
           title="Select Category"
           categories={categories}
           selectedItem={selectedCategory}
-          onSelectionCancel={() => categoryModal.current?.dismiss()}
+          onSelectionCancel={() => setCategoryModal(false)}
           onSelectionChange={onHandleCategory}
         />
       </IonModal>
-      <IonModal trigger="select-brand" ref={brandModal}>
+      <IonModal isOpen={brandModal}>
         <SelectBrand
           title="Select Brand"
           brands={brands}
           selectedItem={selectedBrand}
-          onSelectionCancel={() => brandModal.current?.dismiss()}
+          onSelectionCancel={() => setBrandModal(false)}
           onSelectionChange={onHandleBrand}
         />
       </IonModal>
-      <IonModal trigger="select-tax" ref={taxModal}>
+      <IonModal isOpen={taxModal}>
         <SelectTax
           title="Select Tax"
           taxes={taxes}
           selectedItem={selectedTax}
-          onSelectionCancel={() => taxModal.current?.dismiss()}
+          onSelectionCancel={() => setTaxModal(false)}
           onSelectionChange={onHandleTax}
         />
       </IonModal>
-      <IonModal trigger="select-combine_code" ref={combineCodeModal}>
+      <IonModal isOpen={combineCodeModal}>
         <SelectCombineCode
           title={isProduct ? "Select Hsn Code" : "Select Sac Code"}
           combineCodes={combineCodes}
           selectedItem={selectedCombineCode}
-          onSelectionCancel={() => combineCodeModal.current?.dismiss()}
+          onSelectionCancel={() => setCombineCodesModal(false)}
           onSelectionChange={onHandleCombineCode}
         />
       </IonModal>
-      <IonModal trigger="select-uom" ref={uomModal}>
+      <IonModal isOpen={uomModal}>
         <SelectUOM
           title={"Select Unit"}
           uoms={AllUnitOfMeasurement}
           selectedItem={formData?.UOM}
-          onSelectionCancel={() => uomModal.current?.dismiss()}
+          onSelectionCancel={() => setUomModal(false)}
           onSelectionChange={onHandleUom}
         />
       </IonModal>

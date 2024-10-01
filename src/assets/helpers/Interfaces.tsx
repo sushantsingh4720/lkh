@@ -81,7 +81,7 @@ export interface CombineCode {
 }
 
 export interface Item {
-  id: number;
+  id?: number;
   brandName: string;
   UOM: string;
   categoryName: string;
