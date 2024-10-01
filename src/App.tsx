@@ -57,7 +57,7 @@ const App: React.FC = () => {
       const user = data?.data;
       dispatch(loadUser({ user }));
     } catch (error: any) {
-      if (error.response.status === 403) {
+      if (error?.response?.status === 403) {
         dispatch(logout());
       }
     } finally {

@@ -8,14 +8,23 @@ import {
   Contact,
   InvoiceItem,
   SalesInvoice,
+  TaxName,
 } from "../assets/helpers/Interfaces"; // Import the SelectedContact interface
+import { checkbox } from "ionicons/icons";
 
 const calculateTotals = (
   products: InvoiceItem[],
-  isClientCompanyStateSame: boolean
+  isClientCompanyStateSame: boolean,
+  shipping_charges: string,
+  shipping_charges_check: boolean,
+  round_off: boolean,
+  invoiceType: string,
+  discountType: string,
+  discountValue: string,
+  taxName: TaxName | null
 ) => {
   let amount;
-  let discount;
+  let discount = "";
   let total_tax;
   let GST;
   let total;
@@ -23,7 +32,7 @@ const calculateTotals = (
   let CGST;
   let IGST;
   let balance;
-
+  let round_off_value;
   amount = parseFloatWithFixedValue(
     products.reduce(
       (amount, product) => amount + Number(product.preSubTotal),
@@ -31,19 +40,43 @@ const calculateTotals = (
     )
   );
   total = amount;
-  discount = parseFloatWithFixedValue(
-    products.reduce(
-      (discount, product) => discount + Number(product.discount || 0),
-      0
-    )
-  );
+
+  if (invoiceType === "item_wise_discount_and_tax") {
+    discount = parseFloatWithFixedValue(
+      products.reduce(
+        (discount, product) => discount + Number(product.discount || 0),
+        0
+      )
+    );
+  } else {
+    if (Number(discountValue) > 0) {
+      if (Number(discountType) === 1) {
+        discount = parseFloatWithFixedValue(
+          (Number(amount) * Number(discountValue)) / 100
+        );
+      } else if (Number(discountType) === 2) {
+        discount = parseFloatWithFixedValue(discountValue);
+      }
+    }
+  }
+
   if (Number(discount) > 0) {
     total = parseFloatWithFixedValue(Number(amount) - Number(discount));
   }
 
-  total_tax = parseFloatWithFixedValue(
-    products.reduce((tax, product) => tax + Number(product.itemTax || 0), 0)
-  );
+  if (invoiceType === "item_wise_discount_and_tax") {
+    total_tax = parseFloatWithFixedValue(
+      products.reduce((tax, product) => tax + Number(product.itemTax || 0), 0)
+    );
+  } else {
+    total_tax = parseFloatWithFixedValue(
+      (Number(
+        products.reduce((tax, product) => tax + Number(product.itemTax || 0), 0)
+      ) *
+        Number(taxName?.rate)) /
+        100
+    );
+  }
 
   if (Number(total_tax) > 0) {
     GST = total_tax;
@@ -55,8 +88,34 @@ const calculateTotals = (
     }
     total = parseFloatWithFixedValue(Number(total) + Number(GST));
   }
+
+  if (shipping_charges_check && Number(shipping_charges) > 0) {
+    total = parseFloatWithFixedValue(Number(total) + Number(shipping_charges));
+  }
+
+  if (round_off) {
+    const roundedTotal = Math.round(Number(total));
+    round_off_value = parseFloatWithFixedValue(
+      Math.abs(roundedTotal - Number(total))
+    );
+    total = parseFloatWithFixedValue(roundedTotal);
+  }
+
   balance = total;
-  return { amount, discount, total_tax, GST, SGST, CGST, IGST, total, balance };
+
+  return {
+    amount,
+    discount,
+    total_tax,
+    GST,
+    SGST,
+    CGST,
+    IGST,
+    total,
+    balance,
+    round_off,
+    round_off_value,
+  };
 };
 
 const initialState: SalesInvoice = {
@@ -67,12 +126,14 @@ const initialState: SalesInvoice = {
   dueDate: todayDate,
   invoice: null,
   discountType: "1",
+  discountValue: "",
   other_info: {
     client_type: {
       label: "Customer",
       value: "Customer",
     },
   },
+  round_off: false,
 };
 
 const InoviceForm = createSlice({
@@ -180,7 +241,17 @@ const InoviceForm = createSlice({
       const { isClientCompanyStateSame, product } = action.payload;
 
       const products = [product, ...(state?.all_products || [])];
-      const totals = calculateTotals(products, isClientCompanyStateSame);
+      const totals = calculateTotals(
+        products,
+        isClientCompanyStateSame,
+        state?.other_charges?.shipping_charges,
+        state?.all_checks?.shipping_charges,
+        state?.round_off,
+        state?.invoiceType,
+        state?.discountType,
+        state?.discountValue,
+        state?.taxName || null
+      );
 
       return {
         ...state,
@@ -198,7 +269,17 @@ const InoviceForm = createSlice({
     ) => {
       const { isClientCompanyStateSame, index } = action.payload;
       const products = state.all_products?.filter((_, i) => i !== index) || [];
-      const totals = calculateTotals(products, isClientCompanyStateSame);
+      const totals = calculateTotals(
+        products,
+        isClientCompanyStateSame,
+        state?.other_charges?.shipping_charges,
+        state?.all_checks?.shipping_charges,
+        state?.round_off,
+        state?.invoiceType,
+        state?.discountType,
+        state?.discountValue,
+        state?.taxName || null
+      );
       return {
         ...state,
         all_products: products,
@@ -234,6 +315,172 @@ const InoviceForm = createSlice({
         other_info: updateOtherInfo,
       };
     },
+    handleShippingChargesCheckedBox: (
+      state,
+      action: PayloadAction<{
+        checked: boolean;
+        isClientCompanyStateSame: boolean;
+      }>
+    ) => {
+      const { checked, isClientCompanyStateSame } = action.payload;
+      let other_charges;
+      let totals = {};
+      const all_checks = {
+        shipping_charges: checked,
+      };
+      if (!checked && Number(state?.other_charges?.shipping_charges) > 0) {
+        other_charges = {
+          shipping_charges: "",
+        };
+        totals = calculateTotals(
+          state.all_products || [],
+          isClientCompanyStateSame,
+          "",
+          state?.all_checks?.shipping_charges,
+          state?.round_off,
+          state?.invoiceType,
+          state?.discountType,
+          state?.discountValue,
+          state?.taxName || null
+        );
+      }
+      return {
+        ...state,
+        all_checks,
+        other_charges,
+        ...totals,
+      };
+    },
+    handleShippingChargesInputChange: (
+      state,
+      action: PayloadAction<{
+        value: string;
+        isClientCompanyStateSame: boolean;
+      }>
+    ) => {
+      const { value, isClientCompanyStateSame } = action.payload;
+      const other_charges = {
+        shipping_charges: value,
+      };
+      const totals = calculateTotals(
+        state.all_products || [],
+        isClientCompanyStateSame,
+        value,
+        state?.all_checks?.shipping_charges,
+        state?.round_off,
+        state?.invoiceType,
+        state?.discountType,
+        state?.discountValue,
+        state?.taxName || null
+      );
+
+      return {
+        ...state,
+        other_charges,
+        ...totals,
+      };
+    },
+    handleRoundOffChecked: (
+      state,
+      action: PayloadAction<{
+        checked: boolean;
+        isClientCompanyStateSame: boolean;
+      }>
+    ) => {
+      const { checked, isClientCompanyStateSame } = action.payload;
+
+      const totals = calculateTotals(
+        state.all_products || [],
+        isClientCompanyStateSame,
+        state?.other_charges?.shipping_charges,
+        state?.all_checks?.shipping_charges,
+        checked,
+        state?.invoiceType,
+        state?.discountType,
+        state?.discountValue,
+        state?.taxName || null
+      );
+      return {
+        ...state,
+        ...totals,
+      };
+    },
+    handleDiscountTypeChange: (
+      state,
+      action: PayloadAction<{
+        value: string;
+        isClientCompanyStateSame: boolean;
+      }>
+    ) => {
+      const { value, isClientCompanyStateSame } = action.payload;
+      const totals = calculateTotals(
+        state.all_products || [],
+        isClientCompanyStateSame,
+        state?.other_charges?.shipping_charges,
+        state?.all_checks?.shipping_charges,
+        state?.round_off,
+        state?.invoiceType,
+        state?.discountType,
+        "",
+        state?.taxName || null
+      );
+      return {
+        ...state,
+        ...totals,
+        discountType: value,
+        discountValue: "",
+      };
+    },
+    handleDiscountInputChange: (
+      state,
+      action: PayloadAction<{
+        value: string;
+        isClientCompanyStateSame: boolean;
+      }>
+    ) => {
+      const { value, isClientCompanyStateSame } = action.payload;
+      const totals = calculateTotals(
+        state.all_products || [],
+        isClientCompanyStateSame,
+        state?.other_charges?.shipping_charges,
+        state?.all_checks?.shipping_charges,
+        state?.round_off,
+        state?.invoiceType,
+        state?.discountType,
+        value,
+        state?.taxName || null
+      );
+      return {
+        ...state,
+        ...totals,
+        discountValue: value,
+      };
+    },
+    handleTaxSelect: (
+      state,
+      action: PayloadAction<{
+        taxName: TaxName;
+        isClientCompanyStateSame: boolean;
+      }>
+    ) => {
+      const { taxName, isClientCompanyStateSame } = action.payload;
+      const totals = calculateTotals(
+        state.all_products || [],
+        isClientCompanyStateSame,
+        state?.other_charges?.shipping_charges,
+        state?.all_checks?.shipping_charges,
+        state?.round_off,
+        state?.invoiceType,
+        state?.discountType,
+        state?.discountValue,
+        taxName || null
+      );
+      return {
+        ...state,
+        taxName,
+        ...totals,
+      };
+    },
   },
 });
 
@@ -249,6 +496,12 @@ export const {
   removeItemHandler,
   otherInfoHandler,
   bankHandler,
+  handleShippingChargesCheckedBox,
+  handleShippingChargesInputChange,
+  handleRoundOffChecked,
+  handleDiscountTypeChange,
+  handleDiscountInputChange,
+  handleTaxSelect,
 } = InoviceForm.actions;
 
 // Export reducer

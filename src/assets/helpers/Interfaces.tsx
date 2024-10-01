@@ -90,18 +90,18 @@ interface UOM {
   value: string;
 }
 
-interface TaxName {
+export interface TaxName {
   id: number;
   name: string;
-  fy_id: number;
-  companyId: number;
+  fy_id?: number;
+  companyId?: number;
   rate: number;
   active: boolean;
   description: string | null;
-  createdAt: string; // or Date if you prefer Date objects
-  updatedAt: string; // or Date if you prefer Date objects
-  value: string;
-  label: string;
+  createdAt?: string; // or Date if you prefer Date objects
+  updatedAt?: string; // or Date if you prefer Date objects
+  value?: string;
+  label?: string;
 }
 
 export interface InvoiceItem {
@@ -127,20 +127,20 @@ export interface SalesInvoice {
   invoice: number | null;
   is_cancelled?: number; // Defaults to 0 (tinyint).
   type?: string;
-  invoiceType?: string;
+  invoiceType: string;
   hsn_sac?: number;
   amount?: string;
   discount?: string; // Defaults to 0.00.
-  discountType?: string;
-  discountValue?: string;
+  discountType: string;
+  discountValue: string;
   GST?: string;
   IGST?: string;
   CGST?: string;
   SGST?: string;
   total_tax?: string;
   total?: string;
-  round_off?: number; // Defaults to 0 (tinyint).
-  round_off_value?: number; // Defaults to 0.00.
+  round_off: boolean; // Defaults to 0 (tinyint).
+  round_off_value?: string; // Defaults to 0.00.
   payment_status?: string; // Defaults to 'Unpaid'.
   paid_amount?: string; // Defaults to 0.00.
   dueDate: string; // Date in format 'YYYY-MM-DD'.
@@ -148,9 +148,9 @@ export interface SalesInvoice {
   date: string; // Date in format 'YYYY-MM-DD'.
   paid_date?: string; // Date in format 'YYYY-MM-DD'.
   balance?: string;
-  taxName?: string; // JSON string, ensure validation.
+  taxName?: TaxName | null; // JSON string, ensure validation.
   all_products?: InvoiceItem[]; // JSON string, ensure validation.
-  other_charges?: string; // JSON string, ensure validation.
+  other_charges?: any; // JSON string, ensure validation.
   other_info?: any; // JSON string, ensure validation.
-  all_checks?: string; // JSON string, ensure validation.
+  all_checks?: any; // JSON string, ensure validation.
 }

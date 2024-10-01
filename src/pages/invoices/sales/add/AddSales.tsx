@@ -53,6 +53,12 @@ import {
   bankHandler,
   clientSelectChange,
   dateInputChange,
+  handleDiscountInputChange,
+  handleDiscountTypeChange,
+  handleRoundOffChecked,
+  handleShippingChargesCheckedBox,
+  handleShippingChargesInputChange,
+  handleTaxSelect,
   inputChange,
   invoiceNumberChange,
   invoiceTypeChange,
@@ -106,6 +112,55 @@ const AddSales: FC = () => {
     setCustomerModal(false);
   };
 
+  const onHandleTax = (selectedTax: Tax) => {
+    setSelectedTax(selectedTax);
+    const taxName = {
+      ...selectedTax,
+      label: selectedTax.name,
+      value: selectedTax.name,
+    };
+    dispatch(handleTaxSelect({ taxName, isClientCompanyStateSame }));
+    setTaxModal(false);
+  };
+
+  const onRemoveItemHandler = (index: number) => {
+    dispatch(removeItemHandler({ index, isClientCompanyStateSame }));
+  };
+
+  const onHandleOtherInfoInputChange = (e: any) => {
+    const { name, value } = e.target;
+    dispatch(otherInfoHandler({ name, value }));
+  };
+
+  const onHandleShippingChargesCheckBox = (e: any) => {
+    const { name, checked } = e.target;
+    dispatch(
+      handleShippingChargesCheckedBox({ checked, isClientCompanyStateSame })
+    );
+  };
+
+  const onHandleShippingChangesInputChange = (e: any) => {
+    const { value } = e.target;
+    dispatch(
+      handleShippingChargesInputChange({ value, isClientCompanyStateSame })
+    );
+  };
+
+  const onHandleRoundOffChecked = (e: any) => {
+    const { checked } = e.target;
+    dispatch(handleRoundOffChecked({ checked, isClientCompanyStateSame }));
+  };
+
+  const onHandleDiscountTypeChanged = (e: any) => {
+    const { value } = e.target;
+    dispatch(handleDiscountTypeChange({ value, isClientCompanyStateSame }));
+  };
+
+  const onHandleDiscountInputChange = (e: any) => {
+    const { name, value } = e.target;
+    dispatch(handleDiscountInputChange({ value, isClientCompanyStateSame }));
+  };
+
   const onHandleBank = (selectedBank: Bank) => {
     setSelectedBank(selectedBank);
     let bank;
@@ -120,20 +175,6 @@ const AddSales: FC = () => {
     }
     dispatch(bankHandler({ bank }));
     setBankModal(false);
-  };
-
-  const onHandleTax = (selectedTax: Tax) => {
-    setSelectedTax(selectedTax);
-    setTaxModal(false);
-  };
-
-  const onRemoveItemHandler = (index: number) => {
-    dispatch(removeItemHandler({ index, isClientCompanyStateSame }));
-  };
-
-  const onHandleOtherInfoInputChange = (e: any) => {
-    const { name, value } = e.target;
-    dispatch(otherInfoHandler({ name, value }));
   };
 
   const fetchData = async () => {
@@ -203,7 +244,10 @@ const AddSales: FC = () => {
                   ></IonIcon>
                 </div>
                 <IonList>
-                  <IonItem onClick={() => setCustomerModal(true)}>
+                  <IonItem
+                    onClick={() => setCustomerModal(true)}
+                    disabled={!!state?.all_products?.length}
+                  >
                     <div
                       style={{
                         display: "flex",
@@ -272,11 +316,17 @@ const AddSales: FC = () => {
                   onIonChange={handleItemTypeChange}
                 >
                   <div>
-                    <IonRadio value="product"></IonRadio>
+                    <IonRadio
+                      value="product"
+                      disabled={!!state?.all_products?.length}
+                    ></IonRadio>
                     <IonText>Product</IonText>
                   </div>
                   <div>
-                    <IonRadio value="service"></IonRadio>
+                    <IonRadio
+                      value="service"
+                      disabled={!!state?.all_products?.length}
+                    ></IonRadio>
                     <IonText>Service</IonText>
                   </div>
                 </IonRadioGroup>
@@ -288,11 +338,17 @@ const AddSales: FC = () => {
                   onIonChange={handleInvoiceTypeChange}
                 >
                   <div>
-                    <IonRadio value="item_wise_discount_and_tax"></IonRadio>
+                    <IonRadio
+                      value="item_wise_discount_and_tax"
+                      disabled={!!state?.all_products?.length}
+                    ></IonRadio>
                     <IonText>Per Item </IonText>
                   </div>
                   <div>
-                    <IonRadio value="invoice_wise_discount_and_tax"></IonRadio>
+                    <IonRadio
+                      value="invoice_wise_discount_and_tax"
+                      disabled={!!state?.all_products?.length}
+                    ></IonRadio>
                     <IonText>Per Invoice</IonText>
                   </div>
                 </IonRadioGroup>
@@ -380,13 +436,17 @@ const AddSales: FC = () => {
             </IonGrid>
           </IonCardContent>
         </IonCard>
-        {state?.invoiceType === "invoice_wise_discount_and_tax" ? (
+        {state?.invoiceType === "invoice_wise_discount_and_tax" &&
+        state.all_products?.length ? (
           <IonCard>
             <IonCardContent>
               <IonGrid className="ion-no-padding">
                 <IonRow>
                   <IonLabel>Discount Type</IonLabel>
-                  <IonRadioGroup value={state?.discountType}>
+                  <IonRadioGroup
+                    value={state?.discountType}
+                    onClick={onHandleDiscountTypeChanged}
+                  >
                     <div>
                       <IonRadio value="1"></IonRadio>
                       <IonText>%</IonText>
@@ -400,10 +460,12 @@ const AddSales: FC = () => {
                 <IonRow>
                   <IonLabel>Discount Value</IonLabel>
                   <IonInput
+                    disabled={!(Number(state?.amount || "") > 0)}
                     className="customInput"
                     name="discountValue"
                     type="number"
                     value={state?.discountValue}
+                    onIonInput={onHandleDiscountInputChange}
                   />
                 </IonRow>
                 <IonRow>
@@ -437,51 +499,79 @@ const AddSales: FC = () => {
         ) : (
           ""
         )}
-        <IonCard>
-          <IonCardContent>
-            <IonGrid>
-              <IonRow>
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                  <IonCheckbox
-                    checked={state?.all_checks?.shipping_charges}
+        {state.all_products?.length ? (
+          <IonCard>
+            <IonCardContent>
+              <IonGrid>
+                <IonRow>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <IonCheckbox
+                      checked={state?.all_checks?.shipping_charges}
+                      name="shipping_charges"
+                      onClick={onHandleShippingChargesCheckBox}
+                    ></IonCheckbox>
+                    <IonLabel>
+                      Shipping Charges <IonText>({Curruncy})</IonText>
+                    </IonLabel>
+                  </div>
+                  <IonInput
+                    disabled={!state?.all_checks?.shipping_charges}
+                    className="customInput"
                     name="shipping_charges"
-                  ></IonCheckbox>
-                  <IonLabel>
-                    Shipping Charges <IonText>({Curruncy})</IonText>
-                  </IonLabel>
-                </div>
-                <IonInput
-                  disabled
-                  className="customInput"
-                  name="shipping_charges"
-                  type="number"
-                  value={state?.other_charges?.shipping_charges}
-                />
-              </IonRow>
-              <IonRow>
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                  <IonCheckbox
-                    checked={state?.round_off}
-                    name="round_off"
-                  ></IonCheckbox>
-                  <IonLabel>
-                    Round Off <IonText>({Curruncy})</IonText>
-                  </IonLabel>
-                </div>
-                <IonInput
-                  className="customInput"
-                  name="round_off_value"
-                  type="number"
-                  value={state?.round_off_value}
-                />
-              </IonRow>
-            </IonGrid>
-          </IonCardContent>
-        </IonCard>
+                    type="number"
+                    value={state?.other_charges?.shipping_charges}
+                    onIonInput={onHandleShippingChangesInputChange}
+                  />
+                </IonRow>
+                <IonRow>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <IonCheckbox
+                        checked={state?.round_off}
+                        name="round_off"
+                        onClick={onHandleRoundOffChecked}
+                      ></IonCheckbox>
+                      <IonLabel>Round Off</IonLabel>
+                    </div>
+                    {state?.round_off ? (
+                      <IonText
+                        style={{
+                          border: "1px solid black",
+                          padding: "2px 4px",
+                          borderRadius: "4px",
+                        }}
+                      >
+                        {Curruncy} {state?.round_off_value}
+                      </IonText>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                </IonRow>
+              </IonGrid>
+            </IonCardContent>
+          </IonCard>
+        ) : (
+          ""
+        )}
         {state.all_products?.length ? (
           <IonCard>
             <IonCardContent>
