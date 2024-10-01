@@ -69,13 +69,11 @@ const calculateTotals = (
       products.reduce((tax, product) => tax + Number(product.itemTax || 0), 0)
     );
   } else {
-    total_tax = parseFloatWithFixedValue(
-      (Number(
-        products.reduce((tax, product) => tax + Number(product.itemTax || 0), 0)
-      ) *
-        Number(taxName?.rate)) /
-        100
-    );
+    if (taxName) {
+      total_tax = parseFloatWithFixedValue(
+        (Number(total) * Number(taxName?.rate)) / 100
+      );
+    }
   }
 
   if (Number(total_tax) > 0) {
@@ -481,6 +479,9 @@ const InoviceForm = createSlice({
         ...totals,
       };
     },
+    clearHanlder: () => {
+      return initialState;
+    },
   },
 });
 
@@ -502,6 +503,7 @@ export const {
   handleDiscountTypeChange,
   handleDiscountInputChange,
   handleTaxSelect,
+  clearHanlder,
 } = InoviceForm.actions;
 
 // Export reducer

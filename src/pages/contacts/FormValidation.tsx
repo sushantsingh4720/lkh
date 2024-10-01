@@ -2,6 +2,7 @@ interface ValidationResult {
   success: boolean;
   message: string;
 }
+
 interface CustomerData {
   name: string;
   display_name: string;

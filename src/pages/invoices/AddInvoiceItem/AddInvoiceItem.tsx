@@ -85,11 +85,16 @@ const AddInvoiceItem: FC = () => {
 
   const isClientCompanyStateSame =
     state?.checkout_details?.billing_state === companyData?.state;
+
   const onHandleItem = (selectedItem: Item): void => {
     setSelectedItem(selectedItem);
     const { UOM, hsn_code, sac_code, taxName, s_price, type } = selectedItem;
     const code: string = state.type === "product" ? hsn_code : sac_code;
-    const findTax = taxes.find((tax) => tax.name === taxName);
+    const foundTax = taxes.find((tax) => tax.name === taxName);
+    const taxWithLabelAndValue = foundTax
+      ? { ...foundTax, label: foundTax.name, value: foundTax.name }
+      : undefined;
+
     const findUOM = AllUnitOfMeasurement.includes(UOM)
       ? { value: UOM, label: UOM }
       : null;
@@ -100,13 +105,13 @@ const AddInvoiceItem: FC = () => {
       product: selectedItem,
       price: s_price,
       ...(state?.invoiceType === "item_wise_discount_and_tax"
-        ? { taxName: findTax }
+        ? { taxName: taxWithLabelAndValue }
         : {}),
       UOM: findUOM,
       quantity: "1",
       type,
     }));
-    setSelectedTax(findTax ? findTax : null);
+    setSelectedTax(taxWithLabelAndValue ? taxWithLabelAndValue : null);
     setItemModal(false);
   };
 
@@ -121,6 +126,11 @@ const AddInvoiceItem: FC = () => {
   };
 
   const onHandleTax = (selectedTax: Tax) => {
+    selectedTax = {
+      ...selectedTax,
+      label: selectedTax.name,
+      value: selectedTax.name,
+    };
     setSelectedTax(selectedTax);
     setFormData((pre) => ({ ...pre, taxName: selectedTax }));
     setTaxModal(false);

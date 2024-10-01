@@ -1,3 +1,8 @@
+export interface ValidationResult {
+  success: boolean;
+  message: string;
+}
+
 export interface Contact {
   id: number;
   DL: string;
@@ -25,6 +30,8 @@ export interface Contact {
   shipping_pin_code: string;
   shipping_phone: string;
   shipping_state: string;
+  label?: string | null;
+  value?: string | null;
 }
 
 export interface Category {
@@ -47,6 +54,8 @@ export interface Tax {
   rate: number;
   active: boolean;
   description: string;
+  label?: string | null;
+  value?: string | null;
 }
 
 export interface Bank {

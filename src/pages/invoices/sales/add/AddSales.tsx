@@ -1,4 +1,5 @@
 import {
+  IonAlert,
   IonButton,
   IonButtons,
   IonCard,
@@ -12,6 +13,7 @@ import {
   IonItem,
   IonLabel,
   IonList,
+  IonLoading,
   IonModal,
   IonPage,
   IonRadio,
@@ -51,6 +53,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../reduxStore/Index";
 import {
   bankHandler,
+  clearHanlder,
   clientSelectChange,
   dateInputChange,
   handleDiscountInputChange,
@@ -68,6 +71,7 @@ import {
 } from "../../../../reduxStore/InvoiceForm";
 import SelectBank from "../../../../components/Select/SetectBank";
 import SelectTax from "../../../../components/Select/SelectTax";
+import { ValidateSales } from "../FormValidation";
 
 const AddSales: FC = () => {
   const history = useHistory();
@@ -83,7 +87,11 @@ const AddSales: FC = () => {
   const [taxes, setTaxes] = useState([]);
   const [selectedTax, setSelectedTax] = useState<Tax | null>(null);
   const [selectedBank, setSelectedBank] = useState<Bank | null>(null);
-  console.log(state);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [errorMessages, setErrorMessages] = useState<string>("");
+  const [alertHeader, setAlertHeader] = useState<string>("");
+  const [busy, setBusy] = useState<boolean>(false);
+
   const isClientCompanyStateSame =
     state?.checkout_details?.billing_state === companyData?.state;
 
@@ -105,22 +113,6 @@ const AddSales: FC = () => {
   const handleInvoiceTypeChange = (e: any) => {
     const { value } = e.target;
     dispatch(invoiceTypeChange({ invoiceType: value }));
-  };
-
-  const onHandleCustomer = (selectedContact: Contact) => {
-    dispatch(clientSelectChange({ selectedContact }));
-    setCustomerModal(false);
-  };
-
-  const onHandleTax = (selectedTax: Tax) => {
-    setSelectedTax(selectedTax);
-    const taxName = {
-      ...selectedTax,
-      label: selectedTax.name,
-      value: selectedTax.name,
-    };
-    dispatch(handleTaxSelect({ taxName, isClientCompanyStateSame }));
-    setTaxModal(false);
   };
 
   const onRemoveItemHandler = (index: number) => {
@@ -161,6 +153,27 @@ const AddSales: FC = () => {
     dispatch(handleDiscountInputChange({ value, isClientCompanyStateSame }));
   };
 
+  const onHandleCustomer = (selectedContact: Contact) => {
+    selectedContact = {
+      ...selectedContact,
+      label: selectedContact.name,
+      value: selectedContact.name,
+    };
+    dispatch(clientSelectChange({ selectedContact }));
+    setCustomerModal(false);
+  };
+
+  const onHandleTax = (selectedTax: Tax) => {
+    setSelectedTax(selectedTax);
+    const taxName = {
+      ...selectedTax,
+      label: selectedTax.name,
+      value: selectedTax.name,
+    };
+    dispatch(handleTaxSelect({ taxName, isClientCompanyStateSame }));
+    setTaxModal(false);
+  };
+
   const onHandleBank = (selectedBank: Bank) => {
     setSelectedBank(selectedBank);
     let bank;
@@ -175,6 +188,60 @@ const AddSales: FC = () => {
     }
     dispatch(bankHandler({ bank }));
     setBankModal(false);
+  };
+
+  // Helper functions
+  const alertHandler = (header: string, message: string) => {
+    setAlertHeader(header);
+    setErrorMessages(message);
+    setShowAlert(true);
+  };
+
+  const handleError = (error: any) => {
+    const err = error.response?.data;
+    alertHandler("Form Submission Failed", err?.message || "Please Retry");
+  };
+
+  const resetSelections = () => {
+    setSelectedBank(null);
+    setSelectedTax(null);
+  };
+
+  const handleSave = async () => {
+    const result = ValidateSales(state);
+    if (!result.success) {
+      alertHandler("Form validation Failed", result.message);
+      return;
+    }
+
+    setBusy(true);
+    try {
+      // Check invoice validity
+      const checkResponse = await axios.get(
+        `sales_inv/check_inv?inv=${state.invoice}`
+      );
+      if (!checkResponse.data.success) {
+        alertHandler(
+          "Form Submission Failed",
+          "This invoice No. is not available"
+        );
+        return;
+      }
+
+      // Submit sales invoice if invoice is valid
+      const postResponse = await axios.post("/sales_inv", state, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const message = postResponse.data?.message || "Sales Successfully Saved";
+      history.goBack(); // Navigate back after successful save
+      dispatch(clearHanlder()); // Clear form
+      resetSelections(); // Reset selections (banks, tax, etc.)
+    } catch (error: any) {
+      handleError(error); // Centralized error handling
+    } finally {
+      setBusy(false);
+    }
   };
 
   const fetchData = async () => {
@@ -226,7 +293,9 @@ const AddSales: FC = () => {
           </IonButtons>
           <IonTitle>Add Sales</IonTitle>
           <IonButtons slot="end">
-            <IonButton color="primary">Save</IonButton>
+            <IonButton color="primary" onClick={handleSave}>
+              Save
+            </IonButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
@@ -772,6 +841,22 @@ const AddSales: FC = () => {
           onSelectionChange={onHandleBank}
         />
       </IonModal>
+      <IonAlert
+        isOpen={showAlert}
+        onDidDismiss={() => {
+          setShowAlert(false);
+          setErrorMessages("");
+          setAlertHeader("");
+        }}
+        header={alertHeader}
+        message={errorMessages}
+        buttons={["OK"]}
+      />
+      <IonLoading
+        className="custom-loading"
+        isOpen={busy}
+        message="please wait..."
+      />
     </IonPage>
   );
 };
