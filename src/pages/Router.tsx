@@ -38,6 +38,8 @@ import AddInvoiceItem from "./invoices/AddInvoiceItem/AddInvoiceItem";
 import useAxios from "../utils/axiosInstance";
 import { setCompanyData } from "../reduxStore/Company";
 import { setFinancialYearArray } from "../reduxStore/FinancialYear";
+import ViewContact from "./contacts/viewContact/ViewContact";
+import EditContact from "./contacts/editContact/EditCotact";
 const Router: FC = () => {
   const dispatch = useDispatch();
   const axios = useAxios();
@@ -77,6 +79,8 @@ const Router: FC = () => {
           {isAuthenticated ? <Tab></Tab> : <Redirect to="/auth/login" />}
         </Route>
         <Route exact path="/contacts/add" component={AddContact} />
+        <Route exact path="/contacts/view/:id" component={ViewContact} />
+        <Route exact path="/contacts/edit/:id" component={EditContact} />
         <Route exact path="/leads" component={Leads} />
         <Route exact path="/items/add" component={AddItems} />
         <Route exact path="/categories" component={Categories} />

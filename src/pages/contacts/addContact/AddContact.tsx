@@ -37,35 +37,9 @@ import SelectState from "../../../components/Select/SelectState";
 import { City, AllCities } from "../../../assets/helpers/AllCities";
 import SelectCity from "../../../components/Select/SelectCity";
 import { useHistory } from "react-router";
-interface FormData {
-  DL: string;
-  GSTIN: string;
-  PAN: string;
-  TIN: string;
-  VAT: string;
-  billing_address: string;
-  billing_PIN_Code: string;
-  billing_city: string;
-  billing_country: string;
-  billing_state: string;
-  name: string;
-  display_name: string;
-  email: string;
-  phone: string;
-  contactType: string;
-  isBillAndShipAddressSame: boolean;
-  shipping_address: string;
-  shipping_city: string;
-  shipping_name: string;
-  shipping_display_name: string;
-  shipping_country: string;
-  shipping_email: string;
-  shipping_pin_code: string;
-  shipping_phone: string;
-  shipping_state: string;
-}
+import { Contact } from "../../../assets/helpers/Interfaces";
 
-const initialFormData: FormData = {
+const initialFormData: Contact = {
   DL: "",
   GSTIN: "",
   PAN: "",
@@ -96,12 +70,14 @@ const AddContact: FC = () => {
   const history = useHistory();
   const axios = useAxios();
   const [busy, setBusy] = useState<boolean>(false);
-  const countryModal = useRef<HTMLIonModalElement>(null);
-  const stateModal = useRef<HTMLIonModalElement>(null);
-  const cityModal = useRef<HTMLIonModalElement>(null);
-  const shippingCountryModal = useRef<HTMLIonModalElement>(null);
-  const ShippingStateModal = useRef<HTMLIonModalElement>(null);
-  const ShippingCityModal = useRef<HTMLIonModalElement>(null);
+  const [formData, setFormData] = useState<Contact>(initialFormData);
+  const [countryModal, setCountryModal] = useState<boolean>(false);
+  const [stateModal, setStateModal] = useState<boolean>(false);
+  const [cityModal, setCityModal] = useState<boolean>(false);
+  const [shippingCountryModal, setShippingCountryModal] =
+    useState<boolean>(false);
+  const [shippingStateModal, setShippingStateModal] = useState<boolean>(false);
+  const [ShippingCityModal, setShippingCityModal] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [alertHeader, setAlertHeader] = useState<string>("");
@@ -143,7 +119,6 @@ const AddContact: FC = () => {
     null
   );
 
-  const [formData, setFormData] = useState<FormData>(initialFormData);
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setFormData((pre) => ({ ...pre, [name]: value }));
@@ -182,7 +157,7 @@ const AddContact: FC = () => {
       billing_country: selectedCountry.name,
     }));
 
-    countryModal.current?.dismiss();
+    setCountryModal(false);
   };
 
   const onHandleBillingState = async (selectedState: State) => {
@@ -201,13 +176,13 @@ const AddContact: FC = () => {
     }
     setSelectedBillingState(selectedState);
     setFormData((pre) => ({ ...pre, billing_state: selectedState.name }));
-    stateModal.current?.dismiss();
+    setStateModal(false);
   };
 
   const onHandleBillingCity = (selectedCity: City) => {
     setSelectedBillingCity(selectedCity);
     setFormData((pre) => ({ ...pre, billing_city: selectedCity.name }));
-    cityModal.current?.dismiss();
+    setCityModal(false);
   };
 
   const onHandleShippingCountry = (selectedCountry: Country) => {
@@ -230,7 +205,7 @@ const AddContact: FC = () => {
       shipping_country: selectedCountry.name,
     }));
 
-    shippingCountryModal.current?.dismiss();
+    setShippingCountryModal(false);
   };
 
   const onHandleShippingState = async (selectedState: State) => {
@@ -250,13 +225,13 @@ const AddContact: FC = () => {
 
     setSelectedShippingState(selectedState);
     setFormData((pre) => ({ ...pre, shipping_state: selectedState.name }));
-    ShippingStateModal.current?.dismiss();
+    setShippingStateModal(false);
   };
 
   const onHandleShippingCity = (selectedCity: City) => {
     setSelectedShippingCity(selectedCity);
     setFormData((pre) => ({ ...pre, shipping_city: selectedCity.name }));
-    ShippingCityModal.current?.dismiss();
+    setShippingCityModal(false);
   };
 
   const handleSave = async () => {
@@ -271,8 +246,8 @@ const AddContact: FC = () => {
 
     const updatedFormData = {
       ...formData,
-      name: name.trim(),
-      display_name: display_name.trim(),
+      name: name?.trim(),
+      display_name: display_name?.trim(),
       ...(shipping_name && { shipping_name: shipping_name.trim() }),
       ...(shipping_display_name && {
         shipping_display_name: shipping_display_name.trim(),
@@ -473,12 +448,8 @@ const AddContact: FC = () => {
                 />
               </IonRow>
               <IonRow>
-                <IonList inset={true}>
-                  <IonItem
-                    button={true}
-                    detail={false}
-                    id="select-billing-country"
-                  >
+                <IonList>
+                  <IonItem onClick={() => setCountryModal(true)}>
                     <IonLabel color="primary">Country</IonLabel>
                     <div
                       slot="end"
@@ -496,13 +467,8 @@ const AddContact: FC = () => {
               </IonRow>
               <IonRow>
                 {true ? (
-                  <IonList inset={true}>
-                    <IonItem
-                      disabled={!formData?.billing_country}
-                      button={true}
-                      detail={false}
-                      id="select-billing-state"
-                    >
+                  <IonList onClick={() => setStateModal(true)}>
+                    <IonItem disabled={!formData?.billing_country}>
                       <IonLabel color="primary">State</IonLabel>
                       <div
                         slot="end"
@@ -532,14 +498,11 @@ const AddContact: FC = () => {
               </IonRow>
               <IonRow>
                 {true ? (
-                  <IonList inset={true}>
+                  <IonList onClick={() => setCityModal(true)}>
                     <IonItem
                       disabled={
                         !formData?.billing_country || !formData?.billing_state
                       }
-                      button={true}
-                      detail={false}
-                      id="select-billing-city" // Only set the id here
                     >
                       <IonLabel color="primary">City</IonLabel>
                       <div
@@ -655,12 +618,8 @@ const AddContact: FC = () => {
                       />
                     </IonRow>
                     <IonRow>
-                      <IonList inset={true}>
-                        <IonItem
-                          button={true}
-                          detail={false}
-                          id="select-shipping-country"
-                        >
+                      <IonList onClick={() => setShippingCountryModal(true)}>
+                        <IonItem>
                           <IonLabel color="primary">Country</IonLabel>
                           <div
                             slot="end"
@@ -678,13 +637,8 @@ const AddContact: FC = () => {
                     </IonRow>
                     <IonRow>
                       {true ? (
-                        <IonList inset={true}>
-                          <IonItem
-                            disabled={!formData?.shipping_country}
-                            button={true}
-                            detail={false}
-                            id="select-shipping-state"
-                          >
+                        <IonList onClick={() => setShippingStateModal(true)}>
+                          <IonItem disabled={!formData?.shipping_country}>
                             <IonLabel color="primary">State</IonLabel>
                             <div
                               slot="end"
@@ -714,15 +668,12 @@ const AddContact: FC = () => {
                     </IonRow>
                     <IonRow>
                       {true ? (
-                        <IonList inset={true}>
+                        <IonList onClick={() => setShippingCityModal(true)}>
                           <IonItem
                             disabled={
                               !formData?.shipping_country ||
                               !formData?.shipping_state
                             }
-                            button={true}
-                            detail={false}
-                            id="select-shipping-city" // Only set the id here
                           >
                             <IonLabel color="primary">City</IonLabel>
                             <div
@@ -770,57 +721,57 @@ const AddContact: FC = () => {
           </IonCard>
         )}
       </IonContent>
-      <IonModal trigger="select-billing-country" ref={countryModal}>
+      <IonModal isOpen={countryModal}>
         <SelectCountry
           title="Billing Country"
           countries={AllCountries}
           selectedItem={selectedBillingCountry}
-          onSelectionCancel={() => countryModal.current?.dismiss()}
+          onSelectionCancel={() => setCountryModal(false)}
           onSelectionChange={onHandleBillingCountry}
         />
       </IonModal>
-      <IonModal trigger="select-billing-state" ref={stateModal}>
+      <IonModal isOpen={stateModal}>
         <SelectState
           title="Billing State"
           states={allBillingStateByCountry}
           selectedItem={selectedBillingState}
-          onSelectionCancel={() => stateModal.current?.dismiss()}
+          onSelectionCancel={() => setStateModal(false)}
           onSelectionChange={onHandleBillingState}
         />
       </IonModal>
-      <IonModal trigger="select-billing-city" ref={cityModal}>
+      <IonModal isOpen={cityModal}>
         <SelectCity
           title="Billing City"
           cities={allCitiesByCountryState}
           selectedItem={selectedBillingCity}
-          onSelectionCancel={() => cityModal.current?.dismiss()}
+          onSelectionCancel={() => setCityModal(false)}
           onSelectionChange={onHandleBillingCity}
         />
       </IonModal>
-      <IonModal trigger="select-shipping-country" ref={shippingCountryModal}>
+      <IonModal isOpen={shippingCountryModal}>
         <SelectCountry
           title="Shipping Country"
           countries={AllCountries}
           selectedItem={selectedShippingCountry}
-          onSelectionCancel={() => shippingCountryModal.current?.dismiss()}
+          onSelectionCancel={() => setShippingCountryModal(false)}
           onSelectionChange={onHandleShippingCountry}
         />
       </IonModal>
-      <IonModal trigger="select-shipping-state" ref={ShippingStateModal}>
+      <IonModal isOpen={shippingStateModal}>
         <SelectState
           title="Shipping State"
           states={allShippingStateByCountry}
           selectedItem={selectedShippingState}
-          onSelectionCancel={() => ShippingStateModal.current?.dismiss()}
+          onSelectionCancel={() => setShippingStateModal(false)}
           onSelectionChange={onHandleShippingState}
         />
       </IonModal>
-      <IonModal trigger="select-shipping-city" ref={ShippingCityModal}>
+      <IonModal isOpen={ShippingCityModal}>
         <SelectCity
           title="Shipping City"
           cities={allShippingCitiesByCountryState}
           selectedItem={selectedShippingCity}
-          onSelectionCancel={() => ShippingCityModal.current?.dismiss()}
+          onSelectionCancel={() => setShippingCityModal(false)}
           onSelectionChange={onHandleShippingCity}
         />
       </IonModal>

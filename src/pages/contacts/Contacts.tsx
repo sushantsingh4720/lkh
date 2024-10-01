@@ -64,7 +64,7 @@ const Contacts: FC = () => {
         ) : (
           <IonList>
             {items?.map((item: any, index: Number) => (
-              <IonItem key={item.id}>
+              <IonItem key={item.id} routerLink={`/contacts/view/${item.id}`}>
                 <div className={styles.ionitem_container}>
                   <div>
                     <IonLabel className={styles.name_logo}>

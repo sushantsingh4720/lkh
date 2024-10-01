@@ -4,10 +4,10 @@ interface ValidationResult {
 }
 
 interface CustomerData {
-  name: string;
-  display_name: string;
-  phone: string;
-  billing_country: string;
+  name?: string;
+  display_name?: string;
+  phone?: string;
+  billing_country?: string;
   billing_state?: string;
   shipping_name?: string;
   shipping_display_name?: string;
@@ -18,7 +18,7 @@ interface CustomerData {
 
 export const validateContact = (
   customerData: CustomerData,
-  contactType: string
+  contactType?: string
 ): ValidationResult => {
   const {
     name,

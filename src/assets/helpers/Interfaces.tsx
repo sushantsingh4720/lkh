@@ -3,33 +3,37 @@ export interface ValidationResult {
   message: string;
 }
 
+export interface RouteParams {
+  id: string;
+}
+
 export interface Contact {
-  id: number;
-  DL: string;
-  GSTIN: string;
-  PAN: string;
-  TIN: string;
-  VAT: string;
-  billing_address: string;
-  billing_PIN_Code: string;
-  billing_city: string;
-  billing_country: string;
-  billing_state: string;
-  name: string;
-  display_name: string;
-  email: string;
-  phone: string;
-  contactType: string;
-  isBillAndShipAddressSame: boolean;
-  shipping_address: string;
-  shipping_city: string;
-  shipping_name: string;
-  shipping_display_name: string;
-  shipping_country: string;
-  shipping_email: string;
-  shipping_pin_code: string;
-  shipping_phone: string;
-  shipping_state: string;
+  id?: number;
+  DL?: string;
+  GSTIN?: string;
+  PAN?: string;
+  TIN?: string;
+  VAT?: string;
+  billing_address?: string;
+  billing_PIN_Code?: string;
+  billing_city?: string;
+  billing_country?: string;
+  billing_state?: string;
+  name?: string;
+  display_name?: string;
+  email?: string;
+  phone?: string;
+  contactType?: string;
+  isBillAndShipAddressSame?: boolean;
+  shipping_address?: string;
+  shipping_city?: string;
+  shipping_name?: string;
+  shipping_display_name?: string;
+  shipping_country?: string;
+  shipping_email?: string;
+  shipping_pin_code?: string;
+  shipping_phone?: string;
+  shipping_state?: string;
   label?: string | null;
   value?: string | null;
 }
