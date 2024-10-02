@@ -69,7 +69,10 @@ const Categories: FC = () => {
         ) : (
           <IonList>
             {items.map((item: any) => (
-              <IonItem key={item?.id}>
+              <IonItem
+                key={item?.id}
+                onClick={() => history.push(`/categories/view/${item?.id}`)}
+              >
                 <div className={styles.inner_ion_item}>
                   <h5>{item?.name}</h5>
                 </div>

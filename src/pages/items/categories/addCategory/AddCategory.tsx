@@ -27,21 +27,16 @@ import { FC, useState } from "react";
 import { useHistory } from "react-router";
 import styles from "./AddCategory.module.scss";
 import useAxios from "../../../../utils/axiosInstance";
-interface FormData {
-  name: string;
-  active: boolean;
-  description: string;
-}
-const initialFormData: FormData = {
-  name: "",
-  active: true,
+import { Category } from "../../../../assets/helpers/Interfaces";
+
+const initialFormData: Category = {
   description: "",
 };
 
 const AddCategory: FC = () => {
   const axios = useAxios();
   const history = useHistory();
-  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [formData, setFormData] = useState<Category>(initialFormData);
   const [alertHeader, setAlertHeader] = useState<string>("");
   const [errorMessage, setErrorMessages] = useState<string>("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
@@ -62,7 +57,7 @@ const AddCategory: FC = () => {
     const { name, description } = formData;
     let updatedFormData = {
       ...formData,
-      name: name.trim(),
+      name: name?.trim(),
       ...(description && { description: description.trim() }),
     };
     setFormData(updatedFormData);
@@ -150,30 +145,30 @@ const AddCategory: FC = () => {
             </IonGrid>
           </IonCardContent>
         </IonCard>
-        <IonAlert
-          isOpen={showAlert}
-          onDidDismiss={() => {
-            setShowAlert(false);
-            setErrorMessages("");
-            setAlertHeader("");
-          }}
-          header={alertHeader}
-          message={errorMessage}
-          buttons={["OK"]}
-        />
-        <IonLoading
-          className="custom-loading"
-          isOpen={busy}
-          message="please wait..."
-        />
-        {/* <IonToast
+      </IonContent>
+      <IonAlert
+        isOpen={showAlert}
+        onDidDismiss={() => {
+          setShowAlert(false);
+          setErrorMessages("");
+          setAlertHeader("");
+        }}
+        header={alertHeader}
+        message={errorMessage}
+        buttons={["OK"]}
+      />
+      <IonLoading
+        className="custom-loading"
+        isOpen={busy}
+        message="please wait..."
+      />
+      {/* <IonToast
           isOpen={isSuccess}
           position="bottom"
           positionAnchor="footer"
           message={successMessage}
           duration={3000}
         ></IonToast> */}
-      </IonContent>
     </IonPage>
   );
 };

@@ -40,32 +40,10 @@ import { useHistory } from "react-router";
 import { Contact } from "../../../assets/helpers/Interfaces";
 
 const initialFormData: Contact = {
-  DL: "",
-  GSTIN: "",
-  PAN: "",
-  TIN: "",
-  VAT: "",
-  billing_address: "",
-  billing_PIN_Code: "",
-  billing_city: "",
-  billing_country: "",
-  billing_state: "",
-  name: "",
-  display_name: "",
-  email: "",
-  phone: "",
   contactType: "customer",
   isBillAndShipAddressSame: false,
-  shipping_address: "",
-  shipping_city: "",
-  shipping_name: "",
-  shipping_display_name: "",
-  shipping_country: "",
-  shipping_email: "",
-  shipping_pin_code: "",
-  shipping_phone: "",
-  shipping_state: "",
 };
+
 const AddContact: FC = () => {
   const history = useHistory();
   const axios = useAxios();

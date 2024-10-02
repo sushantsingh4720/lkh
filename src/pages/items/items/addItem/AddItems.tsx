@@ -49,20 +49,8 @@ import SelectUOM from "../../../../components/Select/SelectUnitOfMeasurement";
 import { productValidation } from "../FormValidation";
 
 const initialFormData: Item = {
-  brandName: "",
-  UOM: "",
-  categoryName: "",
-  description: "",
-  hsn_code: "",
-  mrp_price: "",
-  name: "",
   opening_qty_per: "1",
-  p_price: "",
-  s_price: "",
-  sac_code: "",
-  taxName: "",
   type: "product",
-  varient: "",
 };
 
 const AddItems: FC = () => {

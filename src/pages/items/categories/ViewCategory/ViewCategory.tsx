@@ -1,7 +1,3 @@
-import { FC, useState } from "react";
-import { useHistory, useParams } from "react-router";
-import useAxios from "../../../../utils/axiosInstance";
-import { Item, RouteParams } from "../../../../assets/helpers/Interfaces";
 import {
   IonAlert,
   IonButton,
@@ -16,14 +12,18 @@ import {
   useIonViewWillEnter,
 } from "@ionic/react";
 import { arrowBackOutline, createOutline, trashOutline } from "ionicons/icons";
+import { FC, useState } from "react";
+import { useHistory, useParams } from "react-router";
+import useAxios from "../../../../utils/axiosInstance";
+import { Category, RouteParams } from "../../../../assets/helpers/Interfaces";
 import LoadDataSpinner from "../../../../components/Spinner/loadDataSpinner/LoadDataSpinner";
 
-const ViewItem: FC = () => {
+const ViewCategory: FC = () => {
   const history = useHistory();
   const axios = useAxios();
   const { id } = useParams<RouteParams>();
   const [busy, setBusy] = useState<boolean>(true);
-  const [item, setItem] = useState<Item | null>(null);
+  const [category, setCategory] = useState<Category | null>(null);
   const [deleteAlert, setDeleteAlert] = useState<boolean>(false);
 
   const deleteHandler = () => {
@@ -38,8 +38,8 @@ const ViewItem: FC = () => {
   const fetchData = async () => {
     setBusy(true);
     try {
-      const [itemRes] = await Promise.all([axios.get(`/product/${id}`)]);
-      setItem(itemRes.data?.data);
+      const [categoryRes] = await Promise.all([axios.get(`/category/${id}`)]);
+      setCategory(categoryRes.data?.data);
     } catch (error) {
     } finally {
       setBusy(false);
@@ -51,7 +51,7 @@ const ViewItem: FC = () => {
   });
 
   useIonViewDidLeave(() => {
-    setItem(null);
+    setCategory(null);
   });
 
   return (
@@ -65,9 +65,11 @@ const ViewItem: FC = () => {
           </IonButtons>
           {!busy ? (
             <>
-              <IonTitle>Item</IonTitle>
+              <IonTitle>{category?.name}</IonTitle>
               <IonButtons slot="end">
-                <IonButton onClick={() => history.push(`/items/edit/${id}`)}>
+                <IonButton
+                  onClick={() => history.push(`/categories/edit/${id}`)}
+                >
                   <IonIcon icon={createOutline} color="primary"></IonIcon>
                 </IonButton>
                 <IonButton onClick={() => setDeleteAlert(true)}>
@@ -82,7 +84,7 @@ const ViewItem: FC = () => {
       </IonHeader>
       {busy ? <LoadDataSpinner /> : <IonContent>View page</IonContent>}
       <IonAlert
-        header="Are you sure you want to delete this item?"
+        header="Are you sure you want to delete this category?"
         isOpen={deleteAlert}
         buttons={[
           {
@@ -106,4 +108,4 @@ const ViewItem: FC = () => {
   );
 };
 
-export default ViewItem;
+export default ViewCategory;

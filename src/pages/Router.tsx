@@ -42,6 +42,8 @@ import ViewContact from "./contacts/viewContact/ViewContact";
 import EditContact from "./contacts/editContact/EditCotact";
 import ViewItem from "./items/items/viewItem/ViewItem";
 import EditItem from "./items/items/editItem/EditItem";
+import ViewCategory from "./items/categories/ViewCategory/ViewCategory";
+import EditCategory from "./items/categories/EditCategory/EditCategory";
 const Router: FC = () => {
   const dispatch = useDispatch();
   const axios = useAxios();
@@ -89,6 +91,8 @@ const Router: FC = () => {
         <Route exact path="/items/edit/:id" component={EditItem} />
         <Route exact path="/categories" component={Categories} />
         <Route exact path="/categories/add" component={AddCategory} />
+        <Route exact path="/categories/view/:id" component={ViewCategory} />
+        <Route exact path="/categories/edit/:id" component={EditCategory} />
         <Route exact path="/brands" component={Brands} />
         <Route exact path="/brands/add" component={AddBrand} />
         <Route exact path="/taxes" component={Taxes} />
