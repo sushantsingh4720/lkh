@@ -32,7 +32,7 @@ const EditSac: FC = () => {
   const axios = useAxios();
   const history = useHistory();
   const { id } = useParams<RouteParams>();
-  const [formData, setFormData] = useState<SAC>();
+  const [formData, setFormData] = useState<SAC>({});
   const [loading, setLoading] = useState(true);
   const [alertHeader, setAlertHeader] = useState<string>("");
   const [errorMessage, setErrorMessages] = useState<string>("");
@@ -49,6 +49,53 @@ const EditSac: FC = () => {
   const onHandleCheckboxChange = (e: any) => {
     const { name, checked } = e.target;
     setFormData((pre) => ({ ...pre, [name]: checked }));
+  };
+
+  const handleSave = async () => {
+    const { sac_code, sac_code_no, name_of_commodity, gst_rate } = formData;
+    let updatedFormData = {
+      ...formData,
+      ...(name_of_commodity && { name_of_commodity: name_of_commodity.trim() }),
+    };
+
+    setFormData(updatedFormData);
+    if (!sac_code_no || sac_code_no.length < 4) {
+      setAlertHeader("Form validation Failed");
+      setErrorMessages("Please enter valid sac code no");
+      setShowAlert(true);
+      return;
+    }
+    if (!sac_code || sac_code.length < 4) {
+      setAlertHeader("Form validation Failed");
+      setErrorMessages("Please enter sac code");
+      setShowAlert(true);
+      return;
+    }
+    if (gst_rate && +gst_rate > 100) {
+      setAlertHeader("Form validation Failed");
+      setErrorMessages("Please enter valid rate");
+      setShowAlert(true);
+      return;
+    }
+    setBusy(true);
+    try {
+      const response = await axios.put(`/gstsac/${id}`, updatedFormData, {
+        headers: { "Content-Type": "application/json" },
+      });
+      const result = response.data;
+      const message = result?.message || "Sac Successfully Saved";
+      setSuccessMessage(message);
+      setIsSuccess(true);
+      setFormData({});
+      history.goBack();
+    } catch (error: any) {
+      const err = error.response?.data;
+      setAlertHeader("Form Submission Failed");
+      setErrorMessages(err?.message || "Please Retry");
+      setShowAlert(true);
+    } finally {
+      setBusy(false);
+    }
   };
 
   const fetchData = async () => {
@@ -88,7 +135,9 @@ const EditSac: FC = () => {
             ""
           ) : (
             <IonButtons slot="end">
-              <IonButton color="primary">Save</IonButton>
+              <IonButton color="primary" onClick={handleSave}>
+                Save
+              </IonButton>
             </IonButtons>
           )}
         </IonToolbar>

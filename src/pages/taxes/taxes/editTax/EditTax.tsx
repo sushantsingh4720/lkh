@@ -27,13 +27,13 @@ import { useHistory, useParams } from "react-router";
 import useAxios from "../../../../utils/axiosInstance";
 import { arrowBackOutline } from "ionicons/icons";
 import LoadDataSpinner from "../../../../components/Spinner/loadDataSpinner/LoadDataSpinner";
-import styles from "./EditTax.module.scss"
+import styles from "./EditTax.module.scss";
 const EditTax: FC = () => {
   const history = useHistory();
   const axios = useAxios();
   const { id } = useParams<RouteParams>();
   const [loading, setLoading] = useState<boolean>(true);
-  const [formData, setFormData] = useState<Tax>();
+  const [formData, setFormData] = useState<Tax>({});
   const [alertHeader, setAlertHeader] = useState<string>("");
   const [errorMessage, setErrorMessages] = useState<string>("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
@@ -49,6 +49,48 @@ const EditTax: FC = () => {
   const onHandleCheckboxChange = (e: any) => {
     const { name, checked } = e.target;
     setFormData((pre) => ({ ...pre, [name]: checked }));
+  };
+
+  const handleSave = async () => {
+    const { name, rate, description } = formData;
+    let updatedFormData = {
+      ...formData,
+      name: name?.trim(),
+      ...(description && { description: description.trim() }),
+    };
+    setFormData(updatedFormData);
+    if (!updatedFormData.name) {
+      setAlertHeader("Form validation Failed");
+      setErrorMessages("Please enter tax name");
+      setShowAlert(true);
+      return;
+    }
+    if (rate && +rate > 100) {
+      setAlertHeader("Form validation Failed");
+      setErrorMessages("Please enter valid rate");
+      setShowAlert(true);
+      return;
+    }
+
+    setBusy(true);
+    try {
+      const response = await axios.put(`/tax/${id}`, updatedFormData, {
+        headers: { "Content-Type": "application/json" },
+      });
+      const result = response.data;
+      const message = result?.message || "Tax Successfully Saved";
+      setSuccessMessage(message);
+      setIsSuccess(true);
+      setFormData({});
+      history.goBack();
+    } catch (error: any) {
+      const err = error.response?.data;
+      setAlertHeader("Form Submission Failed");
+      setErrorMessages(err?.message || "Please Retry");
+      setShowAlert(true);
+    } finally {
+      setBusy(false);
+    }
   };
 
   const fetchData = async () => {
@@ -89,7 +131,9 @@ const EditTax: FC = () => {
             ""
           ) : (
             <IonButtons slot="end">
-              <IonButton color="primary">Save</IonButton>
+              <IonButton color="primary" onClick={handleSave}>
+                Save
+              </IonButton>
             </IonButtons>
           )}
         </IonToolbar>

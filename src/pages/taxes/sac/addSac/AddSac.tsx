@@ -31,6 +31,7 @@ import { SAC } from "../../../../assets/helpers/Interfaces";
 
 const initialFormData: SAC = {
   gst_rate: "0",
+  active: true,
 };
 
 const AddSac: FC = () => {
