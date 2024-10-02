@@ -1,13 +1,10 @@
-interface ValidationResult {
-  success: boolean;
-  message: string;
-}
+import { ValidationResult } from "../../../assets/helpers/Interfaces";
 
 interface ProductData {
-  name: string;
-  s_price: string;
-  p_price: string;
-  opening_qty_per: string;
+  name?: string;
+  s_price?: string;
+  p_price?: string;
+  opening_qty_per?: string;
 }
 
 export const productValidation = (
@@ -19,18 +16,18 @@ export const productValidation = (
     return { success: false, message: "Please enter name" };
   }
 
-  if (+s_price < 1) {
+  if (!s_price || +s_price < 1) {
     return { success: false, message: "Please enter valid sell price" };
   }
 
-  if (+p_price && +p_price > +s_price) {
+  if (p_price && +p_price && +p_price > +s_price) {
     return {
       success: false,
       message: "Purchase price must be less than or equal to sell price",
     };
   }
 
-  if (+opening_qty_per && +opening_qty_per < 1) {
+  if (opening_qty_per && +opening_qty_per && +opening_qty_per < 1) {
     return { success: false, message: "Please entert least 1 unit" };
   }
 

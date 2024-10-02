@@ -158,7 +158,7 @@ const AddItems: FC = () => {
     const { name, varient, description } = formData;
     let updatedFormData = {
       ...formData,
-      name: name.trim(),
+      name: name?.trim(),
       ...(varient && { varient: varient.trim() }),
       ...(description && { description: description.trim() }),
     };
@@ -599,7 +599,7 @@ const AddItems: FC = () => {
         <SelectUOM
           title={"Select Unit"}
           uoms={AllUnitOfMeasurement}
-          selectedItem={formData?.UOM}
+          selectedItem={formData?.UOM || null}
           onSelectionCancel={() => setUomModal(false)}
           onSelectionChange={onHandleUom}
         />

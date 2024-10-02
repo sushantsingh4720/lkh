@@ -82,20 +82,22 @@ export interface CombineCode {
 
 export interface Item {
   id?: number;
-  brandName: string;
-  UOM: string;
-  categoryName: string;
-  description: string;
-  hsn_code: string;
-  mrp_price: string;
-  name: string;
-  opening_qty_per: string;
-  p_price: string;
-  s_price: string;
-  sac_code: string;
-  taxName: string;
-  type: string;
-  varient: string;
+  brandName?: string;
+  UOM?: string;
+  categoryName?: string;
+  description?: string;
+  hsn_code?: string;
+  mrp_price?: string;
+  name?: string;
+  opening_qty_per?: string;
+  p_price?: string;
+  s_price?: string;
+  sac_code?: string;
+  taxName?: string;
+  type?: string;
+  varient?: string;
+  label?: string;
+  value?: string;
 }
 
 interface UOM {
@@ -132,6 +134,8 @@ export interface InvoiceItem {
   amount: string; // Consider using number if amount is always numeric
   itemTax: string;
   type: string;
+  label?: string;
+  value?: string;
 }
 
 export interface SalesInvoice {
