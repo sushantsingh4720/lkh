@@ -33,7 +33,7 @@ const EditCategory: FC = () => {
   const axios = useAxios();
   const [loading, setLoading] = useState<boolean>(true);
   const { id } = useParams<RouteParams>();
-  const [formData, setFormData] = useState<Category>();
+  const [formData, setFormData] = useState<Category>({});
 
   const [alertHeader, setAlertHeader] = useState<string>("");
   const [errorMessage, setErrorMessages] = useState<string>("");
@@ -49,6 +49,41 @@ const EditCategory: FC = () => {
   const onHandleCheckboxChange = (e: any) => {
     const { name, checked } = e.target;
     setFormData((pre) => ({ ...pre, [name]: checked }));
+  };
+
+  const handleSave = async () => {
+    const { name, description } = formData;
+    let updatedFormData = {
+      ...formData,
+      name: name?.trim(),
+      ...(description && { description: description.trim() }),
+    };
+    setFormData(updatedFormData);
+    if (!updatedFormData.name) {
+      setAlertHeader("Form validation Failed");
+      setErrorMessages("Please enter category name");
+      setShowAlert(true);
+      return;
+    }
+    setBusy(true);
+    try {
+      const response = await axios.put(`/category/${id}`, updatedFormData, {
+        headers: { "Content-Type": "application/json" },
+      });
+      const result = response.data;
+      const message = result?.message || "Category Successfully Saved";
+      setSuccessMessage(message);
+      setIsSuccess(true);
+      setFormData({});
+      history.goBack();
+    } catch (error: any) {
+      const err = error.response?.data;
+      setAlertHeader("Form Submission Failed");
+      setErrorMessages(err?.message || "Please Retry");
+      setShowAlert(true);
+    } finally {
+      setBusy(false);
+    }
   };
 
   const fetchData = async () => {
@@ -89,7 +124,7 @@ const EditCategory: FC = () => {
             ""
           ) : (
             <IonButtons slot="end">
-              <IonButton color="primary">Save</IonButton>
+              <IonButton color="primary" onClick={handleSave}>Save</IonButton>
             </IonButtons>
           )}
         </IonToolbar>
