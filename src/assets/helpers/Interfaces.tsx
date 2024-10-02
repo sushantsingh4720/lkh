@@ -77,6 +77,17 @@ export interface HSN {
   value?: string;
 }
 
+export interface SAC {
+  id?: number;
+  sac_code_no?: string;
+  sac_code?: string;
+  gst_rate?: string;
+  active?: boolean;
+  name_of_commodity?: string;
+  label?: string;
+  value?: string;
+}
+
 export interface Item {
   id?: number;
   brandName?: string;

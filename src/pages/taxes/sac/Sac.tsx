@@ -69,7 +69,7 @@ const Sac: FC = () => {
         ) : (
           <IonList>
             {items.map((item: any) => (
-              <IonItem key={item?.id}>
+              <IonItem key={item?.id} routerLink={`/sac/view/${item?.id}`}>
                 <div className={styles.inner_ion_item}>
                   <div>
                     <p>Sac Code</p>

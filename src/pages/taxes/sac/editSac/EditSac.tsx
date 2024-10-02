@@ -24,15 +24,15 @@ import {
 import { FC, useState } from "react";
 import useAxios from "../../../../utils/axiosInstance";
 import { useHistory, useParams } from "react-router";
-import { HSN, RouteParams } from "../../../../assets/helpers/Interfaces";
-import styles from "./EditHsn.module.scss";
+import { SAC, RouteParams } from "../../../../assets/helpers/Interfaces";
+import styles from "./EditSac.module.scss";
 import { arrowBackOutline, language } from "ionicons/icons";
 import LoadDataSpinner from "../../../../components/Spinner/loadDataSpinner/LoadDataSpinner";
-const EditHsn: FC = () => {
+const EditSac: FC = () => {
   const axios = useAxios();
   const history = useHistory();
   const { id } = useParams<RouteParams>();
-  const [formData, setFormData] = useState<HSN>();
+  const [formData, setFormData] = useState<SAC>();
   const [loading, setLoading] = useState(true);
   const [alertHeader, setAlertHeader] = useState<string>("");
   const [errorMessage, setErrorMessages] = useState<string>("");
@@ -54,8 +54,7 @@ const EditHsn: FC = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [hsnRes] = await Promise.all([axios.get(`/gsthsn/${id}`)]);
-
+      const [sacRes] = await Promise.all([axios.get(`/gstsac/${id}`)]);
       const {
         fy_id,
         createdAt,
@@ -63,7 +62,7 @@ const EditHsn: FC = () => {
         id: number,
         companyId,
         ...rest
-      } = hsnRes.data?.data;
+      } = sacRes.data?.data;
       setFormData(rest);
     } catch (error) {
     } finally {
@@ -76,7 +75,7 @@ const EditHsn: FC = () => {
   });
 
   return (
-    <IonPage className={styles.edit_hsn_page}>
+    <IonPage className={styles.edit_sac_page}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -84,7 +83,7 @@ const EditHsn: FC = () => {
               <IonIcon icon={arrowBackOutline} color="primary"></IonIcon>
             </IonButton>
           </IonButtons>
-          <IonTitle>Edit Hsn</IonTitle>
+          <IonTitle>Edit Sac</IonTitle>
           {loading ? (
             ""
           ) : (
@@ -100,27 +99,27 @@ const EditHsn: FC = () => {
         <IonContent>
           <IonCard>
             <IonCardHeader>
-              <IonCardTitle>Hsn Information</IonCardTitle>
+              <IonCardTitle>Sac Information</IonCardTitle>
             </IonCardHeader>
             <IonCardContent>
               <IonGrid className="ion-no-padding">
                 <IonRow>
-                  <IonLabel>Hsn Code No</IonLabel>
+                  <IonLabel>Sac Code No</IonLabel>
                   <IonInput
                     className="customInput"
                     type="number"
-                    name="hsn_code_no"
-                    value={formData?.hsn_code_no}
+                    name="sac_code_no"
+                    value={formData?.sac_code_no}
                     onIonInput={onHandleInputChange}
                   />
                 </IonRow>
                 <IonRow>
-                  <IonLabel>Hsn Code</IonLabel>
+                  <IonLabel>Sac Code</IonLabel>
                   <IonInput
                     className="customInput"
                     type="number"
-                    name="hsn_code"
-                    value={formData?.hsn_code}
+                    name="sac_code"
+                    value={formData?.sac_code}
                     onIonInput={onHandleInputChange}
                   />
                 </IonRow>
@@ -181,14 +180,14 @@ const EditHsn: FC = () => {
         message="please wait..."
       />
       {/* <IonToast
-              isOpen={isSuccess}
-              position="bottom"
-              positionAnchor="footer"
-              message={successMessage}
-              duration={3000}
-            ></IonToast> */}
+                isOpen={isSuccess}
+                position="bottom"
+                positionAnchor="footer"
+                message={successMessage}
+                duration={3000}
+              ></IonToast> */}
     </IonPage>
   );
 };
 
-export default EditHsn;
+export default EditSac;

@@ -50,6 +50,8 @@ import ViewTax from "./taxes/taxes/viewTax/ViewTax";
 import EditTax from "./taxes/taxes/editTax/EditTax";
 import ViewHsn from "./taxes/hsn/viewHsn/ViewHsn";
 import EditHsn from "./taxes/hsn/editHsn/EditHsn";
+import ViewSac from "./taxes/sac/viewSac/ViewSac";
+import EditSac from "./taxes/sac/editSac/EditSac";
 const Router: FC = () => {
   const dispatch = useDispatch();
   const axios = useAxios();
@@ -113,6 +115,8 @@ const Router: FC = () => {
         <Route exact path="/hsn/edit/:id" component={EditHsn} />
         <Route exact path="/sac" component={Sac} />
         <Route exact path="/sac/add" component={AddSac} />
+        <Route exact path="/sac/view/:id" component={ViewSac} />
+        <Route exact path="/sac/edit/:id" component={EditSac} />
         <Route exact path="/invoices/item/add" component={AddInvoiceItem} />
         <Route exact path="/sales/add" component={AddSales} />
         <Route exact path="/expenses" component={Expenses} />
