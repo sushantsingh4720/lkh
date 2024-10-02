@@ -27,23 +27,17 @@ import { FC, useState } from "react";
 import { useHistory } from "react-router";
 import styles from "./AddTax.module.scss";
 import useAxios from "../../../../utils/axiosInstance";
-interface FormData {
-  name: string;
-  rate: number;
-  active: boolean;
-  description: string;
-}
-const initialFormData: FormData = {
-  name: "",
+import { Tax } from "../../../../assets/helpers/Interfaces";
+
+const initialFormData: Tax = {
   rate: 0,
   active: true,
-  description: "",
 };
 
 const AddTax: FC = () => {
   const axios = useAxios();
   const history = useHistory();
-  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [formData, setFormData] = useState<Tax>(initialFormData);
   const [alertHeader, setAlertHeader] = useState<string>("");
   const [errorMessage, setErrorMessages] = useState<string>("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
@@ -64,7 +58,7 @@ const AddTax: FC = () => {
     const { name, rate, description } = formData;
     let updatedFormData = {
       ...formData,
-      name: name.trim(),
+      name: name?.trim(),
       ...(description && { description: description.trim() }),
     };
     setFormData(updatedFormData);
@@ -74,7 +68,7 @@ const AddTax: FC = () => {
       setShowAlert(true);
       return;
     }
-    if (+rate > 100) {
+    if (rate && +rate > 100) {
       setAlertHeader("Form validation Failed");
       setErrorMessages("Please enter valid rate");
       setShowAlert(true);
@@ -169,6 +163,7 @@ const AddTax: FC = () => {
             </IonGrid>
           </IonCardContent>
         </IonCard>
+      </IonContent>
         <IonAlert
           isOpen={showAlert}
           onDidDismiss={() => {
@@ -192,7 +187,6 @@ const AddTax: FC = () => {
               message={successMessage}
               duration={3000}
             ></IonToast> */}
-      </IonContent>
     </IonPage>
   );
 };

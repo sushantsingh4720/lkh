@@ -57,22 +57,24 @@ export interface Brand {
 }
 
 export interface Tax {
-  id: number;
-  name: string;
-  rate: number;
-  active: boolean;
-  description: string;
-  label?: string | null;
-  value?: string | null;
+  id?: number;
+  name?: string;
+  rate?: number;
+  active?: boolean;
+  description?: string;
+  label?: string;
+  value?: string;
 }
 
 export interface Bank {
-  id: number;
-  name: string;
-  ifsc: string;
-  branch: string;
-  account_no: string;
-  description: string | null;
+  id?: number;
+  name?: string;
+  ifsc?: string;
+  branch?: string;
+  account_no?: string;
+  description?: string | null;
+  label?: string;
+  value?: string;
 }
 
 export interface CombineCode {
