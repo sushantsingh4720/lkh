@@ -66,24 +66,15 @@ export interface Tax {
   value?: string;
 }
 
-export interface Bank {
+export interface HSN {
   id?: number;
-  name?: string;
-  ifsc?: string;
-  branch?: string;
-  account_no?: string;
-  description?: string | null;
+  hsn_code_no?: string;
+  hsn_code?: string;
+  gst_rate?: string;
+  active?: boolean;
+  name_of_commodity?: string;
   label?: string;
   value?: string;
-}
-
-export interface CombineCode {
-  id: number;
-  code_no: string;
-  code: string;
-  gst_rate: string;
-  active: boolean;
-  name_of_commodity: string;
 }
 
 export interface Item {
@@ -106,23 +97,31 @@ export interface Item {
   value?: string;
 }
 
+export interface Bank {
+  id?: number;
+  name?: string;
+  ifsc?: string;
+  branch?: string;
+  account_no?: string;
+  description?: string | null;
+  label?: string;
+  value?: string;
+}
+
+export interface CombineCode {
+  id: number;
+  code_no: string;
+  code: string;
+  gst_rate: string;
+  active: boolean;
+  name_of_commodity: string;
+  label?: string;
+  value?: string;
+}
+
 interface UOM {
   label: string;
   value: string;
-}
-
-export interface TaxName {
-  id: number;
-  name: string;
-  fy_id?: number;
-  companyId?: number;
-  rate: number;
-  active: boolean;
-  description: string | null;
-  createdAt?: string; // or Date if you prefer Date objects
-  updatedAt?: string; // or Date if you prefer Date objects
-  value?: string;
-  label?: string;
 }
 
 export interface InvoiceItem {
@@ -171,7 +170,7 @@ export interface SalesInvoice {
   date: string; // Date in format 'YYYY-MM-DD'.
   paid_date?: string; // Date in format 'YYYY-MM-DD'.
   balance?: string;
-  taxName?: TaxName | null; // JSON string, ensure validation.
+  taxName?: Tax | null; // JSON string, ensure validation.
   all_products?: InvoiceItem[]; // JSON string, ensure validation.
   other_charges?: any; // JSON string, ensure validation.
   other_info?: any; // JSON string, ensure validation.

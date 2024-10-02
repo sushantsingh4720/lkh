@@ -69,7 +69,7 @@ const Hsn: FC = () => {
         ) : (
           <IonList>
             {items.map((item: any) => (
-              <IonItem key={item?.id}>
+              <IonItem key={item?.id} routerLink={`/hsn/view/${item?.id}`}>
                 <div className={styles.inner_ion_item}>
                   <div>
                     <p>Hsn Code</p>

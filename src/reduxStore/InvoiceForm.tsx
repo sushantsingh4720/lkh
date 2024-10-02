@@ -8,7 +8,7 @@ import {
   Contact,
   InvoiceItem,
   SalesInvoice,
-  TaxName,
+  Tax,
 } from "../assets/helpers/Interfaces"; // Import the SelectedContact interface
 import { checkbox } from "ionicons/icons";
 
@@ -21,7 +21,7 @@ const calculateTotals = (
   invoiceType: string,
   discountType: string,
   discountValue: string,
-  taxName: TaxName | null
+  taxName: Tax | null
 ) => {
   let amount;
   let discount = "";
@@ -457,7 +457,7 @@ const InoviceForm = createSlice({
     handleTaxSelect: (
       state,
       action: PayloadAction<{
-        taxName: TaxName;
+        taxName: Tax;
         isClientCompanyStateSame: boolean;
       }>
     ) => {

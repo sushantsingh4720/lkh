@@ -16,34 +16,30 @@ import {
   IonLoading,
   IonPage,
   IonRow,
-  IonText,
   IonTextarea,
   IonTitle,
-  IonToast,
   IonToolbar,
+  useIonViewWillEnter,
 } from "@ionic/react";
-import { addOutline, arrowBackOutline, searchOutline } from "ionicons/icons";
 import { FC, useState } from "react";
-import { useHistory } from "react-router";
-import styles from "./AddHsn.module.scss";
 import useAxios from "../../../../utils/axiosInstance";
-import { HSN } from "../../../../assets/helpers/Interfaces";
-
-const initialFormData: HSN = {
-  gst_rate: "0",
-  active: true,
-};
-
-const AddHsn: FC = () => {
+import { useHistory, useParams } from "react-router";
+import { HSN, RouteParams } from "../../../../assets/helpers/Interfaces";
+import styles from "./EditHsn.module.scss";
+import { arrowBackOutline, language } from "ionicons/icons";
+const EditHsn: FC = () => {
   const axios = useAxios();
   const history = useHistory();
-  const [formData, setFormData] = useState<HSN>(initialFormData);
+  const { id } = useParams<RouteParams>();
+  const [formData, setFormData] = useState<HSN>();
+  const [loading, setLoading] = useState(true);
   const [alertHeader, setAlertHeader] = useState<string>("");
   const [errorMessage, setErrorMessages] = useState<string>("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [busy, setBusy] = useState<boolean>(false);
+
   const onHandleInputChange = (e: any) => {
     const { name, value } = e.target;
     setFormData((pre) => ({ ...pre, [name]: value }));
@@ -54,55 +50,32 @@ const AddHsn: FC = () => {
     setFormData((pre) => ({ ...pre, [name]: checked }));
   };
 
-  const handleSave = async () => {
-    const { hsn_code, hsn_code_no, name_of_commodity, gst_rate } = formData;
-    let updatedFormData = {
-      ...formData,
-      ...(name_of_commodity && { name_of_commodity: name_of_commodity.trim() }),
-    };
-
-    setFormData(updatedFormData);
-    if (!hsn_code_no || hsn_code_no.length < 4) {
-      setAlertHeader("Form validation Failed");
-      setErrorMessages("Please enter valid hsn code no");
-      setShowAlert(true);
-      return;
-    }
-    if (!hsn_code || hsn_code.length < 4) {
-      setAlertHeader("Form validation Failed");
-      setErrorMessages("Please enter hsn code");
-      setShowAlert(true);
-      return;
-    }
-    if (gst_rate && +gst_rate > 100) {
-      setAlertHeader("Form validation Failed");
-      setErrorMessages("Please enter valid rate");
-      setShowAlert(true);
-      return;
-    }
-    setBusy(true);
+  const fetchData = async () => {
+    setLoading(true);
     try {
-      const response = await axios.post("/gsthsn", updatedFormData, {
-        headers: { "Content-Type": "application/json" },
-      });
-      const result = response.data;
-      const message = result?.message || "Hsn Successfully Saved";
-      setSuccessMessage(message);
-      setIsSuccess(true);
-      setFormData(initialFormData);
-      history.goBack();
-    } catch (error: any) {
-      const err = error.response?.data;
-      setAlertHeader("Form Submission Failed");
-      setErrorMessages(err?.message || "Please Retry");
-      setShowAlert(true);
+      const [hsnRes] = await Promise.all([axios.get(`/gsthsn/${id}`)]);
+
+      const {
+        fy_id,
+        createdAt,
+        updatedAt,
+        id: number,
+        companyId,
+        ...rest
+      } = hsnRes.data?.data;
+      setFormData(rest);
+    } catch (error) {
     } finally {
-      setBusy(false);
+      setLoading(false);
     }
   };
 
+  useIonViewWillEnter(() => {
+    fetchData();
+  });
+
   return (
-    <IonPage className={styles.add_hsn_page}>
+    <IonPage className={styles.edit_hsn_page}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -110,12 +83,14 @@ const AddHsn: FC = () => {
               <IonIcon icon={arrowBackOutline} color="primary"></IonIcon>
             </IonButton>
           </IonButtons>
-          <IonTitle>Add Hsn</IonTitle>
-          <IonButtons slot="end">
-            <IonButton color="primary" onClick={handleSave}>
-              Save
-            </IonButton>
-          </IonButtons>
+          <IonTitle>Edit Hsn</IonTitle>
+          {loading ? (
+            ""
+          ) : (
+            <IonButtons slot="end">
+              <IonButton color="primary">Save</IonButton>
+            </IonButtons>
+          )}
         </IonToolbar>
       </IonHeader>
       <IonContent>
@@ -197,14 +172,14 @@ const AddHsn: FC = () => {
         message="please wait..."
       />
       {/* <IonToast
-                isOpen={isSuccess}
-                position="bottom"
-                positionAnchor="footer"
-                message={successMessage}
-                duration={3000}
-              ></IonToast> */}
+              isOpen={isSuccess}
+              position="bottom"
+              positionAnchor="footer"
+              message={successMessage}
+              duration={3000}
+            ></IonToast> */}
     </IonPage>
   );
 };
 
-export default AddHsn;
+export default EditHsn;

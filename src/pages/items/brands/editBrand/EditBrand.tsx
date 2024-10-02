@@ -50,6 +50,7 @@ const EditBrand: FC = () => {
     const { name, checked } = e.target;
     setFormData((pre) => ({ ...pre, [name]: checked }));
   };
+  
   const fetchData = async () => {
     setLoading(true);
     try {
