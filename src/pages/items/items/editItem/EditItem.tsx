@@ -48,13 +48,14 @@ import {
   UOM,
 } from "../../../../assets/helpers/AllUnitOfMeasurement";
 import styles from "./EditItem.module.scss";
+import { productValidation } from "../FormValidation";
 const EditItem: FC = () => {
   const axios = useAxios();
   const history = useHistory();
   const { id } = useParams<RouteParams>();
   const [busy, setBusy] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [formData, setFormData] = useState<Item>();
+  const [formData, setFormData] = useState<Item>({});
   const [categoryModal, setCategoryModal] = useState<boolean>(false);
   const [brandModal, setBrandModal] = useState<boolean>(false);
   const [taxModal, setTaxModal] = useState<boolean>(false);
@@ -137,11 +138,47 @@ const EditItem: FC = () => {
     setUomModal(false);
   };
 
+  const handleSave = async () => {
+    const { name, varient, description } = formData;
+    let updatedFormData = {
+      ...formData,
+      name: name?.trim(),
+      ...(varient && { varient: varient.trim() }),
+      ...(description && { description: description.trim() }),
+    };
+    setFormData(updatedFormData);
+    const result = productValidation(updatedFormData);
+    if (!result.success) {
+      setAlertHeader("Form validation Failed");
+      setErrorMessages(result.message);
+      setShowAlert(true);
+      return;
+    }
+    setBusy(true);
+    try {
+      const response = await axios.put(`/product/${id}`, updatedFormData, {
+        headers: { "Content-Type": "application/json" },
+      });
+      const result = response.data;
+      const message = result?.message || "Item Successfully Saved";
+      setSuccessMessage(message);
+      setIsSuccess(true);
+      setFormData({});
+      history.goBack();
+    } catch (error: any) {
+      const err = error.response?.data;
+      setAlertHeader("Form Submission Failed");
+      setErrorMessages(err?.message || "Please Retry");
+      setShowAlert(true);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const fetchItemData = async () => {
     setLoading(true);
     try {
       const [itemRes] = await Promise.all([axios.get(`/product/${id}`)]);
-
       const {
         fy_id,
         createdAt,
@@ -151,6 +188,12 @@ const EditItem: FC = () => {
         ...rest
       } = itemRes.data?.data;
       setFormData(rest);
+      const { brandName, categoryName, hsn_code, sac_code, taxName } = rest;
+      if (taxName) setSelectedTax({ name: taxName });
+      if (brandName) setSelectedBrand({ name: brandName });
+      if (categoryName) setSelectedCategory({ name: categoryName });
+      if (sac_code || hsn_code)
+        setSelectedCombineCode({ code: sac_code || hsn_code });
     } catch (error) {
     } finally {
       setLoading(false);
@@ -258,7 +301,7 @@ const EditItem: FC = () => {
             ""
           ) : (
             <IonButtons slot="end">
-              <IonButton color="primary">Save</IonButton>
+              <IonButton color="primary" onClick={handleSave}>Save</IonButton>
             </IonButtons>
           )}
         </IonToolbar>
@@ -381,7 +424,7 @@ const EditItem: FC = () => {
                           display: "flex",
                           justifyContent: "space-between",
                           alignItems: "center",
-                          width: "100%",
+                          inlineSize: "100%",
                         }}
                       >
                         {formData?.taxName || "--Select Tax--"}
@@ -408,7 +451,7 @@ const EditItem: FC = () => {
                           display: "flex",
                           justifyContent: "space-between",
                           alignItems: "center",
-                          width: "100%",
+                          inlineSize: "100%",
                         }}
                       >
                         {(isProduct
@@ -447,7 +490,7 @@ const EditItem: FC = () => {
                           display: "flex",
                           justifyContent: "space-between",
                           alignItems: "center",
-                          width: "100%",
+                          inlineSize: "100%",
                         }}
                       >
                         {formData?.brandName || "--Select Brand--"}
@@ -472,7 +515,7 @@ const EditItem: FC = () => {
                           display: "flex",
                           justifyContent: "space-between",
                           alignItems: "center",
-                          width: "100%",
+                          inlineSize: "100%",
                         }}
                       >
                         {formData?.categoryName || "--Select Category--"}
@@ -490,7 +533,7 @@ const EditItem: FC = () => {
                           display: "flex",
                           justifyContent: "space-between",
                           alignItems: "center",
-                          width: "100%",
+                          inlineSize: "100%",
                         }}
                       >
                         {formData?.UOM || "--Select Unit--"}

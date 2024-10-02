@@ -120,12 +120,12 @@ export interface Bank {
 }
 
 export interface CombineCode {
-  id: number;
-  code_no: string;
-  code: string;
-  gst_rate: string;
-  active: boolean;
-  name_of_commodity: string;
+  id?: number;
+  code_no?: string;
+  code?: string;
+  gst_rate?: string;
+  active?: boolean;
+  name_of_commodity?: string;
   label?: string;
   value?: string;
 }

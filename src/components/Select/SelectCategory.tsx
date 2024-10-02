@@ -52,7 +52,7 @@ function SelectCategory(props: TypeaheadProps) {
       const normalizedQuery = searchQuery.toLowerCase();
       setFilteredItems(
         props.categories.filter((item) =>
-          item.name.toLowerCase().includes(normalizedQuery)
+          item.name?.toLowerCase().includes(normalizedQuery)
         )
       );
     }
