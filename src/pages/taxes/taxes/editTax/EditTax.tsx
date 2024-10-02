@@ -27,7 +27,7 @@ import { useHistory, useParams } from "react-router";
 import useAxios from "../../../../utils/axiosInstance";
 import { arrowBackOutline } from "ionicons/icons";
 import LoadDataSpinner from "../../../../components/Spinner/loadDataSpinner/LoadDataSpinner";
-
+import styles from "./EditTax.module.scss"
 const EditTax: FC = () => {
   const history = useHistory();
   const axios = useAxios();
@@ -76,7 +76,7 @@ const EditTax: FC = () => {
   });
 
   return (
-    <IonPage>
+    <IonPage className={styles.edit_tax_page}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">

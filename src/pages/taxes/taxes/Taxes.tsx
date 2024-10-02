@@ -69,10 +69,7 @@ const Taxes: FC = () => {
         ) : (
           <IonList>
             {items.map((item: any) => (
-              <IonItem
-                key={item?.id}
-                onClick={() => history.push(`/taxes/view/${item?.id}`)}
-              >
+              <IonItem key={item?.id} routerLink={`/taxes/view/${item?.id}`}>
                 <div className={styles.inner_ion_item}>
                   <h5>{item?.name}</h5>
                   <div>

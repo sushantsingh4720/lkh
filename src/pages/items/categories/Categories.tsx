@@ -71,7 +71,7 @@ const Categories: FC = () => {
             {items.map((item: any) => (
               <IonItem
                 key={item?.id}
-                onClick={() => history.push(`/categories/view/${item?.id}`)}
+                routerLink={`/categories/view/${item?.id}`}
               >
                 <div className={styles.inner_ion_item}>
                   <h5>{item?.name}</h5>
