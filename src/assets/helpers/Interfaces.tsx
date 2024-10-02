@@ -48,10 +48,12 @@ export interface Category {
 }
 
 export interface Brand {
-  id: number;
-  name: string;
-  active: boolean;
-  description: string;
+  id?: number;
+  name?: string;
+  active?: boolean;
+  description?: string;
+  label?: string;
+  value?: string;
 }
 
 export interface Tax {

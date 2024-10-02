@@ -24,16 +24,16 @@ import {
 import { arrowBackOutline } from "ionicons/icons";
 import { FC, useState } from "react";
 import { useHistory, useParams } from "react-router";
-import LoadDataSpinner from "../../../../components/Spinner/loadDataSpinner/LoadDataSpinner";
-import { Category, RouteParams } from "../../../../assets/helpers/Interfaces";
 import useAxios from "../../../../utils/axiosInstance";
-import styles from "./EditCategory.module.scss";
-const EditCategory: FC = () => {
+import LoadDataSpinner from "../../../../components/Spinner/loadDataSpinner/LoadDataSpinner";
+import { Brand, RouteParams } from "../../../../assets/helpers/Interfaces";
+import styles from "./EditBrand.module.scss";
+const EditBrand: FC = () => {
   const history = useHistory();
   const axios = useAxios();
-  const [loading, setLoading] = useState<boolean>(true);
   const { id } = useParams<RouteParams>();
-  const [formData, setFormData] = useState<Category>();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [formData, setFormData] = useState<Brand>();
 
   const [alertHeader, setAlertHeader] = useState<string>("");
   const [errorMessage, setErrorMessages] = useState<string>("");
@@ -50,11 +50,10 @@ const EditCategory: FC = () => {
     const { name, checked } = e.target;
     setFormData((pre) => ({ ...pre, [name]: checked }));
   };
-
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [categoryRes] = await Promise.all([axios.get(`/category/${id}`)]);
+      const [brandRes] = await Promise.all([axios.get(`/brand/${id}`)]);
 
       const {
         fy_id,
@@ -63,7 +62,7 @@ const EditCategory: FC = () => {
         id: number,
         companyId,
         ...rest
-      } = categoryRes.data?.data;
+      } = brandRes.data?.data;
       setFormData(rest);
     } catch (error) {
     } finally {
@@ -76,7 +75,7 @@ const EditCategory: FC = () => {
   });
 
   return (
-    <IonPage className={styles.edit_category_page}>
+    <IonPage className={styles.edit_brand_page}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -84,7 +83,7 @@ const EditCategory: FC = () => {
               <IonIcon icon={arrowBackOutline} color="primary"></IonIcon>
             </IonButton>
           </IonButtons>
-          <IonTitle>Edit Category</IonTitle>
+          <IonTitle>Edit Brand</IonTitle>
           {loading ? (
             ""
           ) : (
@@ -100,7 +99,7 @@ const EditCategory: FC = () => {
         <IonContent>
           <IonCard>
             <IonCardHeader>
-              <IonCardTitle>Category Information</IonCardTitle>
+              <IonCardTitle>Brand Information</IonCardTitle>
             </IonCardHeader>
             <IonCardContent>
               <IonGrid className="ion-no-padding">
@@ -160,14 +159,14 @@ const EditCategory: FC = () => {
         message="please wait..."
       />
       {/* <IonToast
-          isOpen={isSuccess}
-          position="bottom"
-          positionAnchor="footer"
-          message={successMessage}
-          duration={3000}
-        ></IonToast> */}
+            isOpen={isSuccess}
+            position="bottom"
+            positionAnchor="footer"
+            message={successMessage}
+            duration={3000}
+          ></IonToast> */}
     </IonPage>
   );
 };
 
-export default EditCategory;
+export default EditBrand;

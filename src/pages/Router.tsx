@@ -44,6 +44,8 @@ import ViewItem from "./items/items/viewItem/ViewItem";
 import EditItem from "./items/items/editItem/EditItem";
 import ViewCategory from "./items/categories/ViewCategory/ViewCategory";
 import EditCategory from "./items/categories/EditCategory/EditCategory";
+import ViewBrand from "./items/brands/viewBrand/ViewBrand";
+import EditBrand from "./items/brands/editBrand/EditBrand";
 const Router: FC = () => {
   const dispatch = useDispatch();
   const axios = useAxios();
@@ -95,6 +97,8 @@ const Router: FC = () => {
         <Route exact path="/categories/edit/:id" component={EditCategory} />
         <Route exact path="/brands" component={Brands} />
         <Route exact path="/brands/add" component={AddBrand} />
+        <Route exact path="/brands/view/:id" component={ViewBrand} />
+        <Route exact path="/brands/edit/:id" component={EditBrand} />
         <Route exact path="/taxes" component={Taxes} />
         <Route exact path="/taxes/add" component={AddTax} />
         <Route exact path="/hsn" component={Hsn} />
